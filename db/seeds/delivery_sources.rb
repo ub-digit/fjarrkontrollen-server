@@ -1,0 +1,8 @@
+DeliverySource.create({id: 1, label: "own_collection", name: "Egen samling", is_active: true, position: 10}) 
+DeliverySource.create({id: 2, label: "libris", name: "Libris", is_active: true, position: 20}) 
+DeliverySource.create({id: 3, label: "subito", name: "Subito", is_active: true, position: 30}) 
+DeliverySource.create({id: 4, label: "oclc", name: "OCLC", is_active: true, position: 40}) 
+DeliverySource.create({id: 5, label: "netpunkt", name: "Netpunkt", is_active: true, position: 50}) 
+DeliverySource.create({id: 6, label: "bibsys", name: "Bibsys", is_active: true, position: 60}) 
+DeliverySource.create({id: 7, label: "blld", name: "BLLD", is_active: true, position: 70}) 
+DeliverySource.create({id: 8, label: "other", name: "Annan", is_active: true, position: 80})

@@ -1,0 +1,35 @@
+# -*- encoding : utf-8 -*-
+ActionMailer::Base.delivery_method = :smtp
+ActionMailer::Base.smtp_settings = {
+  :address => "<SMTP server>",
+  :port => 25
+}
+ActionMailer::Base.raise_delivery_errors = true
+
+Illbackend::Application.config.email_settings = {
+  :subject_prefix => "TEST : "
+}
+
+# Usage:
+# Illbackend::Application.config.librisill_settings[:base_url]
+Illbackend::Application.config.librisill_settings = {
+  :base_url => "<Libris fjärrlån API endpoint>"
+}
+
+# Usage:
+# Illbackend::Application.config.printing[:logo_path]
+Illbackend::Application.config.printing = {
+  :logo_path => "app/assets/images/gu_flag_fjarrlan_printout.png",
+  :slip_logo_path => "app/assets/images/gu_flag_bokslip_printout.png"
+}
+
+Illbackend::Application.config.pagination = {
+  :orders_per_page => 5
+}
+
+Illbackend::Application.config.gunda = {
+  :write => true,
+  :create_bib_and_item_url => '<enter url>',
+  :delete_bib_and_item_url => '<enter url>',
+  :find_item_by_barcode => '<enter url>'
+}

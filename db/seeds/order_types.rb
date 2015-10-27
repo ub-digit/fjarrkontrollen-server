@@ -1,0 +1,5 @@
+OrderType.create({id: 1, name_sv: "Kopia", name_en: "Photocopy", label: "photocopy"})
+OrderType.create({id: 2, name_sv: "Lån", name_en: "Loan", label: "loan"})
+OrderType.create({id: 3, name_sv: "Kopia av bokkapitel", name_en: "Copy of Book Chapter", label: "photocopy_chapter"})
+OrderType.create({id: 4, name_sv: "Musiktryck", name_en: "Score", label: "score"})
+OrderType.create({id: 5, name_sv: "Mikrofilmad dagstidning", name_en: "Microfilm", label: "microfilm"})

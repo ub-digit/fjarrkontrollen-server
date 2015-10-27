@@ -1,0 +1,50 @@
+<% 10.times do |n| %>
+order_<%= n %>:
+  id: <%= n %>
+  order_number: <%="20140101-000000.#{n}"%>
+  order_type: 1
+  title: <%= n == 6 ? 'Husmoderns stora bok om chokladtomtar och gräddbakelser' : 'Artificial organs' %>
+  publication_year: <%= n==6 ? 1912 : 2010 %>
+  volume:
+  issue: 3
+  pages: 222-223
+  journal_title: <%= "Journal_#{n}" %>
+  issn_isbn: <%= n==7 ? '1234-1234' : '1111-1111' %>
+  reference_information: hajjenxyz
+  photocopies_if_loan_not_possible: false
+  order_outside_scandinavia: false
+  email_confirmation: false
+  not_valid_after: 2014-05-20
+  delivery_type: 2
+  name: <%= n == 5 ? 'Alfred E Neumann' : 'Henry Jekyll' %>
+  company1: Astma och allergienheten
+  company2: Östra Sjukhuset
+  company3:
+  phone_number:
+  email_address: <%= "jekyll#{n}@example.com" %>
+  library_card_number: <%= n == 5 ? 5001242102 : 5001000000 + n %>
+  customer_type: sahl
+  comments: Testing testing
+  form_lang: sv
+  authors:
+  form_library: G
+  delivery_place: Skickas levadr
+  location_id: <%= Location.find_by_label('G')[:id] %>
+  invoicing_name:
+  invoicing_address:
+  invoicing_postal_address1:
+  invoicing_postal_address2:
+  order_path: SFX
+  status_id: <%= n == 3 ? Status.find_by_label("archived")[:id] : Status.find_by_label("new")[:id] %> 
+  user_id: 
+  libris_lf_number: <%= n == 4 ? 'G-141121-0001' : "G-141224-000#{n}" %>
+  librisid: <%= n == 4 ? '12345' : 13000 + n %>
+  libris_request_id: <%= n == 4 ? '246708' : 250000 + n %>
+  librismisc: <%= n == 4 ? 'diwerze zaker' : "ett o annat #{n}" %>
+  sticky_note_id: <%= n == 9 ? 9 : (n == 3 ? 999 : nil) %>
+  is_archived: <%= n == 7 ? true : false %>
+  delivery_source_id: <%= n == 8 ? DeliverySource.find_by_label("other")[:id] : DeliverySource.find_by_label("own_collection")[:id] %>
+
+<% end %>
+
+

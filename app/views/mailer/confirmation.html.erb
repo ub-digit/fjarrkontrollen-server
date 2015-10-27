@@ -1,0 +1,111 @@
+<%= t('email.confirmation.body_header') %><%= I18n.locale.to_s.eql?("en") ? @location.name_en : @location.name_sv %>
+
+<br />
+<br />
+<br />
+___________________________________________________________________________
+<br />
+<%= t('email.order_received.gub') %><%= I18n.locale.to_s.eql?("en") ? @location.name_en : @location.name_sv %>
+<br />
+
+<% if @order.order_type_id == 1 %>
+  <%= t('email.field.copies') %>
+<% elsif @order.order_type_id == 2 %>
+  <%= t('email.field.loan') %>
+<% end %>
+<br />
+<% if @order.order_outside_scandinavia == true %>
+  <%= t('email.field.order_outside_scandinavia') %>
+<% end %>
+<br />
+<%= @order.order_number %>
+<br />
+---------------------------------------------------------------------------
+<br />
+<%= @order.journal_title.blank? ? "" : @order.journal_title %>
+<%= @order.publication_year.blank? ? "" : " " + @order.publication_year + ";" %>
+<%= @order.volume.blank? ? "" : @order.volume %>
+<%= @order.issue.blank? ? "():" : "(" + @order.issue + "):" %>
+<%= @order.pages.blank? ? "" : @order.pages %>
+<br />
+<br />
+<%= @order.authors.blank? ? "" : @order.authors %>
+<br />
+<%= @order.title.blank? ? "" : @order.title %>
+<br />
+<%= @order.publication_type.blank? ? "" : @order.publication_type %>
+<br />
+<%= @order.period.blank? ? "" : @order.period %>
+<br />
+---------------------------------------------------------------------------
+<br />
+<% if !@order.issn_isbn.blank? %>
+
+  <% if @order.order_type_id == 1 %>
+    <%= t('email.field.issn') + ": " + @order.issn_isbn %>
+  <% elsif @order.order_type_id == 2 %>
+    <%= t('email.field.isbn') + ": " + @order.issn_isbn %>
+  <% end %>
+<% end %>
+<br />
+---------------------------------------------------------------------------
+<br />
+<%= @order.email_address.blank? ? "" : t('email.field.email_address') + ": " + @order.email_address %>
+<br />
+<%= @order.phone_number.blank? ? "" : t('email.field.phone_number') + ": " + @order.phone_number %>
+<br />
+<%= @order.library_card_number.blank? ? "" : t('email.field.library_card_number') + ": " + @order.library_card_number %>
+<br />
+<br />
+
+<%= @order.name.blank? ? "" : "        " + @order.name %>
+<br />
+<%= @order.company1.blank? ? "" : "        " + @order.company1 %>
+<br />
+<%= @order.company2.blank? ? "" : "        " + @order.company2 %>
+<br />
+<%= @order.company3.blank? ? "" : "        " + @order.company3 %>
+<br />
+---------------------------------------------------------------------------
+<br />
+<%= @order.delivery_place.blank? ? "" : @order.delivery_place %>
+<br />
+<%= @order.customer_type.blank? ? "" : @order.customer_type %>
+<br />
+---------------------------------------------------------------------------
+<br />
+<%= t('email.delivery_info') + ":" %>
+<br />
+<%= @order.delivery_address.blank? ? "" : @order.delivery_address %>
+<br />
+<%= @order.delivery_box.blank? ? "" : @order.delivery_box %>
+<br />
+<%= @order.delivery_postal_code.blank? ? "" : @order.delivery_postal_code %>
+<br />
+<%= @order.delivery_city.blank? ? "" : @order.delivery_city %>
+<br />
+<%= @order.delivery_comments.blank? ? "" : simple_format(@order.delivery_comments) %>
+<br />
+---------------------------------------------------------------------------
+<br />
+<%= t('email.invoicing_info') + ":" %>
+<br />
+<%= @order.invoicing_name.blank? ? "" : @order.invoicing_name %>
+<br />
+<%= @order.invoicing_company.blank? ? "" : @order.invoicing_company %>
+<br />
+<%= @order.invoicing_address.blank? ? "" : @order.invoicing_address %>
+<br />
+<%= @order.invoicing_postal_address1.blank? ? "" : @order.invoicing_postal_address1 %>
+<br />
+<%= @order.invoicing_postal_address2.blank? ? "" : @order.invoicing_postal_address2 %>
+<br />
+<%= @order.invoicing_id.blank? ? "" : t('email.field.invoicing_id') + ": " + @order.invoicing_id %>
+<br />
+<br />
+<%= @order.not_valid_after.blank? ? "" : t('email.field.not_valid_after') + ": " +  @order.not_valid_after %>
+<br />
+<%= @order.comments.blank? ? "" : simple_format(@order.comments) %>
+---------------------------------------------------------------------------
+<br />
+<%= @order.order_path.blank? ? "" : @order.order_path %>

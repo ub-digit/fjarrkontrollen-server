@@ -1,0 +1,68 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+# This model initially had no columns defined.  If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+G:
+  id: 1
+  label: G,
+  name_sv: Humanistiska biblioteket,
+  name_en: Humanities Library,
+  email: gubgfj@ub.gu.se
+
+G-plikt:
+  id: 2
+  label: G-plikt,
+  name_sv: Hum plikten,
+  name_en: Humanities Library pliketn ,
+  email: gubgfj@ub.gu.se
+
+G-inkop:
+  id: 3
+  label: G-inkop,
+  name_sv: Hum förvärv,
+  name_en: Humanities Library förvärv,
+  email: gubgfj@ub.gu.se
+
+Ge:
+  id: 4
+  label: Ge,
+  name_sv: Ekonomiska biblioteket,
+  name_en: Economics Library,
+  email: Ge.Interurb@ub.gu.se
+
+Ge-inkop:
+  id: 5
+  label: Ge-inkop,
+  name_sv: Eko inköp,
+  name_en: Economics Library,
+  email: Ge.Interurb@ub.gu.se
+
+Gg:
+  id: 6
+  label: Gg,
+  name_sv: Geovetenskapliga biblioteket med kulturvård,
+  name_en: Earth Sciences and Conservation Library,
+  email: geovet.bibl@ub.gu.se
+
+Gm:
+  id: 7
+  label: Gm,
+  name_sv: Biomedicinska biblioteket,
+  name_en: Biomedical Library,
+  email: gubmsub@ub.gu.se
+
+Gm-inkop:
+  id: 8
+  label: Gm-inkop,
+  name_sv: Biomed inköp,
+  name_en: Biomedical...,
+  email: gubmsub@ub.gu.se
+
+Gp:
+  id: 9
+  label: Gp,
+  name_sv: Pedagogiska biblioteket,
+  name_en: Education Library,
+  email: fjarr@ub.gu.se
