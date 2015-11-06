@@ -40,7 +40,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-passenger' #For passenger specific projects
   gem 'capistrano-bundler', '~> 1.1.2' #To be able to run bundle install on deploy
-  gem 'rvm-capistrano' # För att hantera ruby version vid deploy
+  gem 'capistrano-rvm' # För att hantera ruby version vid deploy
 end
 
 gem 'active_model_serializers'
