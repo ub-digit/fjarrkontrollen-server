@@ -15,9 +15,6 @@
 /log/*.log
 /tmp
 
-
-Gemfile.lock
-
 config/database.yml
 config/initializers/illbackend_cfg.rb
 config/deploy/*.rb
