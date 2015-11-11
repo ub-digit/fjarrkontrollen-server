@@ -7,6 +7,10 @@ set :application, 'fjarrkontrollen-server'
 # Set the repository link
 set :repo_url, 'https://github.com/ub-digit/fjarrkontrollen-server.git'
 
+# Default deploy_to directory is /var/www/my_app_name
+# set :deploy_to, '/var/www/my_app_name'
+set :deploy_to, '/apps/fjarrlan/fjarrkontrollen-server'
+
 # Set tmp directory on remote host - Default value: '/tmp , which often will not allow files to be executed
 set :tmp_dir, '/home/apps/tmp'
 
