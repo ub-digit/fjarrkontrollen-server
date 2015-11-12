@@ -35,3 +35,5 @@ public/libris*.html
 tmp/testindicator.file
 backend_server_name
 cronlog.txt
+config/initializers/secret_token.rb
+deploy/
