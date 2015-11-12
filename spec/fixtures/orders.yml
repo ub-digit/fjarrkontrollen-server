@@ -26,7 +26,7 @@ order_<%= n %>:
   customer_type: sahl
   comments: Testing testing
   form_lang: sv
-  authors:
+  authors: <%= n == 5 ? 'Sakarias Miller' : '' %>
   form_library: G
   delivery_place: Skickas levadr
   location_id: <%= Location.find_by_label('G')[:id] %>
@@ -35,8 +35,8 @@ order_<%= n %>:
   invoicing_postal_address1:
   invoicing_postal_address2:
   order_path: SFX
-  status_id: <%= n == 3 ? Status.find_by_label("archived")[:id] : Status.find_by_label("new")[:id] %> 
-  user_id: 
+  status_id: <%= n == 3 ? Status.find_by_label("archived")[:id] : Status.find_by_label("new")[:id] %>
+  user_id:
   libris_lf_number: <%= n == 4 ? 'G-141121-0001' : "G-141224-000#{n}" %>
   librisid: <%= n == 4 ? '12345' : 13000 + n %>
   libris_request_id: <%= n == 4 ? '246708' : 250000 + n %>

@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
   # GET /orders/?status_group=status_group_id
   # GET /orders/?is_archived=
   # GET /orders/?delivery_source=delivery_source_id
-  
+
   # Sorting:
   # GET /orders/?sortkey=
   # Pagination:
@@ -73,7 +73,7 @@ class OrdersController < ApplicationController
 
     delivery_source = params[:delivery_source] || ''
     delivery_source_obj = DeliverySource.find_by_label(delivery_source)
-    delivery_source_obj ? apply_delivery_source_filter = true : apply_delivery_source_filter = false 
+    delivery_source_obj ? apply_delivery_source_filter = true : apply_delivery_source_filter = false
 
     @orders = Order.paginate(page: params[:page])
     if @orders.current_page > @orders.total_pages
@@ -87,10 +87,10 @@ class OrdersController < ApplicationController
     if apply_to_be_invoiced_filter
       @orders = @orders.where(to_be_invoiced: to_be_invoiced)
     end
-    
+
     if apply_delivery_source_filter
       @orders = @orders.where(delivery_source_id: delivery_source_obj[:id])
-    end      
+    end
 
     if apply_status_group_filter
       @orders = @orders.where(status_id: status_group_obj.statuses.map(&:id))
@@ -121,6 +121,7 @@ class OrdersController < ApplicationController
       @orders = @orders.where(
         "(lower(name) LIKE ?)
           OR (lower(title) LIKE ?)
+          OR (lower(authors) LIKE ?)
           OR (lower(publication_year) LIKE ?)
           OR (lower(journal_title) LIKE ?)
           OR (lower(issn_isbn) LIKE ?)
@@ -135,6 +136,7 @@ class OrdersController < ApplicationController
           OR (user_id = ?)
           OR (user_id IN (?))
           OR (id IN (?))",
+        "%#{st}%",
         "%#{st}%",
         "%#{st}%",
         "%#{st}%",
@@ -164,8 +166,8 @@ class OrdersController < ApplicationController
     pagination[:pages] = @orders.total_pages
     pagination[:page] = @orders.current_page
     pagination[:next] = @orders.next_page
-    pagination[:previous] = @orders.previous_page    
-    
+    pagination[:previous] = @orders.previous_page
+
     query[:total] = @orders.total_entries
 
     logger.info @orders.to_sql
@@ -230,7 +232,7 @@ class OrdersController < ApplicationController
     if obj.email_address
       logger.info("OrdersController#create: Sending email to customer")
       Mailer.confirmation(obj, location).deliver
-    end    
+    end
 
     logger.info "OrdersController#create: Ends"
     render json: {order: obj}, status: 201
@@ -307,7 +309,7 @@ class OrdersController < ApplicationController
     if old_order[:sticky_note_id] != new_order[:sticky_note_id]
       write_to_note = false
     end
-    
+
 
     # Check user difference
     if old_order[:user_id].blank? && new_order[:user_id].present?
@@ -322,25 +324,25 @@ class OrdersController < ApplicationController
     # Check status difference
     if old_order[:status_id] != new_order[:status_id]
       log_entries << "Status ändrades från #{Status.find_by_id(old_order[:status_id])[:name_sv]} till #{Status.find_by_id(new_order[:status_id])[:name_sv]}."
-    
+
       # If system is configured to write to Gunda and new status is "received" and order type is loan, then try to create items in Gunda
       if Illbackend::Application.config.gunda[:write] && new_order[:status_id] == Status.find_by_label("received").id && new_order[:order_type_id] == OrderType.find_by_label("loan")[:id]
         res = Gunda.create_bib_and_item new_order
-        if res 
+        if res
           log_entries << "Bibliografisk post och exemplarpost skapades i Gunda."
         else
           log_entries << "Systemet misslyckades med att skapa bibliografisk post och beståndspost i Gunda."
         end
       end
-      
+
       # If system is configured to write to Gunda and new status is "returned" and order type is loan, then try to delete items in Gunda
       if Illbackend::Application.config.gunda[:write] && new_order[:status_id] == Status.find_by_label("returned").id && new_order[:order_type_id] == OrderType.find_by_label("loan")[:id]
         res = Gunda.delete_bib_and_item new_order.order_number
-        if res 
+        if res
           log_entries << "Bibliografisk post och exemplarpost togs bort i Gunda."
         else
           log_entries << "Systemet misslyckades med att ta bort bibliografisk post och beståndspost i Gunda."
-        end      
+        end
       end
     end
 
@@ -348,7 +350,7 @@ class OrdersController < ApplicationController
     if old_order[:order_type_id] != new_order[:order_type_id]
       log_entries << "Beställningstyp ändrades från #{OrderType.find_by_id(old_order[:order_type_id])[:name_sv]} till #{OrderType.find_by_id(new_order[:order_type_id])[:name_sv]}."
     end
- 
+
     # Check location difference
     if old_order[:location_id] != new_order[:location_id]
       log_entries << "Remittering ändrades från #{Location.find_by_id(old_order[:location_id])[:name_sv]} till #{Location.find_by_id(new_order[:location_id])[:name_sv]}."
@@ -443,13 +445,13 @@ class OrdersController < ApplicationController
       pdf.text "Återlämningsdatum ", :size=>11, :style=>:bold
       if obj.loan_period
         pdf.text "#{obj.loan_period} ", :size=>11
-      else 
+      else
         pdf.text "Inget, öppen lånetid ", :size=>11
       end
     end
-    
+
     pdf.move_down md_value * 2
-    
+
     pdf.text "#{obj.order_number}", :size=>12
 
     pdf.move_down md_value / 2
@@ -521,12 +523,12 @@ class OrdersController < ApplicationController
       pdf.text "#{obj.name} ", :size=>14, :style=>:bold
       pdf.text "#{obj.library_card_number} ", :size=>14
 
-      pdf.move_down md_value * 2 
+      pdf.move_down md_value * 2
 
       pdf.text "Återlämningsdatum ", :size=>11, :style=>:bold
       if obj.loan_period
         pdf.text "#{obj.loan_period} ", :size=>11
-      else 
+      else
         pdf.text "Inget, öppen lånetid ", :size=>11
       end
       pdf.move_down md_value * 2
@@ -543,7 +545,7 @@ class OrdersController < ApplicationController
     send_data pdf.render, filename: "deliverynote-#{obj.order_number}.pdf", type: "application/pdf", disposition: "inline"
 
   end
-  
+
   def generate_order_pdf obj
     md_value = 8
     status =  Status.find_by_id(obj.status_id) ? Status.find_by_id(obj.status_id).name_sv : ""
@@ -698,9 +700,9 @@ class OrdersController < ApplicationController
       pdf.text "#{obj.comments} "
       pdf.move_down md_value
 
-      if obj.price 
+      if obj.price
         pdf.text "Pris", :style=>:bold
-        pdf.text "#{obj.price} SEK " 
+        pdf.text "#{obj.price} SEK "
         pdf.move_down md_value
       end
 
@@ -798,7 +800,7 @@ private
      :publication_type,
      :period]
   end
-  def customer_attributes 
+  def customer_attributes
     [:name,
      :company1,
      :company2,
@@ -809,7 +811,7 @@ private
      :x_account,
      :customer_type,
      :comments,
-     :form_lang, 
+     :form_lang,
      :form_library, # not present in view ?
      :invoicing_name,
      :invoicing_company,

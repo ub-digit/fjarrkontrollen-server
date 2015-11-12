@@ -115,7 +115,7 @@ RSpec.describe OrdersController, :type => :controller do
         expect(json["orders"].to_a.find { |order| order["id"] == 2 }).not_to be_nil
       end
     end
-    
+
     context 'when a valid sticky note id exists' do
       it "should return a valid sticky note subject" do
         get :index, {:token => @token}
@@ -125,7 +125,7 @@ RSpec.describe OrdersController, :type => :controller do
         get :index, {:token => @token}
         expect(json["orders"].to_a.find { |order| order["id"] == 9 }["sticky_note_message"]).to eq 'Sticky Note Test Message'
       end
-    end 
+    end
     context 'when an invalid sticky note id exists' do
       it "should return sticky note subject with nil value" do
         get :index, {:token => @token}
@@ -135,7 +135,7 @@ RSpec.describe OrdersController, :type => :controller do
         get :index, {:token => @token}
         expect(json["orders"].to_a.find { |order| order["id"] == 4 }["sticky_note_message"]).to eq nil
       end
-    end 
+    end
   end
 
   #
@@ -201,12 +201,12 @@ RSpec.describe OrdersController, :type => :controller do
       get :index, {:token => @token, :is_archived => 'true'}
       expect(json).not_to have_key('error')
       expect(json["orders"].to_a.count).to be == 1
-    end      
+    end
     it "should return 1 order when is_archived=1" do
       get :index, {:token => @token, :is_archived => '1'}
       expect(json).not_to have_key('error')
       expect(json["orders"].to_a.count).to be == 1
-    end      
+    end
 
     # delivery source tests
     it "should return 10 orders when delivery_source is missing" do
@@ -237,16 +237,22 @@ RSpec.describe OrdersController, :type => :controller do
     end
     it "should return 1 orders when delivery_source=other" do
       get :index, {:token => @token, :delivery_source => 'other'}
-      expect(json).not_to have_key('error')      
+      expect(json).not_to have_key('error')
       expect(json["orders"].to_a.count).to be == 1
     end
 
-  end  
+  end
 
   describe "search" do
 
     it "should return one hit when name is Alfred E Neumann" do
       get :index, {:token => @token, :search_term => 'Neuman'}
+      expect(json["orders"].to_a.count).to be == 1
+      expect(json["orders"].to_a.find { |order| order["id"] == 5 }).not_to be_nil
+    end
+
+    it "should return one hit when author is Miller" do
+      get :index, {:token => @token, :search_term => 'Miller'}
       expect(json["orders"].to_a.count).to be == 1
       expect(json["orders"].to_a.find { |order| order["id"] == 5 }).not_to be_nil
     end
