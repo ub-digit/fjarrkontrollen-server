@@ -18,7 +18,7 @@
 config/database.yml
 config/initializers/illbackend_cfg.rb
 config/initializers/secret_token.rb
-config/deploy/*.rb
+config/deploy/
 
 db/seeds/locations.rb
 db/seeds/users.rb
@@ -36,5 +36,3 @@ public/libris*.html
 tmp/testindicator.file
 backend_server_name
 cronlog.txt
-config/initializers/secret_token.rb
-deploy/
