@@ -27,6 +27,11 @@ Illbackend::Application.config.pagination = {
   :orders_per_page => 5
 }
 
+# Usage:
+# Illbackend::Application.config.gunda[:write]
+# Illbackend::Application.config.gunda[:create_bib_and_item_url]
+# Illbackend::Application.config.gunda[:delete_bib_and_item_url]
+# Illbackend::Application.config.gunda[:find_item_by_barcode]
 Illbackend::Application.config.gunda = {
   :write => true,
   :create_bib_and_item_url => '<enter url>',
