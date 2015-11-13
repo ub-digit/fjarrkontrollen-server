@@ -1,16 +1,16 @@
 # encoding: utf-8
 class Gunda
-  
+
   CREATE_SUCCESS_STR = 'Skickat till GUNDA för laddning'
   DELETE_SUCCESS_STR_1 = 'Borttagningen av exposten lyckades'
   DELETE_SUCCESS_STR_2 = 'Borttagningen av bibposten lyckades'
-  
+
   def self.create_bib_and_item order
     Rails.logger.info "Entering Gunda#create_bib_and_item, order number: #{order[:order_number]}"
 
   	# Use sigel and not label field to get a valid sigel
     order[:location_id].present? ? si = Location.find_by_id(order[:location_id])[:sigel] : si = ''
-    order[:author].present? ? au =  order[:author] : au = ''
+    order[:authors].present? ? au =  order[:authors] : au = ''
     order[:title].present? ? ti =  order[:title] : ti = ''
     order[:publication_year].present? ? yr =  order[:publication_year] : yr = ''
     order[:issn_isbn].present? ? isbn =  order[:issn_isbn] : isbn = ''
@@ -23,7 +23,7 @@ class Gunda
     #publication_year
     #lending_library
     #order_number
-    
+
     if si.blank? || ti.blank? || yr.blank? || ll.blank? || item.blank?
       missing_fields = []
       si.blank? ? missing_fields << "location_id" : ""
@@ -42,7 +42,7 @@ class Gunda
       return false
     end
 
-    if response.code != 200 
+    if response.code != 200
       Rails.logger.error "Leaving Gunda#create_bib_and_item, error: response code from Gunda: #{response.code}"
       return false
     end
@@ -65,7 +65,7 @@ class Gunda
 
     response = RestClient.get Illbackend::Application.config.gunda[:delete_bib_and_item_url], :params => {item: order_number}
 
-    if response.code != 200 
+    if response.code != 200
       Rails.logger.error "Leaving Gunda#delete_bib_and_item, error: response code from Gunda: #{response.code}"
       return false
     end
@@ -87,10 +87,10 @@ class Gunda
     response = RestClient.get Illbackend::Application.config.gunda[:find_item_by_barcode], :params => {barcode: order_number}
 #    puts response.code
 #    puts response.headers
-#    puts response.body     
+#    puts response.body
 
     # TBD
-       
+
     Rails.logger.info "Leaving Gunda#item_exists, not implemented"
     return false
   rescue RestClient::ResourceNotFound, URI::InvalidURIError => e
