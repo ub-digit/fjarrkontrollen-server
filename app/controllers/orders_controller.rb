@@ -576,7 +576,7 @@ class OrdersController < ApplicationController
     barcode = Barby::Code128B.new("#{obj.order_number}")
     barcode.annotate_pdf(pdf, {:x=>0, :y=>barcode_cursor, :height=>(15.send(:mm))})
 
-    pdf.font_size = 11
+    pdf.font_size = 10
 
     pdf.move_down (15.send(:mm) + md_value)
 
@@ -584,7 +584,7 @@ class OrdersController < ApplicationController
     pdf.text "#{location} "
     pdf.move_down md_value*2
 
-    pdf.font_size = 14
+    pdf.font_size = 12
 
     pdf.bounding_box([0, pdf.cursor], :width => (126).send(:mm)) do
       pdf.text "Titel", :style=>:bold
@@ -604,7 +604,7 @@ class OrdersController < ApplicationController
     pdf.bounding_box([0, pdf.cursor], :width => 82.send(:mm)) do
 
       #stroke_bounds
-      pdf.font_size = 11
+      pdf.font_size = 10
 
       #my_cursor = pdf.cursor
       pdf.text "Tidskriftstitel", :style=>:bold
@@ -635,6 +635,18 @@ class OrdersController < ApplicationController
       pdf.text "#{obj.pages} "
       pdf.move_down md_value
 
+      if obj.comments
+        pdf.text "Kommentar", :style=>:bold
+        pdf.text "#{obj.comments} "
+        pdf.move_down md_value
+      end
+
+      if obj.price
+        pdf.text "Pris", :style=>:bold
+        pdf.text "#{obj.price} SEK"
+        pdf.move_down md_value
+      end
+
       #pdf.transparent(0.5) { pdf.stroke_bounds}
       upper_left_col = pdf.cursor
     end
@@ -651,43 +663,32 @@ class OrdersController < ApplicationController
       pdf.text "#{obj.name} "
       pdf.move_down md_value
 
-      pdf.text "Adress", :style=>:bold
-      pdf.text "#{obj.company1} "
-      pdf.text "#{obj.company2} "
-      pdf.text "#{obj.company3} "
-      pdf.move_down md_value
-
-      pdf.text "Telefonnummer", :style=>:bold
-      pdf.text "#{obj.phone_number} "
-      pdf.move_down md_value
+      if obj.company1 || obj.company2 || obj.company3
+        pdf.text "Adress", :style=>:bold
+        pdf.text "#{obj.company1} " unless !obj.company1
+        pdf.text "#{obj.company2} " unless !obj.company2
+        pdf.text "#{obj.company3} " unless !obj.company3
+        pdf.move_down md_value
+      end
 
       pdf.text "E-postadress", :style=>:bold
       pdf.text "#{obj.email_address} "
       pdf.move_down md_value
 
-      pdf.text "Lånekortsnummer", :style=>:bold
-      pdf.text "#{obj.library_card_number} "
-      pdf.move_down md_value
+      if obj.library_card_number
+        pdf.text "Lånekortsnummer", :style=>:bold
+        pdf.text "#{obj.x_account} "
+        pdf.move_down md_value
+      end
+
+      if obj.x_account
+        pdf.text "X-konto", :style=>:bold
+        pdf.text "#{obj.library_card_number} "
+        pdf.move_down md_value
+      end
 
       pdf.text "Kundtyp", :style=>:bold
       pdf.text "#{obj.customer_type} "
-      pdf.move_down md_value
-
-      pdf.text "Faktureringsadress", :style=>:bold
-      pdf.text "#{obj.invoicing_name} "
-      pdf.text "#{obj.invoicing_address} "
-      pdf.text "#{obj.invoicing_postal_address1} "
-      pdf.text "#{obj.invoicing_postal_address2} "
-      pdf.move_down md_value
-
-      #pdf.transparent(0.5) { pdf.stroke_bounds}
-      lower_right_col = pdf.cursor
-    end
-
-    pdf.bounding_box([87.send(:mm), middle_line_cursor], :width => 82.send(:mm)) do
-
-      pdf.text "Ansvarsnummer och beställarid", :style=>:bold
-      pdf.text "#{obj.invoicing_id} "
       pdf.move_down md_value
 
       pdf.text "Ej aktuell efter", :style=>:bold
@@ -698,17 +699,34 @@ class OrdersController < ApplicationController
       pdf.text "#{order_type} "
       pdf.move_down md_value
 
+      #pdf.transparent(0.5) { pdf.stroke_bounds}
+      lower_right_col = pdf.cursor
+    end
+
+    pdf.bounding_box([87.send(:mm), middle_line_cursor], :width => 82.send(:mm)) do
+
+      if obj.invoicing_name || obj.invoicing_address || obj.invoicing_postal_address1 || obj.invoicing_postal_address2 || obj.invoicing_id || obj.invoicing_company
+        pdf.text "Faktureringsuppgifter", :style=>:bold
+        pdf.text "#{obj.invoicing_name} " unless !obj.invoicing_name
+        pdf.text "Beställarid: #{obj.invoicing_id} " unless !obj.invoicing_id
+        pdf.text "#{obj.invoicing_company} " unless !obj.invoicing_company
+        pdf.text "#{obj.invoicing_address} " unless !obj.invoicing_address
+        pdf.text "#{obj.invoicing_postal_address1} " unless !obj.invoicing_postal_address1
+        pdf.text "#{obj.invoicing_postal_address2} " unless !obj.invoicing_postal_address2
+        pdf.move_down md_value
+      end
+
       pdf.text "Leveransalternativ", :style=>:bold
       pdf.text "#{obj.delivery_place} "
       pdf.move_down md_value
 
-      pdf.text "Kommentar", :style=>:bold
-      pdf.text "#{obj.comments} "
-      pdf.move_down md_value
-
-      if obj.price
-        pdf.text "Pris", :style=>:bold
-        pdf.text "#{obj.price} SEK "
+      if obj.delivery_address || obj.delivery_postal_code || obj.delivery_box || obj.delivery_city || obj.delivery_comments
+        pdf.text "Leveransuppgifter", :style=>:bold
+        pdf.text "#{obj.delivery_address} " unless !obj.delivery_address
+        pdf.text "#{obj.delivery_postal_code} " unless !obj.delivery_postal_code
+        pdf.text "#{obj.delivery_box} " unless !obj.delivery_box
+        pdf.text "#{obj.delivery_city} " unless !obj.delivery_city
+        pdf.text "#{obj.delivery_comments} " unless !obj.delivery_comments
         pdf.move_down md_value
       end
 
