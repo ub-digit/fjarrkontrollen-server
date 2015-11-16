@@ -15,6 +15,6 @@ set :deploy_to, '/apps/fjarrlan/fjarrkontrollen-server'
 set :tmp_dir, '/home/apps/tmp'
 
 # Copy originals into /{app}/shared/config from respective sample file
-set :linked_files, %w{config/database.yml config/initializers/illbackend_cfg.rb config/initializers/secret_token.rb db/seeds/locations.rb db/seeds/testdata.rb db/seeds/users.rb}
+#set :linked_files, %w{config/database.yml config/initializers/illbackend_cfg.rb config/initializers/secret_token.rb db/seeds/locations.rb db/seeds/testdata.rb db/seeds/users.rb}
 
-set :rvm_ruby_version, "2.1.1"              # use the same ruby as used locally for deployment
+set :rvm_ruby_version, "2.1.5"              # use the same ruby as used locally for deployment
