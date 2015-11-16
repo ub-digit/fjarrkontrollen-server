@@ -1,6 +1,0 @@
-# /etc/cron.d/illbackend_demo_cron_script
-
-# Update fjarrkontrollen db every 30 minutes
-
-*/30 * * * *     rails /data/demo/illbackend/libris_neg_responses.sh demo >> /data/demo/illbackend/cronlog.txt 2>&1
-*/30 * * * *     rails /data/demo/illbackend/libris_user_requests.sh demo >> /data/demo/illbackend/cronlog.txt 2>&1
