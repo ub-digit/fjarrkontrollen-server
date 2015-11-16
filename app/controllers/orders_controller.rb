@@ -490,6 +490,12 @@ class OrdersController < ApplicationController
       pdf.text "Handläggande enhet", :style=>:bold
       pdf.text "#{location} "
       pdf.move_down md_value
+
+      if obj.price
+        pdf.text "Pris", :style=>:bold
+        pdf.text "#{obj.price} SEK"
+        pdf.move_down md_value
+      end
     end
 
     pdf.move_cursor_to top_line_cursor
