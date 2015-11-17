@@ -677,13 +677,13 @@ class OrdersController < ApplicationController
 
       if obj.library_card_number
         pdf.text "Lånekortsnummer", :style=>:bold
-        pdf.text "#{obj.x_account} "
+        pdf.text "#{obj.library_card_number} "
         pdf.move_down md_value
       end
 
       if obj.x_account
         pdf.text "X-konto", :style=>:bold
-        pdf.text "#{obj.library_card_number} "
+        pdf.text "#{obj.x_account} "
         pdf.move_down md_value
       end
 
@@ -691,9 +691,11 @@ class OrdersController < ApplicationController
       pdf.text "#{obj.customer_type} "
       pdf.move_down md_value
 
-      pdf.text "Ej aktuell efter", :style=>:bold
-      pdf.text "#{obj.not_valid_after} "
-      pdf.move_down md_value
+      if obj.not_valid_after
+        pdf.text "Ej aktuell efter", :style=>:bold
+        pdf.text "#{obj.not_valid_after} "
+        pdf.move_down md_value
+      end
 
       pdf.text "Beställningstyp", :style=>:bold
       pdf.text "#{order_type} "
@@ -708,7 +710,7 @@ class OrdersController < ApplicationController
       if obj.invoicing_name || obj.invoicing_address || obj.invoicing_postal_address1 || obj.invoicing_postal_address2 || obj.invoicing_id || obj.invoicing_company
         pdf.text "Faktureringsuppgifter", :style=>:bold
         pdf.text "#{obj.invoicing_name} " unless !obj.invoicing_name
-        pdf.text "Beställarid: #{obj.invoicing_id} " unless !obj.invoicing_id
+        pdf.text "Beställar-ID: #{obj.invoicing_id} " unless !obj.invoicing_id
         pdf.text "#{obj.invoicing_company} " unless !obj.invoicing_company
         pdf.text "#{obj.invoicing_address} " unless !obj.invoicing_address
         pdf.text "#{obj.invoicing_postal_address1} " unless !obj.invoicing_postal_address1
@@ -726,7 +728,7 @@ class OrdersController < ApplicationController
         pdf.text "#{obj.delivery_postal_code} " unless !obj.delivery_postal_code
         pdf.text "#{obj.delivery_box} " unless !obj.delivery_box
         pdf.text "#{obj.delivery_city} " unless !obj.delivery_city
-        pdf.text "#{obj.delivery_comments} " unless !obj.delivery_comments
+        pdf.text "Kommentar: #{obj.delivery_comments} " unless !obj.delivery_comments
         pdf.move_down md_value
       end
 
