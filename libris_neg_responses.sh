@@ -1,8 +1,13 @@
 #!/bin/bash
-# update_from_libris.sh
+# libris_neg_responses.sh
 # Negativa svar från Libris Fjärrlån
 # is run by cronjob fjarrkontrollen_server_ENV_cron_script
+PATH=$PATH:/usr/local/bin
+. /usr/local/rvm/scripts/rvm
 
 CURRENT_ENV=$1
-cd /apps/fjarrlan/fjarrkontrollen-server/current
-RAILS_ENV=${CURRENT_ENV} /usr/local/rvm/gems/ruby-2.1.5/wrappers/rake libris_info:neg_responses
+DIR=$2
+
+cd ${DIR}
+rvm use 2.1.5
+RAILS_ENV=${CURRENT_ENV} bundle exec rake libris_info:neg_responses
