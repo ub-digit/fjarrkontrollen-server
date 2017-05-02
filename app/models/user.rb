@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
 DEFAULT_TOKEN_EXPIRE = 1.day
+# superfluous comment
   has_many :orders
   has_many :notes
   has_many :orders, :through => :notes
