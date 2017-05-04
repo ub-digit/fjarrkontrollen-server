@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.4.0'
+lock '3.4.1'
 
 # Set the application name
 set :application, 'fjarrkontrollen-server'
@@ -23,3 +23,5 @@ def deploy_config
 end
 
 server deploy_config['host'], user: deploy_config['user'], roles: deploy_config['roles']
+
+set :deploy_to, deploy_config['path']
