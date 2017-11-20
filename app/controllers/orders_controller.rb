@@ -501,7 +501,7 @@ class OrdersController < ApplicationController
     pdf.move_cursor_to top_line_cursor
     pdf.move_down 142.send(:mm)
 
-    pdf.text "Låt den här följdesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold, :align => :center
+    pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold, :align => :center
 
     pdf.move_cursor_to top_line_cursor
     pdf.move_down 165.send(:mm)
