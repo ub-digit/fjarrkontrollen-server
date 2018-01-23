@@ -344,6 +344,30 @@ class OrdersController < ApplicationController
           log_entries << "Systemet misslyckades med att ta bort bibliografisk post och beståndspost i Gunda."
         end
       end
+
+      # If new status is "received" and order type is loan and system is configured to write to Koha, then try to create items in Koha
+      if (new_order[:status_id] == Status.find_by_label("received").id &&
+          new_order[:order_type_id] == OrderType.find_by_label("loan")[:id] &&
+          Illbackend::Application.config.koha[:write])
+        res = Koha.create_bib_and_item new_order
+        if res
+          log_entries << "Bibliografisk post och exemplarpost skapades i Koha."
+        else
+          log_entries << "Systemet misslyckades med att skapa bibliografisk post och beståndspost i Koha."
+        end
+      end
+
+      # If new status is "returned" or "cancelled" and order type is loan and system is configured to write to Koha, then try to delete items in Koha
+      if ([Status.find_by_label("returned").id, Status.find_by_label("cancelled").id].include?(new_order[:status_id]) &&
+          new_order[:order_type_id] == OrderType.find_by_label("loan")[:id] &&
+          Illbackend::Application.config.koha[:write])
+        res = Koha.delete_bib_and_item new_order.order_number
+        if res
+          log_entries << "Bibliografisk post och exemplarpost togs bort i Koha."
+        else
+          log_entries << "Systemet misslyckades med att ta bort bibliografisk post och beståndspost i Koha."
+        end
+      end
     end
 
     # Check order type difference

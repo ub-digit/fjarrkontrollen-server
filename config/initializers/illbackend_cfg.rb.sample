@@ -38,3 +38,11 @@ Illbackend::Application.config.gunda = {
   :delete_bib_and_item_url => '<enter url>',
   :find_item_by_barcode => '<enter url>'
 }
+
+Illbackend::Application.config.koha = {
+  :write => true,
+  :userid => '<enter api user id>',
+  :password => '<enter api password>',
+  :create_bib_and_item_url => '<enter url>',
+  :delete_bib_and_item_url => '<enter url>'
+}
