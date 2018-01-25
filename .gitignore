@@ -19,7 +19,6 @@ config/database.yml
 config/deploy.yml
 config/initializers/illbackend_cfg.rb
 config/initializers/secret_token.rb
-config/deploy/
 
 db/seeds/locations.rb
 db/seeds/users.rb
