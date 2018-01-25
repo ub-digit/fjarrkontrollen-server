@@ -12,11 +12,10 @@ class Koha
     order[:lending_library].present? ? ll =  order[:lending_library] : ll = ''
     order[:order_number].present? ? item =  order[:order_number] : item = ''
 
-    if si.blank? || ti.blank? || yr.blank? || ll.blank? || item.blank?
+    if si.blank? || ti.blank? || ll.blank? || item.blank?
       missing_fields = []
       si.blank? ? missing_fields << "location_id" : ""
       ti.blank? ? missing_fields << "title" : ""
-      yr.blank? ? missing_fields << "publication_year" : ""
       ll.blank? ? missing_fields << "lending_library" : ""
       item.blank? ? missing_fields << "order_number" : ""
       Rails.logger.error "Leaving Koha#create_bib_and_item, error, missing fields: #{missing_fields.join(", ")}"
