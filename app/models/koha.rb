@@ -22,9 +22,12 @@ class Koha
       return false
     end
 
+    mt = "a" #monograph
+    mt = "c" if order[:order_type_id] && OrderType.find_by_id(order[:order_type_id])[:label].eql?("score")
+
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, si: si, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, item: item}
+    params = {userid: userid, password: password, si: si, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
     response = RestClient.get Illbackend::Application.config.koha[:create_bib_and_item_url], :params => params
 
     if response.code != 200
