@@ -23,7 +23,7 @@ X Library',
 
 EmailTemplate.create(
 {
-  body_sv: 'Hej, 
+  body_sv: 'Hej,
 
 Uppgifterna är inte tillräckliga - var vänlig komplettera med:
 
@@ -31,7 +31,7 @@ Med vänlig hälsning
 
 X biblioteket',
 
-  body_en: 'Hi, 
+  body_en: 'Hi,
 
 The information is not sufficient - please add:
 
@@ -46,14 +46,14 @@ X Library',
 
 EmailTemplate.create(
 {
-  body_sv: 'Hej, 
+  body_sv: 'Hej,
 
 Det du beställt är utlånat. Vill du ställa dig i kö?
 
 Med vänlig hälsning
 
 X biblioteket',
-  body_en: 'Hi, 
+  body_en: 'Hi,
 
 The item you ordered is not available.
 
@@ -70,7 +70,7 @@ X Library',
 
 EmailTemplate.create(
 {
-  body_sv: 'Hej, 
+  body_sv: 'Hej,
 
 Det du beställt är utlånat och kan inte krävas förrän den (datum).
 
@@ -80,7 +80,7 @@ Med vänlig hälsning
 
 X biblioteket',
 
-  body_en: 'Hi, 
+  body_en: 'Hi,
 
 The item you ordered is checked out and due (date).
 
@@ -106,7 +106,7 @@ Med vänlig hälsning
 
 X biblioteket',
 
-  body_en: 'Hi, 
+  body_en: 'Hi,
 
 The item you ordered has arrived but may only be used in the library.
 
@@ -122,7 +122,7 @@ X Library',
 
 EmailTemplate.create(
 {
-  body_sv: 'Hej, 
+  body_sv: 'Hej,
 
 Beställt material lånas inte ut. Vill du beställa kopior?  Kostar (X) kr
 
@@ -132,7 +132,7 @@ X biblioteket',
 
   body_en: 'Hi,
 
-The item you ordered can not be borrowed. 
+The item you ordered can not be borrowed.
 
 Do you want to order copies instead? The cost is SEK (X)
 
@@ -260,7 +260,7 @@ Med vänlig hälsning
 
 X biblioteket',
 
-  body_en: 'The item you ordered is held by the library and therefore can not be provided through interlibrary loan. 
+  body_en: 'The item you ordered is held by the library and therefore can not be provided through interlibrary loan.
 
 Please consult our catalogue Gunda (link)
 
@@ -277,7 +277,7 @@ EmailTemplate.create(
 {
   body_sv: 'Materialet är nytt och kommer att levereras till biblioteket med pliktleverans.
 
-Vi fjärrlånar inte då utan du ställs i kö och vi meddelar när det kan hämtas. 
+Vi fjärrlånar inte då utan du ställs i kö och vi meddelar när det kan hämtas.
 
 Eftersom materialet är nytt har det ännu inte levererats till biblioteket.
 
@@ -287,9 +287,9 @@ Med vänlig hälsning
 
 X biblioteket',
 
-  body_en: 'The material is new and a legal deposit copy will be sent to the library. Therefore we will not make an 
+  body_en: 'The material is new and a legal deposit copy will be sent to the library. Therefore we will not make an
 
-interlibrary loan. 
+interlibrary loan.
 
 You will be put on hold and get a message when the book is ready for pickup.
 
@@ -362,6 +362,29 @@ X Library',
 
   subject_sv: 'Fri e-resurs',
   subject_en: 'Free electronic resource'
+})
+
+
+EmailTemplate.create(
+{
+  body_sv: 'Du har ett fjärrlån att hämta på biblioteket. Hämta materialet i informationsdisken. Vänligen be personalen om hjälp.
+
+Om du inte hämtar materialet inom sju dagar kommer det att skickas tillbaka.
+
+Med vänlig hälsning
+
+X biblioteket',
+
+  body_en: 'You have an interlibrary loan for pickup at the library. Pick up the material from the information desk. Please ask the staff for assistance.
+
+If you don\'t pick up the material within seven days it will be returned.
+
+Best regards
+
+X Library',
+
+  subject_sv: 'Påminnelse: Fjärrlån att hämta',
+  subject_en: 'Reminder: Interlibrary loan'
 })
 
 
