@@ -456,6 +456,9 @@ class OrdersController < ApplicationController
     require 'barby/outputter/prawn_outputter'
 
     pdf = Prawn::Document.new :page_size=> 'A4', :margin=>[10.send(:mm), 120.send(:mm), 10.send(:mm), 12.send(:mm)]
+    pdf.font_families.update("Roboto" => {:normal => "lib/fonts/Roboto-Regular.ttf", :bold => "lib/fonts/Roboto-Bold.ttf"})
+    pdf.font "Roboto"
+
     barcode = Barby::Code128B.new("#{obj.order_number}")
     current_date = Time.now.strftime("%F")
 
@@ -569,8 +572,8 @@ class OrdersController < ApplicationController
     pdf.image Illbackend::Application.config.printing[:slip_logo_path],
         :width=>20.send(:mm), :at=>[58.send(:mm), 205.send(:mm)]
 
-    pdf.draw_text "#{current_date}", :size=>6, :rotate => 270, :at => [76.send(:mm),bottom_line_cursor - 10.send(:mm)]
-    pdf.draw_text "#{current_date}", :size=>6, :rotate => 270, :at => [76.send(:mm),277.send(:mm)]
+    pdf.draw_text "#{current_date}", :size=>10, :rotate => 270, :at => [76.send(:mm),bottom_line_cursor - 10.send(:mm)]
+    pdf.draw_text "#{current_date}", :size=>10, :rotate => 270, :at => [76.send(:mm),277.send(:mm)]
 
     send_data pdf.render, filename: "deliverynote-#{obj.order_number}.pdf", type: "application/pdf", disposition: "inline"
 
@@ -588,6 +591,8 @@ class OrdersController < ApplicationController
     require 'barby/outputter/prawn_outputter'
 
     pdf = Prawn::Document.new :page_size=> 'A4', :margin=>[10.send(:mm), 20.send(:mm), 12.7.send(:mm), 20.send(:mm)]
+    pdf.font_families.update("Roboto" => {:normal => "lib/fonts/Roboto-Regular.ttf", :bold => "lib/fonts/Roboto-Bold.ttf"})
+    pdf.font "Roboto"
 
     pdf.move_down 2.7.send(:mm)
 
