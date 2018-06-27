@@ -3,7 +3,7 @@ class LocationsController < ApplicationController
 
   # Find all location and show them.
   def index
-    objs = Location.all(:order => "name_sv")
+    objs = Location.all.order(:name_sv)
     if objs
       render json: {locations: objs}, status: 200
     else

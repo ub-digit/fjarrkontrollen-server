@@ -104,8 +104,8 @@ class OrdersController < ApplicationController
     if search_term.present?
       st = search_term.downcase
       #the_user = User.where("id = ?", st[/^\d+$/] ? search_term.to_i : nil)
-      user_xkonto_hit = User.where("(xkonto = ?)", st)
-      user_name_hit = User.where("(lower(name) LIKE ?)", "%#{st}%")
+      user_xkonto_hit = User.where("(xkonto LIKE ?)", "%#{st}%").select(:id)
+      user_name_hit = User.where("(lower(name) LIKE ?)", "%#{st}%").select(:id)
 
       note_hits = Order.joins(:notes).where(
         "(lower(notes.message) LIKE ?)
@@ -133,7 +133,7 @@ class OrdersController < ApplicationController
           OR (libris_request_id = ?)
           OR (lower(librisid) = ?)
           OR (lower(librismisc) LIKE ?)
-          OR (user_id = ?)
+          OR (user_id IN (?))
           OR (user_id IN (?))
           OR (id IN (?))",
         "%#{st}%",
