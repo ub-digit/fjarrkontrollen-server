@@ -1,22 +1,9 @@
-<%= t('email.confirmation.body_header') %><%= I18n.locale.to_s.eql?("en") ? @location.name_en : @location.name_sv %>
-
+<%= t('email.confirmation.body_header') %><%= I18n.locale.to_s.eql?("en") ? @location.name_en : @location.name_sv %>.
 <br />
 <br />
+<%= t('email.confirmation.extra_info') %>
 <br />
-___________________________________________________________________________
 <br />
-<%= t('email.order_received.gub') %><%= I18n.locale.to_s.eql?("en") ? @location.name_en : @location.name_sv %>
-<br />
-
-<% if @order.order_type_id == 1 %>
-  <%= t('email.field.copies') %>
-<% elsif @order.order_type_id == 2 %>
-  <%= t('email.field.loan') %>
-<% end %>
-<br />
-<% if @order.order_outside_scandinavia == true %>
-  <%= t('email.field.order_outside_scandinavia') %>
-<% end %>
 <br />
 <%= @order.order_number %>
 <br />
@@ -27,7 +14,6 @@ ___________________________________________________________________________
 <%= @order.volume.blank? ? "" : @order.volume %>
 <%= @order.issue.blank? ? "():" : "(" + @order.issue + "):" %>
 <%= @order.pages.blank? ? "" : @order.pages %>
-<br />
 <br />
 <%= @order.authors.blank? ? "" : @order.authors %>
 <br />
@@ -70,8 +56,6 @@ ___________________________________________________________________________
 <br />
 <%= @order.delivery_place.blank? ? "" : @order.delivery_place %>
 <br />
-<%= @order.customer_type.blank? ? "" : @order.customer_type %>
-<br />
 ---------------------------------------------------------------------------
 <br />
 <%= t('email.delivery_info') + ":" %>
@@ -106,6 +90,3 @@ ___________________________________________________________________________
 <%= @order.not_valid_after.blank? ? "" : t('email.field.not_valid_after') + ": " +  @order.not_valid_after %>
 <br />
 <%= @order.comments.blank? ? "" : simple_format(@order.comments) %>
----------------------------------------------------------------------------
-<br />
-<%= @order.order_path.blank? ? "" : @order.order_path %>
