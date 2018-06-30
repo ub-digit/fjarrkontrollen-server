@@ -9,5 +9,5 @@ CURRENT_ENV=$1
 DIR=$2
 
 cd ${DIR}
-rvm use 2.1.5
+rvm use 2.3.1
 RAILS_ENV=${CURRENT_ENV} bundle exec rake libris_info:neg_responses
