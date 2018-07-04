@@ -449,6 +449,7 @@ class OrdersController < ApplicationController
   def generade_delivery_note_pdf obj
     md_value = 6
     location =  Location.find_by_id(obj.location_id) ? Location.find_by_id(obj.location_id).name_sv : ""
+    location_email = Location.find_by_id(obj.location_id) ? Location.find_by_id(obj.location_id).email : "ditt bibliotek"
     order_type = OrderType.find_by_id(obj.order_type_id) ? OrderType.find_by_id(obj.order_type_id).name_sv : ""
 
     require 'barby'
@@ -506,18 +507,6 @@ class OrdersController < ApplicationController
       pdf.text "#{obj.title} "
       pdf.move_down md_value
 
-      pdf.text "Författare", :style=>:bold
-      pdf.text "#{obj.authors} "
-      pdf.move_down md_value
-
-      pdf.text "Publiceringsår", :style=>:bold
-      pdf.text "#{obj.publication_year} "
-      pdf.move_down md_value
-
-      pdf.text "Handläggande enhet", :style=>:bold
-      pdf.text "#{location} "
-      pdf.move_down md_value
-
       if obj.price
         pdf.text "Pris", :style=>:bold
         pdf.text "#{obj.price} SEK"
@@ -526,19 +515,25 @@ class OrdersController < ApplicationController
     end
 
     pdf.move_cursor_to top_line_cursor
-    pdf.move_down 142.send(:mm)
+    pdf.move_down 85.send(:mm)
 
-    pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold, :align => :center
+    pdf.move_down md_value
+    pdf.text "Vill du förnya ditt fjärrlån?", :size=>14, :style=>:bold
+    pdf.move_down md_value / 2
+    pdf.text "Kontakta #{location_email} när lånetiden gått ut.", :size=>14
+    pdf.move_down md_value * 4
+
+    pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold
 
     pdf.move_cursor_to top_line_cursor
-    pdf.move_down 165.send(:mm)
+    pdf.move_down 157.send(:mm)
+    pdf.text "#{location} "
+    pdf.move_down md_value
 
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
     pdf.line_width 0.5
     pdf.stroke
     bottom_line_cursor = pdf.cursor
-
-
 
     pdf.move_cursor_to bottom_line_cursor
 
