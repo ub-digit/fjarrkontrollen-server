@@ -515,19 +515,17 @@ class OrdersController < ApplicationController
     end
 
     pdf.move_cursor_to top_line_cursor
-    pdf.move_down 85.send(:mm)
+    pdf.move_down 105.send(:mm)
 
-    pdf.move_down md_value
-    pdf.text "Vill du förnya ditt fjärrlån?", :size=>14, :style=>:bold
-    pdf.move_down md_value / 2
-    pdf.text "Kontakta #{location_email} när lånetiden gått ut.", :size=>14
-    pdf.move_down md_value * 4
+    pdf.text "Vill du förnya ditt fjärrlån?", :size=>11, :style=>:bold
+    pdf.text "Kontakta #{location_email} när lånetiden gått ut.", :size=>11
+    pdf.move_down md_value * 8
 
     pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold
 
     pdf.move_cursor_to top_line_cursor
     pdf.move_down 157.send(:mm)
-    pdf.text "#{location} "
+    pdf.text "#{location}", :style=>:bold
     pdf.move_down md_value
 
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
