@@ -28,7 +28,7 @@ en:
     confirmation:
       subject: "Receipt of order "
       body_header: "This order has been sent to the "
-      extra_info: "Please allow for longer processing times during the summer."
+      extra_info: ""
     delivery_info: "Leveransuppgifter"
     invoicing_info: "Faktureringsuppgifter"
 

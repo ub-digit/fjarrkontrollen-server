@@ -28,7 +28,7 @@ sv:
     confirmation:
       subject: "Beställningskvittens "
       body_header: "Denna beställning har skickats till "
-      extra_info: "Räkna med längre handläggningstider under sommaren."
+      extra_info: ""
     delivery_info: "Leveransuppgifter"
     invoicing_info: "Faktureringsuppgifter"
 
