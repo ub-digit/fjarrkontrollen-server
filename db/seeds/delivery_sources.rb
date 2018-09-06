@@ -6,3 +6,5 @@ DeliverySource.create({id: 5, label: "netpunkt", name: "Netpunkt", is_active: tr
 DeliverySource.create({id: 6, label: "bibsys", name: "Bibsys", is_active: true, position: 60}) 
 DeliverySource.create({id: 7, label: "blld", name: "BLLD", is_active: true, position: 70}) 
 DeliverySource.create({id: 8, label: "other", name: "Annan", is_active: true, position: 80})
+DeliverySource.create({id: 9, label: "getitnow", name: "Get It Now", is_active: true, position: 90})
+DeliverySource.create({id: 10, label: "free_e-resource", name: "Fri e-resurs", is_active: true, position: 100})
