@@ -13,8 +13,17 @@ class ApplicationController < ActionController::Base
   ##before_filter :validate_token
 
   private
+
+  def get_token
+    if params[:token]
+      return params[:token]
+    elsif request.headers["Authorization"]
+      request.headers["Authorization"][/^Bearer (.*)/, 1]
+    end
+  end
+
   def validate_token
-    token = params[:token]
+    token = get_token
     token_object = AccessToken.find_by_token(token)
     if !token_object || !token_object.user.validate_token(token)
       render json: {error: "Invalid token"}, status: 401
