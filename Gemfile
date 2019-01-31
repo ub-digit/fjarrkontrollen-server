@@ -11,8 +11,7 @@ gem 'rack-cors'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
-#gem 'pg', '~> 0.15'
-gem 'pg'
+gem 'pg', '~> 0.15'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
