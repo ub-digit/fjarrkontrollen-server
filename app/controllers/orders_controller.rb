@@ -268,7 +268,7 @@ class OrdersController < ApplicationController
 
       if obj.save!
         # Get the user id, for note event log creation
-        user_id = AccessToken.find_by_token(params[:token])[:user_id]
+        user_id = AccessToken.find_by_token(get_token)[:user_id]
         handle_order_changes obj_id, user_id, old_obj, obj
 
         logger.info "OrdersController#update: Object successfully saved."
