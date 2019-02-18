@@ -4,9 +4,13 @@ class NotesController < ApplicationController
   def index
     logger.info "NotesController#index: Begins"
     if params[:order_id]
-      @notes = Note.where(order_id: params[:order_id])
+      @notes = Note
+        .where(order_id: params[:order_id])
+        .order(created_at: :desc)
     else
-      @notes = Note.all
+      @notes = Note
+        .all
+        .order(created_at: :desc)
     end
     logger.info "NotesController#create: Ends"
     render json: {notes: @notes}, status: 200
