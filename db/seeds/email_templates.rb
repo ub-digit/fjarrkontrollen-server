@@ -254,15 +254,11 @@ EmailTemplate.create(
 {
   body_sv: 'Detta material finns i våra egna samlingar och fjärrlånas därför inte.
 
-Se vår katalog Gunda(länk).
-
 Med vänlig hälsning
 
 X biblioteket',
 
   body_en: 'The item you ordered is held by the library and therefore can not be provided through interlibrary loan.
-
-Please consult our catalogue Gunda (link)
 
 Best regards
 

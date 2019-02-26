@@ -325,26 +325,6 @@ class OrdersController < ApplicationController
     if old_order[:status_id] != new_order[:status_id]
       log_entries << "Status ändrades från #{Status.find_by_id(old_order[:status_id])[:name_sv]} till #{Status.find_by_id(new_order[:status_id])[:name_sv]}."
 
-      # If system is configured to write to Gunda and new status is "received" and order type is loan, then try to create items in Gunda
-      if Illbackend::Application.config.gunda[:write] && new_order[:status_id] == Status.find_by_label("received").id && new_order[:order_type_id] == OrderType.find_by_label("loan")[:id]
-        res = Gunda.create_bib_and_item new_order
-        if res
-          log_entries << "Bibliografisk post och exemplarpost skapades i Gunda."
-        else
-          log_entries << "Systemet misslyckades med att skapa bibliografisk post och beståndspost i Gunda."
-        end
-      end
-
-      # If system is configured to write to Gunda and new status is "returned" and order type is loan, then try to delete items in Gunda
-      if Illbackend::Application.config.gunda[:write] && new_order[:status_id] == Status.find_by_label("returned").id && new_order[:order_type_id] == OrderType.find_by_label("loan")[:id]
-        res = Gunda.delete_bib_and_item new_order.order_number
-        if res
-          log_entries << "Bibliografisk post och exemplarpost togs bort i Gunda."
-        else
-          log_entries << "Systemet misslyckades med att ta bort bibliografisk post och beståndspost i Gunda."
-        end
-      end
-
       # If new status is "received" and order type is loan or score and system is configured to write to Koha, then try to create items in Koha
       if (new_order[:status_id] == Status.find_by_label("received").id &&
           [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
