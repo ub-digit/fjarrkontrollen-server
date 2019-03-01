@@ -4,7 +4,7 @@ DEFAULT_TOKEN_EXPIRE = 1.day
   has_many :orders
   has_many :notes
   has_many :orders, :through => :notes
-  belongs_to :location
+  belongs_to :pickup_location
   has_many :access_tokens
 
   validates_presence_of :xkonto
@@ -12,7 +12,6 @@ DEFAULT_TOKEN_EXPIRE = 1.day
   validates_presence_of :name
 
   def authenticate(provided_password)
-
     uri = URI('https://login-server.ub.gu.se/auth/' + xkonto)
     params = { :password => provided_password}
     params[:service] = 'test' if Rails.env == 'test'
@@ -48,7 +47,7 @@ DEFAULT_TOKEN_EXPIRE = 1.day
     {
       id: id,
       xkonto: xkonto,
-      location_id: location_id,
+      pickup_location_id: pickup_location_id,
       name: name
     }
   end

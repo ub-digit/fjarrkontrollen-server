@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150527133820) do
+ActiveRecord::Schema.define(version: 20190301121623) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "access_tokens", force: true do |t|
+  create_table "access_tokens", force: :cascade do |t|
     t.integer  "user_id"
     t.text     "token"
     t.datetime "token_expire"
@@ -24,16 +24,16 @@ ActiveRecord::Schema.define(version: 20150527133820) do
     t.datetime "updated_at"
   end
 
-  create_table "delivery_sources", force: true do |t|
-    t.string   "label"
-    t.string   "name"
+  create_table "delivery_sources", force: :cascade do |t|
+    t.string   "label",      limit: 255
+    t.string   "name",       limit: 255
     t.boolean  "is_active"
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "email_templates", force: true do |t|
+  create_table "email_templates", force: :cascade do |t|
     t.text     "subject_sv"
     t.text     "subject_en"
     t.text     "body_sv"
@@ -42,18 +42,7 @@ ActiveRecord::Schema.define(version: 20150527133820) do
     t.datetime "updated_at"
   end
 
-  create_table "locations", force: true do |t|
-    t.string   "label"
-    t.string   "name_sv"
-    t.string   "name_en"
-    t.string   "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "is_sigel"
-    t.string   "sigel"
-  end
-
-  create_table "notes", force: true do |t|
+  create_table "notes", force: :cascade do |t|
     t.integer  "order_id"
     t.text     "message"
     t.integer  "user_id"
@@ -65,15 +54,15 @@ ActiveRecord::Schema.define(version: 20150527133820) do
 
   add_index "notes", ["order_id"], name: "index_notes_on_order_id", using: :btree
 
-  create_table "order_types", force: true do |t|
-    t.string   "name_sv"
-    t.string   "name_en"
+  create_table "order_types", force: :cascade do |t|
+    t.string   "name_sv",    limit: 255
+    t.string   "name_en",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "label"
+    t.string   "label",      limit: 255
   end
 
-  create_table "orders", force: true do |t|
+  create_table "orders", force: :cascade do |t|
     t.integer  "order_type_id"
     t.text     "title"
     t.text     "publication_year"
@@ -110,7 +99,7 @@ ActiveRecord::Schema.define(version: 20150527133820) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.integer  "location_id"
+    t.integer  "pickup_location_id"
     t.integer  "status_id"
     t.text     "libris_lf_number"
     t.integer  "libris_request_id"
@@ -118,7 +107,7 @@ ActiveRecord::Schema.define(version: 20150527133820) do
     t.text     "librismisc"
     t.text     "invoicing_id"
     t.integer  "sticky_note_id"
-    t.string   "lending_library"
+    t.string   "lending_library",                  limit: 255
     t.boolean  "is_archived"
     t.integer  "delivery_source_id"
     t.text     "loan_period"
@@ -135,38 +124,52 @@ ActiveRecord::Schema.define(version: 20150527133820) do
     t.text     "delivery_comments"
   end
 
-  create_table "status_group_members", force: true do |t|
+  create_table "pickup_locations", force: :cascade do |t|
+    t.string   "label",      limit: 255
+    t.string   "name_sv",    limit: 255
+    t.string   "name_en",    limit: 255
+    t.string   "email",      limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_sigel"
+    t.string   "sigel",      limit: 255
+  end
+
+  create_table "status_group_members", force: :cascade do |t|
     t.integer  "status_id"
     t.integer  "status_group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "status_groups", force: true do |t|
-    t.string   "name_sv"
-    t.string   "name_en"
-    t.string   "label"
+  create_table "status_groups", force: :cascade do |t|
+    t.string   "name_sv",    limit: 255
+    t.string   "name_en",    limit: 255
+    t.string   "label",      limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position"
   end
 
-  create_table "statuses", force: true do |t|
-    t.string   "name_sv"
-    t.string   "name_en"
+  create_table "statuses", force: :cascade do |t|
+    t.string   "name_sv",    limit: 255
+    t.string   "name_en",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "label"
+    t.string   "label",      limit: 255
     t.boolean  "is_active"
     t.integer  "position"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "xkonto"
-    t.string   "name"
+  create_table "users", force: :cascade do |t|
+    t.string   "xkonto",             limit: 255
+    t.string   "name",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "location_id"
+    t.integer  "pickup_location_id"
   end
 
+  add_foreign_key "orders", "pickup_locations", name: "orders_location_id_fkey"
+  add_foreign_key "orders", "statuses", name: "orders_status_id_fkey"
+  add_foreign_key "orders", "users", name: "orders_user_id_fkey"
 end

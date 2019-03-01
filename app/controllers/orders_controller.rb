@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/
   # Filters:
-  # GET /orders/?currentLocation=location_id
+  # GET /orders/?currentPickupLocation=pickup_location_id
   # GET /orders/?mediaType=media_type_id
   # GET /orders/?user=user_id
   # GET /orders/?status_group=status_group_id
@@ -52,10 +52,10 @@ class OrdersController < ApplicationController
     end
 
 
-    current_location = params[:currentLocation] || ''
-    current_location = '' if current_location.downcase.eql?('null')
-    current_location = '' if current_location.eql?('0')
-    current_location = '' if current_location.downcase.eql?('all')
+    current_pickup_location = params[:currentPickupLocation] || ''
+    current_pickup_location = '' if current_pickup_location.downcase.eql?('null')
+    current_pickup_location = '' if current_pickup_location.eql?('0')
+    current_pickup_location = '' if current_pickup_location.downcase.eql?('all')
 
     order_type = params[:mediaType] || ''
     order_type = '' if order_type.downcase.eql?('null')
@@ -96,7 +96,7 @@ class OrdersController < ApplicationController
       @orders = @orders.where(status_id: status_group_obj.statuses.map(&:id))
     end
 
-    @orders = @orders.where(location_id:   current_location) if current_location.present?
+    @orders = @orders.where(pickup_location_id:   current_pickup_location) if current_pickup_location.present?
     @orders = @orders.where(user_id:       user)            if user.present?
     @orders = @orders.where(order_type_id: order_type)       if order_type.present?
 
@@ -156,7 +156,7 @@ class OrdersController < ApplicationController
       )
     end
 
-    logger.info "OrdersController#index: current_location = #{current_location}"
+    logger.info "OrdersController#index: current_pickup_location = #{current_pickup_location}"
     logger.info "OrdersController#index: sortfield == #{sortfield}"
     logger.info "OrdersController#index: sortdir == #{sortdir}"
 
@@ -184,11 +184,10 @@ class OrdersController < ApplicationController
 
     if obj.save!
       logger.info "OrdersController#update: Object successfully saved."
-      headers['location'] = "/orders/#{obj.id}"
-      #headers['location'] = "#{:order_url}"
+      headers['pickup_location'] = "/orders/#{obj.id}"
       status = 201
       logger.info "==== Here is Header Info ==================="
-      logger.info "#{headers['location']}"
+      logger.info "#{headers['pickup_location']}"
       logger.info "============================================"
       logger.info "==== Here is json for the created object ==="
       logger.info "#{obj.as_json}"
@@ -217,21 +216,21 @@ class OrdersController < ApplicationController
       logger.info "OrdersController#create: Status id does not exist, set it to New."
       obj.update_attribute(:status_id, Status.find_by_label('new')[:id])
     end
-    # Set location to the same library as the sigel
-    if obj[:location_id].blank?
-      logger.info "OrdersController#create: Location id does not exist, set it to the same as the sigel / label."
-      if location = Location.find_by_label(obj[:form_library])
-        location_id = location[:id]
+    # Set pickup_location to the same library as the sigel
+    if obj[:pickup_location_id].blank?
+      logger.info "OrdersController#create: Pickup Location id does not exist, set it to the same as the sigel / label."
+      if pickup_location = PickupLocation.find_by_label(obj[:form_library])
+        pickup_location_id = pickup_location[:id]
       else
-        location_id = nil # Change to default ?
+        pickup_location_id = nil # Change to default ?
       end
-      obj.update_attribute(:location_id, location_id)
+      obj.update_attribute(:pickup_location_id, pickup_location_id)
     end
 
     # Send mail to customer if email address is given.
     if obj.email_address
       logger.info("OrdersController#create: Sending email to customer")
-      Mailer.confirmation(obj, location).deliver
+      Mailer.confirmation(obj, pickup_location).deliver
     end
 
     logger.info "OrdersController#create: Ends"
@@ -355,9 +354,9 @@ class OrdersController < ApplicationController
       log_entries << "Beställningstyp ändrades från #{OrderType.find_by_id(old_order[:order_type_id])[:name_sv]} till #{OrderType.find_by_id(new_order[:order_type_id])[:name_sv]}."
     end
 
-    # Check location difference
-    if old_order[:location_id] != new_order[:location_id]
-      log_entries << "Remittering ändrades från #{Location.find_by_id(old_order[:location_id])[:name_sv]} till #{Location.find_by_id(new_order[:location_id])[:name_sv]}."
+    # Check pickup_location difference
+    if old_order[:pickup_location_id] != new_order[:pickup_location_id]
+      log_entries << "Remittering ändrades från #{PickupLocation.find_by_id(old_order[:pickup_location_id])[:name_sv]} till #{PickupLocation.find_by_id(new_order[:pickup_location_id])[:name_sv]}."
     end
 
     # Check lending library difference
@@ -428,8 +427,8 @@ class OrdersController < ApplicationController
 
   def generade_delivery_note_pdf obj
     md_value = 6
-    location =  Location.find_by_id(obj.location_id) ? Location.find_by_id(obj.location_id).name_sv : ""
-    location_email = Location.find_by_id(obj.location_id) ? Location.find_by_id(obj.location_id).email : "ditt bibliotek"
+    pickup_location =  PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).name_sv : ""
+    pickup_location_email = PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).email : "ditt bibliotek"
     order_type = OrderType.find_by_id(obj.order_type_id) ? OrderType.find_by_id(obj.order_type_id).name_sv : ""
 
     require 'barby'
@@ -498,14 +497,14 @@ class OrdersController < ApplicationController
     pdf.move_down 105.send(:mm)
 
     pdf.text "Vill du förnya ditt fjärrlån?", :size=>11, :style=>:bold
-    pdf.text "Kontakta #{location_email} när lånetiden gått ut.", :size=>11
+    pdf.text "Kontakta #{pickup_location_email} när lånetiden gått ut.", :size=>11
     pdf.move_down md_value * 8
 
     pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold
 
     pdf.move_cursor_to top_line_cursor
     pdf.move_down 157.send(:mm)
-    pdf.text "#{location}", :style=>:bold
+    pdf.text "#{pickup_location}", :style=>:bold
     pdf.move_down md_value
 
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
@@ -555,7 +554,7 @@ class OrdersController < ApplicationController
   def generate_order_pdf obj
     md_value = 8
     status =  Status.find_by_id(obj.status_id) ? Status.find_by_id(obj.status_id).name_sv : ""
-    location =  Location.find_by_id(obj.location_id) ? Location.find_by_id(obj.location_id).name_sv : ""
+    pickup_location =  PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).name_sv : ""
     user =  User.find_by_id(obj.user_id) ? User.find_by_id(obj.user_id).xkonto : ""
     order_type = OrderType.find_by_id(obj.order_type_id) ? OrderType.find_by_id(obj.order_type_id).name_sv : ""
 
@@ -583,7 +582,7 @@ class OrdersController < ApplicationController
     pdf.move_down (15.send(:mm) + md_value)
 
     pdf.text "Handläggande enhet", :style=>:bold
-    pdf.text "#{location} "
+    pdf.text "#{pickup_location} "
     pdf.move_down md_value*2
 
     pdf.font_size = 12
@@ -795,7 +794,7 @@ private
     [:id,
      :order_number,
      :order_type_id,
-     :location_id,
+     :pickup_location_id,
      :order_path,
      :status_id,
      :user_id,

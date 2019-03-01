@@ -9,11 +9,11 @@ class Mailer < ActionMailer::Base
          subject: Illbackend::Application.config.email_settings[:subject_prefix] + subject)
   end
 
-  def confirmation(order, location)
+  def confirmation(order, pickup_location)
     @order = order
-    @location = location
+    @pickup_location = pickup_location
     set_locale order.form_lang ? order.form_lang.to_sym : :sv
-    mail(from:    location.email,
+    mail(from:    pickup_location.email,
          to:      order.email_address, 
          subject: Illbackend::Application.config.email_settings[:subject_prefix] + I18n.t('email.confirmation.subject') + order.order_number)
     set_default_locale
