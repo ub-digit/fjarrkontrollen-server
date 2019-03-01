@@ -23,7 +23,7 @@ RSpec.describe OrdersController, :type => :controller do
 
     #@status_group_all = StatusGroup.find_by_label('all').id
     #@status_group_archived = StatusGroup.find_by_label('archived').id
-    @location_g = Location.find_by_label('G').id
+    @pickup_location_g = PickupLocation.find_by_label('G').id
   end
 
   describe "get orders (index)" do
@@ -98,20 +98,20 @@ RSpec.describe OrdersController, :type => :controller do
     end
 
     context 'for no requested currentLocation (considered as all)' do
-      it "should return an order with location G" do
-        get :index, {:token => @token, :currentLocation => @location_g}
+      it "should return an order with pickup location G" do
+        get :index, {:token => @token, :currentLocation => @pickup_location_g}
         expect(json["orders"].to_a.find { |order| order["id"] == 2 }).not_to be_nil
       end
     end
     context 'for requested currentLocation all' do
-      it "should return an order with location G" do
-        get :index, {:token => @token, :currentLocation => @location_g}
+      it "should return an order with pickup location G" do
+        get :index, {:token => @token, :currentLocation => @pickup_location_g}
         expect(json["orders"].to_a.find { |order| order["id"] == 2 }).not_to be_nil
       end
     end
     context 'for a requested currentLocation G' do
-      it "should return an order with location G" do
-        get :index, {:token => @token, :currentLocation => @location_g}
+      it "should return an order with pickup location G" do
+        get :index, {:token => @token, :currentLocation => @pickup_location_g}
         expect(json["orders"].to_a.find { |order| order["id"] == 2 }).not_to be_nil
       end
     end

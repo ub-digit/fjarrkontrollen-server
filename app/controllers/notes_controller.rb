@@ -36,7 +36,7 @@ class NotesController < ApplicationController
       # Get the email adddress in the order
       to = order[:email_address]
       # Get the email address for the library (from address)
-      from = Location.find(order[:location_id])[:email]
+      from = PickupLocation.find(order[:pickup_location_id])[:email]
 
       !params[:note][:subject].nil? ? subject = params[:note][:subject] : subject = ""
       !params[:note][:message].nil? ? message = params[:note][:message] : message = ""

@@ -1,11 +1,10 @@
-class LocationsController < ApplicationController
-  #before_filter :validate_token
+class PickupLocationsController < ApplicationController
 
-  # Find all location and show them.
+  # Find all pickup_location and show them.
   def index
-    objs = Location.all.order(:name_sv)
+    objs = PickupLocation.all.order(:name_sv)
     if objs
-      render json: {locations: objs}, status: 200
+      render json: {pickup_locations: objs}, status: 200
     else
       render json: {}, status: 500
     end
@@ -13,12 +12,12 @@ class LocationsController < ApplicationController
     render json: {}, status: 500
   end
 
-  # Find one location using id and show it.
+  # Find one pickup_location using id and show it.
   def show
     objid = params[:id]
-    obj = Location.find_by_id(objid)
+    obj = PickupLocation.find_by_id(objid)
     if obj
-      render json: {location: obj}, status: 200
+      render json: {pickup_location: obj}, status: 200
     else
       render json: {}, status: 404
     end
@@ -26,12 +25,12 @@ class LocationsController < ApplicationController
     render json: {}, status: 500
   end
 
-  # Find one location using label and show it.
+  # Find one pickup_location using label and show it.
   def show_by_label
     objid = params[:label]
-    obj = Location.find_by_label(objid)
+    obj = PickupLocation.find_by_label(objid)
     if obj
-      render json: {location: obj}, status: 200
+      render json: {pickup_location: obj}, status: 200
     else
       render json: {}, status: 404
     end

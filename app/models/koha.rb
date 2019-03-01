@@ -4,7 +4,7 @@ class Koha
     Rails.logger.info "Entering Koha#create_bib_and_item, order number: #{order[:order_number]}"
 
     # Use sigel and not label field to get a valid sigel
-    order[:location_id].present? ? si = Location.find_by_id(order[:location_id])[:sigel] : si = ''
+    order[:pickup_location_id].present? ? si = PickupLocation.find_by_id(order[:pickup_location_id])[:sigel] : si = ''
     order[:authors].present? ? au =  order[:authors] : au = ''
     order[:title].present? ? ti =  order[:title] : ti = ''
     order[:publication_year].present? ? yr =  order[:publication_year] : yr = ''
@@ -14,7 +14,7 @@ class Koha
 
     if si.blank? || ti.blank? || ll.blank? || item.blank?
       missing_fields = []
-      si.blank? ? missing_fields << "location_id" : ""
+      si.blank? ? missing_fields << "pickup_location_id" : ""
       ti.blank? ? missing_fields << "title" : ""
       ll.blank? ? missing_fields << "lending_library" : ""
       item.blank? ? missing_fields << "order_number" : ""
