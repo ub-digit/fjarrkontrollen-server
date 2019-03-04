@@ -4,6 +4,7 @@ DEFAULT_TOKEN_EXPIRE = 1.day
   has_many :orders
   has_many :notes
   has_many :orders, :through => :notes
+  belongs_to :managing_group
   belongs_to :pickup_location
   has_many :access_tokens
 

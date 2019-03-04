@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190301121623) do
+ActiveRecord::Schema.define(version: 20190301133326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(version: 20190301121623) do
     t.text     "subject_en"
     t.text     "body_sv"
     t.text     "body_en"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "managing_groups", force: :cascade do |t|
+    t.string   "label"
+    t.string   "name"
+    t.string   "email"
+    t.string   "sublocation"
+    t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -133,6 +143,7 @@ ActiveRecord::Schema.define(version: 20190301121623) do
     t.datetime "updated_at"
     t.boolean  "is_sigel"
     t.string   "sigel",      limit: 255
+    t.boolean  "is_active"
   end
 
   create_table "status_group_members", force: :cascade do |t|

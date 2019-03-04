@@ -6,6 +6,7 @@ class Order < ActiveRecord::Base
   belongs_to :user
   has_many :users, :through => :notes
   belongs_to :pickup_location
+  belongs_to :managing_group
   belongs_to :status
   belongs_to :order_type
   belongs_to :delivery_source
