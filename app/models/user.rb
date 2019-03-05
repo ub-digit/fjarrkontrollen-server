@@ -48,6 +48,7 @@ DEFAULT_TOKEN_EXPIRE = 1.day
     {
       id: id,
       xkonto: xkonto,
+      managing_group_id: managing_group_id,
       pickup_location_id: pickup_location_id,
       name: name
     }
