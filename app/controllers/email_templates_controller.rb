@@ -1,5 +1,5 @@
 class EmailTemplatesController < ApplicationController
-  #before_filter :validate_token
+  before_filter :validate_token
 
   def index
     logger.info "EmailTemplatesController#index: Begins"
