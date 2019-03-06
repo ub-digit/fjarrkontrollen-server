@@ -1,5 +1,5 @@
 class PickupLocationsController < ApplicationController
-
+  before_filter :validate_token
   # Find all pickup_location and show them.
   def index
     objs = PickupLocation.all.order(:name_sv)

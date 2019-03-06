@@ -1,5 +1,5 @@
 class StatusGroupsController < ApplicationController
-  #before_filter :validate_token
+  before_filter :validate_token
 
   def index
     status_groups = StatusGroup.all.order(:position)

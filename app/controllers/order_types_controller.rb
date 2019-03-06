@@ -1,5 +1,5 @@
 class OrderTypesController < ApplicationController
-  #before_filter :validate_token
+  before_filter :validate_token
   def index
     objs = OrderType.all
     if objs
