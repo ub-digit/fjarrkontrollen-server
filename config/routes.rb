@@ -11,6 +11,7 @@ Illbackend::Application.routes.draw do
   get 'users' => 'users#index'
   get 'users/:id' => 'users#show', :constraints => { :id => /[0-9]+/ }
   get 'users/:xkonto' => 'users#show_by_xkonto', :constraints => { :xkonto => /[A-Za-z]+/ }
+  put 'users/:id' => 'users#update', :constraints => { :id => /[0-9]+/ }
 
   get 'statuses' => 'statuses#index'
   get 'statuses/:id' => 'statuses#show', :constraints => { :id => /[0-9]+/ }
@@ -24,6 +25,10 @@ Illbackend::Application.routes.draw do
   get 'pickup_locations' => 'pickup_locations#index'
   get 'pickup_locations/:id' => 'pickup_locations#show', :constraints => { :id => /[0-9]+/ }
   get 'pickup_locations/:label' => 'pickup_locations#show_by_label', :constraints => { :label => /[A-Za-z\-]+/ }
+
+  get 'managing_groups' => 'managing_groups#index'
+  get 'managing_groups/:id' => 'managing_groups#show', :constraints => { :id => /[0-9]+/ }
+  get 'managing_groups/:label' => 'managing_groups#show_by_label', :constraints => { :label => /[A-Za-z\-]+/ }
 
   get "form_orders/:id(.format)" => "orders#show", :constraints  => { :id => /[0-9]+/ }, :defaults => { :format => 'json' }
   get "form_orders/:order_number" => "orders#show_by_order_number", :constraints  => { :order_number => /[0-9\-\.]+/ }

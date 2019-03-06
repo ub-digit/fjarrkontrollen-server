@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190301121623) do
+ActiveRecord::Schema.define(version: 20190304101848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,16 @@ ActiveRecord::Schema.define(version: 20190301121623) do
     t.text     "subject_en"
     t.text     "body_sv"
     t.text     "body_en"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "managing_groups", force: :cascade do |t|
+    t.string   "label"
+    t.string   "name"
+    t.string   "email"
+    t.string   "sublocation"
+    t.boolean  "is_active"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -122,6 +132,7 @@ ActiveRecord::Schema.define(version: 20190301121623) do
     t.text     "period"
     t.text     "delivery_box"
     t.text     "delivery_comments"
+    t.integer  "managing_group_id"
   end
 
   create_table "pickup_locations", force: :cascade do |t|
@@ -133,6 +144,7 @@ ActiveRecord::Schema.define(version: 20190301121623) do
     t.datetime "updated_at"
     t.boolean  "is_sigel"
     t.string   "sigel",      limit: 255
+    t.boolean  "is_active"
   end
 
   create_table "status_group_members", force: :cascade do |t|
@@ -167,6 +179,7 @@ ActiveRecord::Schema.define(version: 20190301121623) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "pickup_location_id"
+    t.integer  "managing_group_id"
   end
 
   add_foreign_key "orders", "pickup_locations", name: "orders_location_id_fkey"

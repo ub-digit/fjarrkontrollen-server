@@ -4,6 +4,7 @@ DEFAULT_TOKEN_EXPIRE = 1.day
   has_many :orders
   has_many :notes
   has_many :orders, :through => :notes
+  belongs_to :managing_group
   belongs_to :pickup_location
   has_many :access_tokens
 
@@ -47,6 +48,7 @@ DEFAULT_TOKEN_EXPIRE = 1.day
     {
       id: id,
       xkonto: xkonto,
+      managing_group_id: managing_group_id,
       pickup_location_id: pickup_location_id,
       name: name
     }

@@ -29,7 +29,7 @@ class OrdersController < ApplicationController
     sortfield = params[:sortfield] || 'created_at'
     sortdir = params[:sortdir] || 'DESC'
 
-    user             = params[:user]
+    user = params[:user]
 
     is_archived_str  = params[:is_archived] || ''
     apply_archive_filter = false
@@ -51,8 +51,12 @@ class OrdersController < ApplicationController
       apply_to_be_invoiced_filter = true
     end
 
+    current_managing_group = params[:current_managing_group] || ''
+    current_managing_group = '' if current_managing_group.downcase.eql?('null')
+    current_managing_group = '' if current_managing_group.eql?('0')
+    current_managing_group = '' if current_managing_group.downcase.eql?('all')
 
-    current_pickup_location = params[:currentPickupLocation] || ''
+    current_pickup_location = params[:current_pickup_location] || ''
     current_pickup_location = '' if current_pickup_location.downcase.eql?('null')
     current_pickup_location = '' if current_pickup_location.eql?('0')
     current_pickup_location = '' if current_pickup_location.downcase.eql?('all')
@@ -96,9 +100,10 @@ class OrdersController < ApplicationController
       @orders = @orders.where(status_id: status_group_obj.statuses.map(&:id))
     end
 
-    @orders = @orders.where(pickup_location_id:   current_pickup_location) if current_pickup_location.present?
-    @orders = @orders.where(user_id:       user)            if user.present?
-    @orders = @orders.where(order_type_id: order_type)       if order_type.present?
+    @orders = @orders.where(managing_group_id: current_managing_group) if current_managing_group.present?
+    @orders = @orders.where(pickup_location_id: current_pickup_location) if current_pickup_location.present?
+    @orders = @orders.where(user_id: user) if user.present?
+    @orders = @orders.where(order_type_id: order_type) if order_type.present?
 
 
     if search_term.present?
@@ -216,6 +221,9 @@ class OrdersController < ApplicationController
       logger.info "OrdersController#create: Status id does not exist, set it to New."
       obj.update_attribute(:status_id, Status.find_by_label('new')[:id])
     end
+
+    # TBD: Set managing group
+
     # Set pickup_location to the same library as the sigel
     if obj[:pickup_location_id].blank?
       logger.info "OrdersController#create: Pickup Location id does not exist, set it to the same as the sigel / label."
@@ -354,9 +362,16 @@ class OrdersController < ApplicationController
       log_entries << "Beställningstyp ändrades från #{OrderType.find_by_id(old_order[:order_type_id])[:name_sv]} till #{OrderType.find_by_id(new_order[:order_type_id])[:name_sv]}."
     end
 
+    # Check managing_group difference
+    if old_order[:managing_group_id].blank? && new_order[:managing_group_id].present?
+      log_entries << "Handläggningsgrupp ändrades från Ingen till #{ManagingGroup.find_by_id(new_order[:managing_group_id])[:name]}."
+    elsif old_order[:managing_group_id] != new_order[:managing_group_id]
+      log_entries << "Handläggningsgrupp ändrades från #{ManagingGroup.find_by_id(old_order[:managing_group_id])[:name]} till #{ManagingGroup.find_by_id(new_order[:managing_group_id])[:name]}."
+    end
+
     # Check pickup_location difference
     if old_order[:pickup_location_id] != new_order[:pickup_location_id]
-      log_entries << "Remittering ändrades från #{PickupLocation.find_by_id(old_order[:pickup_location_id])[:name_sv]} till #{PickupLocation.find_by_id(new_order[:pickup_location_id])[:name_sv]}."
+      log_entries << "Avhämtningsbibliotek ändrades från #{PickupLocation.find_by_id(old_order[:pickup_location_id])[:name_sv]} till #{PickupLocation.find_by_id(new_order[:pickup_location_id])[:name_sv]}."
     end
 
     # Check lending library difference
@@ -794,6 +809,7 @@ private
     [:id,
      :order_number,
      :order_type_id,
+     :managing_group_id,
      :pickup_location_id,
      :order_path,
      :status_id,
