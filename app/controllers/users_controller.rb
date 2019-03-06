@@ -43,11 +43,25 @@ class UsersController < ApplicationController
   end
 
   def update
-    render json: {}, status: 501
+    user_id = params[:id]
+    user = User.find_by_id(user_id)
+    # TBD: check user
+    if user
+      user.update_attributes(permitted_params)
+      render json: {user: user}, status: 200
+    else
+      render json: {}, status: 404
+    end
+  rescue => error
+    render json: {}, status: 500
   end
 
   def delete
     render json: {}, status: 501
   end
 
+private
+  def permitted_params
+    params.require(:user).permit([:managing_group_id, :pickup_location_id])
+  end
 end
