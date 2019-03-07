@@ -79,6 +79,10 @@ class OrdersController < ApplicationController
     delivery_source_obj = DeliverySource.find_by_label(delivery_source)
     delivery_source_obj ? apply_delivery_source_filter = true : apply_delivery_source_filter = false
 
+    delivery_method = params[:delivery_method] || ''
+    delivery_method_obj = DeliveryMethod.find_by_label(delivery_method)
+    delivery_method_obj ? apply_delivery_method_filter = true : apply_delivery_method_filter = false
+
     @orders = Order.paginate(page: params[:page])
     if @orders.current_page > @orders.total_pages
       @orders = Order.paginate(page: 1)
@@ -94,6 +98,10 @@ class OrdersController < ApplicationController
 
     if apply_delivery_source_filter
       @orders = @orders.where(delivery_source_id: delivery_source_obj[:id])
+    end
+
+    if apply_delivery_method_filter
+      @orders = @orders.where(delivery_method_id: delivery_method_obj[:id])
     end
 
     if apply_status_group_filter
@@ -222,7 +230,11 @@ class OrdersController < ApplicationController
       obj.update_attribute(:status_id, Status.find_by_label('new')[:id])
     end
 
-    # TBD: Set managing group
+    # Set managing group based on loan type 
+    obj.set_managing_group
+
+    # Set delivery method based on delivery delivery_place (move to fjärrkontrollen-forms?)
+    obj.set_delivery_method
 
     # Set pickup_location to the same library as the sigel
     if obj[:pickup_location_id].blank?
@@ -360,6 +372,12 @@ class OrdersController < ApplicationController
     # Check order type difference
     if old_order[:order_type_id] != new_order[:order_type_id]
       log_entries << "Beställningstyp ändrades från #{OrderType.find_by_id(old_order[:order_type_id])[:name_sv]} till #{OrderType.find_by_id(new_order[:order_type_id])[:name_sv]}."
+    end
+
+
+    # Check delivery method difference
+    if old_order[:delivery_method_id] != new_order[:delivery_method_id]
+      log_entries << "Leveransmetod ändrades från #{DeliveryMethod.find_by_id(old_order[:delivery_method_id])[:name]} till #{DeliveryMethod.find_by_id(new_order[:delivery_method_id])[:name]}."
     end
 
     # Check managing_group difference
@@ -809,6 +827,7 @@ private
     [:id,
      :order_number,
      :order_type_id,
+     :delivery_method_id,
      :managing_group_id,
      :pickup_location_id,
      :order_path,
