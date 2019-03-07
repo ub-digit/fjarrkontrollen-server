@@ -61,6 +61,10 @@ Illbackend::Application.routes.draw do
   get "delivery_sources/" => "delivery_sources#index"
   get "delivery_sources/:id" => "delivery_sources#show", :constraints  => { :id => /[0-9]+/ }
 
+  # Delivery sources
+  get "delivery_methods/" => "delivery_methods#index"
+  get "delivery_methods/:id" => "delivery_methods#show", :constraints  => { :id => /[0-9]+/ }
+
   get "statistics/" => "statistics#index"
 
 end

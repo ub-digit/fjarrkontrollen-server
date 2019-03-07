@@ -2,7 +2,7 @@ class PickupLocationsController < ApplicationController
   before_filter :validate_token
   # Find all pickup_location and show them.
   def index
-    objs = PickupLocation.all.order(:name_sv)
+    objs = PickupLocation.all.where(is_active: true).order(:name_sv)
     if objs
       render json: {pickup_locations: objs}, status: 200
     else

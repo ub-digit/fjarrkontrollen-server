@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190304101848) do
+ActiveRecord::Schema.define(version: 20190306201433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,15 @@ ActiveRecord::Schema.define(version: 20190304101848) do
     t.integer  "user_id"
     t.text     "token"
     t.datetime "token_expire"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_methods", force: :cascade do |t|
+    t.string   "label"
+    t.string   "name"
+    t.string   "public_name_sv"
+    t.string   "public_name_en"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -133,6 +142,7 @@ ActiveRecord::Schema.define(version: 20190304101848) do
     t.text     "delivery_box"
     t.text     "delivery_comments"
     t.integer  "managing_group_id"
+    t.integer  "delivery_method_id"
   end
 
   create_table "pickup_locations", force: :cascade do |t|
