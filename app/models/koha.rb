@@ -4,7 +4,15 @@ class Koha
     Rails.logger.info "Entering Koha#create_bib_and_item, order number: #{order[:order_number]}"
 
     # Use sigel and not label field to get a valid sigel
-    order.pickup_location_id ? si = PickupLocation.find_by_id(order[:pickup_location_id])[:sigel] : si = ''
+    sublocation = ManagingGroup.find_by_id(order.managing_group_id).sublocation
+    if sublocation.blank?
+      Rails.logger.error "Leaving Koha#create_bib_and_item, error, no sublocation for managing group}"
+      return false
+    end
+
+    branch = sublocation[0,2]
+    location = sublocation
+
     order.authors ? au =  order.authors : au = ''
     order.title ? ti =  order.title : ti = ''
     order.publication_year ? yr =  order.publication_year : yr = ''
@@ -12,9 +20,8 @@ class Koha
     order.lending_library ? ll =  order.lending_library : ll = ''
     order.order_number ? item =  order.order_number : item = ''
 
-    if si.blank? || ti.blank? || ll.blank? || item.blank?
+    if ti.blank? || ll.blank? || item.blank?
       missing_fields = []
-      si.blank? ? missing_fields << "pickup_location_id" : ""
       ti.blank? ? missing_fields << "title" : ""
       ll.blank? ? missing_fields << "lending_library" : ""
       item.blank? ? missing_fields << "order_number" : ""
@@ -27,7 +34,7 @@ class Koha
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, si: si, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
+    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
     response = RestClient.get Illbackend::Application.config.koha[:create_bib_and_item_url], :params => params
 
     if response.code != 200
