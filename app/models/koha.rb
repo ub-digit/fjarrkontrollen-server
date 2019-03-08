@@ -4,13 +4,13 @@ class Koha
     Rails.logger.info "Entering Koha#create_bib_and_item, order number: #{order[:order_number]}"
 
     # Use sigel and not label field to get a valid sigel
-    order[:pickup_location_id].present? ? si = PickupLocation.find_by_id(order[:pickup_location_id])[:sigel] : si = ''
-    order[:authors].present? ? au =  order[:authors] : au = ''
-    order[:title].present? ? ti =  order[:title] : ti = ''
-    order[:publication_year].present? ? yr =  order[:publication_year] : yr = ''
-    order[:issn_isbn].present? ? isbn =  order[:issn_isbn] : isbn = ''
-    order[:lending_library].present? ? ll =  order[:lending_library] : ll = ''
-    order[:order_number].present? ? item =  order[:order_number] : item = ''
+    order.pickup_location_id ? si = PickupLocation.find_by_id(order[:pickup_location_id])[:sigel] : si = ''
+    order.authors ? au =  order.authors : au = ''
+    order.title ? ti =  order.title : ti = ''
+    order.publication_year ? yr =  order.publication_year : yr = ''
+    order.issn_isbn ? isbn =  order.issn_isbn : isbn = ''
+    order.lending_library ? ll =  order.lending_library : ll = ''
+    order.order_number ? item =  order.order_number : item = ''
 
     if si.blank? || ti.blank? || ll.blank? || item.blank?
       missing_fields = []
@@ -23,7 +23,7 @@ class Koha
     end
 
     mt = "a" #monograph
-    mt = "c" if order[:order_type_id] && OrderType.find_by_id(order[:order_type_id])[:label].eql?("score")
+    mt = "c" if order.order_type_id && OrderType.find_by_id(order.order_type_id).label.eql?("score")
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
