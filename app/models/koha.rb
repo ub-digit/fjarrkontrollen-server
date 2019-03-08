@@ -4,17 +4,24 @@ class Koha
     Rails.logger.info "Entering Koha#create_bib_and_item, order number: #{order[:order_number]}"
 
     # Use sigel and not label field to get a valid sigel
-    order[:pickup_location_id].present? ? si = PickupLocation.find_by_id(order[:pickup_location_id])[:sigel] : si = ''
-    order[:authors].present? ? au =  order[:authors] : au = ''
-    order[:title].present? ? ti =  order[:title] : ti = ''
-    order[:publication_year].present? ? yr =  order[:publication_year] : yr = ''
-    order[:issn_isbn].present? ? isbn =  order[:issn_isbn] : isbn = ''
-    order[:lending_library].present? ? ll =  order[:lending_library] : ll = ''
-    order[:order_number].present? ? item =  order[:order_number] : item = ''
+    sublocation = ManagingGroup.find_by_id(order.managing_group_id).sublocation
+    if sublocation.blank?
+      Rails.logger.error "Leaving Koha#create_bib_and_item, error, no sublocation for managing group}"
+      return false
+    end
 
-    if si.blank? || ti.blank? || ll.blank? || item.blank?
+    branch = sublocation[0,2]
+    location = sublocation
+
+    order.authors ? au =  order.authors : au = ''
+    order.title ? ti =  order.title : ti = ''
+    order.publication_year ? yr =  order.publication_year : yr = ''
+    order.issn_isbn ? isbn =  order.issn_isbn : isbn = ''
+    order.lending_library ? ll =  order.lending_library : ll = ''
+    order.order_number ? item =  order.order_number : item = ''
+
+    if ti.blank? || ll.blank? || item.blank?
       missing_fields = []
-      si.blank? ? missing_fields << "pickup_location_id" : ""
       ti.blank? ? missing_fields << "title" : ""
       ll.blank? ? missing_fields << "lending_library" : ""
       item.blank? ? missing_fields << "order_number" : ""
@@ -23,11 +30,11 @@ class Koha
     end
 
     mt = "a" #monograph
-    mt = "c" if order[:order_type_id] && OrderType.find_by_id(order[:order_type_id])[:label].eql?("score")
+    mt = "c" if order.order_type_id && OrderType.find_by_id(order.order_type_id).label.eql?("score")
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, si: si, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
+    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
     response = RestClient.get Illbackend::Application.config.koha[:create_bib_and_item_url], :params => params
 
     if response.code != 200
