@@ -32,5 +32,6 @@ Illbackend::Application.config.koha = {
   :userid => '<enter api user id>',
   :password => '<enter api password>',
   :create_bib_and_item_url => '<enter url>',
+  :update_bib_and_item_url => '<enter url>',
   :delete_bib_and_item_url => '<enter url>'
 }
