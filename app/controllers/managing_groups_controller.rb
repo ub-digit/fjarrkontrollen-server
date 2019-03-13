@@ -2,7 +2,7 @@ class ManagingGroupsController < ApplicationController
   before_filter :validate_token
   # Find all managing_group and show them.
   def index
-    objs = ManagingGroup.all.order(:name)
+    objs = ManagingGroup.all.order(:position)
     if objs
       render json: {managing_groups: objs}, status: 200
     else
