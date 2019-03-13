@@ -344,9 +344,8 @@ class OrdersController < ApplicationController
     if old_order[:status_id] != new_order[:status_id]
       log_entries << "Status ändrades från #{Status.find_by_id(old_order[:status_id])[:name_sv]} till #{Status.find_by_id(new_order[:status_id])[:name_sv]}."
 
-      # If new status is "received" and order type is loan or score and managing group of the order has a sublocation 
-      # and system is configured to write to Koha, then try to create items in Koha
-      if (new_order[:status_id] == Status.find_by_label("received").id &&
+      if (new_order[:status_id] == Status.find_by_label("requested").id &&
+
           [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
           ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
           Illbackend::Application.config.koha[:write])
@@ -355,6 +354,19 @@ class OrdersController < ApplicationController
           log_entries << "Bibliografisk post och exemplarpost skapades i Koha."
         else
           log_entries << "Systemet misslyckades med att skapa bibliografisk post och beståndspost i Koha."
+        end
+      end
+
+      if (new_order[:status_id] == Status.find_by_label("received").id &&
+
+          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
+          ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
+          Illbackend::Application.config.koha[:write])
+        res = Koha.update_bib_and_item new_order
+        if res
+          log_entries << "Bibliografisk post och exemplarpost uppdaterades i Koha."
+        else
+          log_entries << "Systemet misslyckades med att uppdatera bibliografisk post och beståndspost i Koha."
         end
       end
 

@@ -1,2 +1,2 @@
-User.create({id: 1, xkonto: "xaaaaa", name: "Test Person 1", location_id: 1})
-User.create({id: 2, xkonto: "xbbbbb", name: "Test Person 2", location_id: 2})
+User.create({id: 1, xkonto: "xaaaaa", name: "Test Person 1", pickup_location_id: 1})
+User.create({id: 2, xkonto: "xbbbbb", name: "Test Person 2", pickup_location_id: 2})
