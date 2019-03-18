@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190311170440) do
+ActiveRecord::Schema.define(version: 20190315164856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,11 +75,12 @@ ActiveRecord::Schema.define(version: 20190311170440) do
   add_index "notes", ["order_id"], name: "index_notes_on_order_id", using: :btree
 
   create_table "order_types", force: :cascade do |t|
-    t.string   "name_sv",    limit: 255
-    t.string   "name_en",    limit: 255
+    t.string   "name_sv",       limit: 255
+    t.string   "name_en",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "label",      limit: 255
+    t.string   "label",         limit: 255
+    t.boolean  "auth_required",             default: true, null: false
   end
 
   create_table "orders", force: :cascade do |t|
@@ -127,9 +128,9 @@ ActiveRecord::Schema.define(version: 20190311170440) do
     t.text     "librismisc"
     t.text     "invoicing_id"
     t.integer  "sticky_note_id"
-    t.string   "lending_library",                  limit: 255
     t.boolean  "is_archived"
     t.integer  "delivery_source_id"
+    t.string   "lending_library",                  limit: 255
     t.text     "loan_period"
     t.integer  "price"
     t.boolean  "to_be_invoiced"

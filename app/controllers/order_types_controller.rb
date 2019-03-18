@@ -1,5 +1,4 @@
 class OrderTypesController < ApplicationController
-  before_filter :validate_token
   def index
     objs = OrderType.all
     if objs
@@ -18,7 +17,6 @@ class OrderTypesController < ApplicationController
       render json: {}, status: 404
     end
   end
-
 
   def create
     render json: {}, status: 501
