@@ -29,7 +29,7 @@ order_<%= n %>:
   authors: <%= n == 5 ? 'Sakarias Miller' : '' %>
   form_library: G
   delivery_place: Skickas levadr
-  location_id: <%= Location.find_by_label('G')[:id] %>
+  pickup_location_id: <%= PickupLocation.find_by_label('G')[:id] %>
   invoicing_name:
   invoicing_address:
   invoicing_postal_address1:

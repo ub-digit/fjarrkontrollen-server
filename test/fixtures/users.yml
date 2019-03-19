@@ -7,18 +7,18 @@ user_1:
   xkonto: xanjoo
   name: Johan Andersson von Geijer
   sigel: G
-  location: <%= Location.find_by_label('G') %>
+  location: <%= PickupLocation.find_by_label('G') %>
 
 user_2:
   id: 2
   xkonto: xlpero
   name: Per Larsson
   sigel: Gk
-  location: <%= Location.find_by_label('Gk') %>
+  location: <%= PickupLocation.find_by_label('Gk') %>
 
 user_3:
   id: 3
   xkonto: xljoha
   name: Johan Larsson
   sigel: Gp
-  location: Location.find_by_label('G')
+  location: PickupLocation.find_by_label('G')

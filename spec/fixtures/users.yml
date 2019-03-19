@@ -7,28 +7,28 @@ user_1:
   id: 1
   xkonto: xyzxyz
   name: Trazan Apanzon
-  location_id: <%= Location.find_by_label('G').id %>
+  pickup_location_id: <%= PickupLocation.find_by_label('G').id %>
 
 user_2:
   id: 2
   xkonto: xveiro
   name: Veiron Veironsson
-  location_id: <%= Location.find_by_label('Gk').id %>
+  pickup_location_id: <%= PickupLocation.find_by_label('Gk').id %>
 
 user_3:
   id: 3
   xkonto: xottos
   name: Otto Ottosson
-  location_id: <%= Location.find_by_label('Gm').id %>
+  pickup_location_id: <%= PickupLocation.find_by_label('Gm').id %>
 
 user_4:
   id: 4
   xkonto: xgurra
   name: Gustaf Eriksson Wasa
-  location_id: <%= Location.find_by_label('Gp').id %>
+  pickup_location_id: <%= PickupLocation.find_by_label('Gp').id %>
 
 user_5:
   id: 5
   xkonto: xzappa
   name: Frank Zappa
-  location_id: <%= Location.find_by_label('Gumu').id %>
+  pickup_location_id: <%= PickupLocation.find_by_label('Gumu').id %>

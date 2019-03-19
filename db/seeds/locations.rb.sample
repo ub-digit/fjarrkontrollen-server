@@ -1,2 +1,2 @@
-Location.create({id: 1, label: "test1", name_sv: "Testbibliotek 1", name_en: "Test Library 1", email: "library1@example.example", is_sigel: TRUE, sigel: "test1"})
-Location.create({id: 2, label: "test2", name_sv: "Testbibliotek 2", name_en: "Test Library 2", email: "library2@example.example", is_sigel: TRUE, sigel: "test2"})
+PickupLocation.create({id: 1, label: "test1", name_sv: "Testbibliotek 1", name_en: "Test Library 1", email: "library1@example.example", is_sigel: TRUE, sigel: "test1"})
+PickupLocation.create({id: 2, label: "test2", name_sv: "Testbibliotek 2", name_en: "Test Library 2", email: "library2@example.example", is_sigel: TRUE, sigel: "test2"})

@@ -23,11 +23,11 @@ namespace :libris_info do
 
   desc "Checks if there are Libris enduser requests in Libris fjärrlån"
   task user_requests: :environment do
-    @locations = Location.where(is_sigel: true)
+    @locations = PickupLocation.where(is_sigel: true)
     @locations.each do |location|
-      location_id = location.id
+      pickup_location_id = location.id
       library_code = location.label
-      puts "location_id:" + location_id.to_s
+      puts "pickup_location_id:" + pickup_location_id.to_s
       puts "library_code:" + library_code
       resp = LibrisILL.get_user_requests library_code
       puts resp.inspect
@@ -70,7 +70,7 @@ namespace :libris_info do
               # Order data
               is_archived: false,
               status_id: Status.find_by_label('new').id,
-              location_id: location_id,
+              pickup_location_id: pickup_location_id,
               order_type_id: order_type_id,
               libris_request_id: order["request_id"],
               order_path: "LibrisEnduser",
