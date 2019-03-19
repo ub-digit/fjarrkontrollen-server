@@ -230,7 +230,7 @@ class OrdersController < ApplicationController
       obj.update_attribute(:status_id, Status.find_by_label('new')[:id])
     end
 
-    # Set managing group based on loan type 
+    # Set managing group based on loan type
     obj.set_managing_group
 
     # Set delivery method based on delivery delivery_place (move to fjärrkontrollen-forms?)

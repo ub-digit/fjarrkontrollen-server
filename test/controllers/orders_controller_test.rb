@@ -19,7 +19,7 @@ class OrdersControllerTest < ActionController::TestCase
     skip "Test when figured out how to count the number of filtered orders found."
     orders = Order.where(id: 1..5)
     orders.each do |order|
-      order.location = Location.find_by_label('Gm')
+      order.pickup_location = PickupLocation.find_by_label('Gm')
       order.save
     end
 

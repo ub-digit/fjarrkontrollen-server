@@ -15,7 +15,7 @@ load(Rails.root.join( 'db', 'seeds', "status_groups.rb"))
 load(Rails.root.join( 'db', 'seeds', "status_group_members.rb"))
 load(Rails.root.join( 'db', 'seeds', "systemuser.rb"))
 
-load(Rails.root.join( 'db', 'seeds', "locations.rb"))
+load(Rails.root.join( 'db', 'seeds', "pickup_locations.rb"))
 load(Rails.root.join( 'db', 'seeds', "users.rb"))
 
 if !Rails.env == "production" && File.exist?("#{Rails.root}/tmp/testindicator.file")
