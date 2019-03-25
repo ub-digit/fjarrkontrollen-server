@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190320124809) do
+ActiveRecord::Schema.define(version: 20190322160817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,9 +136,9 @@ ActiveRecord::Schema.define(version: 20190320124809) do
     t.text     "librismisc"
     t.text     "invoicing_id"
     t.integer  "sticky_note_id"
+    t.string   "lending_library",                  limit: 255
     t.boolean  "is_archived"
     t.integer  "delivery_source_id"
-    t.string   "lending_library",                  limit: 255
     t.text     "loan_period"
     t.integer  "price"
     t.boolean  "to_be_invoiced"
@@ -153,7 +153,10 @@ ActiveRecord::Schema.define(version: 20190320124809) do
     t.text     "delivery_comments"
     t.integer  "managing_group_id"
     t.integer  "delivery_method_id"
+    t.integer  "customer_type_id"
   end
+
+  add_index "orders", ["customer_type_id"], name: "index_orders_on_customer_type_id", using: :btree
 
   create_table "pickup_locations", force: :cascade do |t|
     t.string   "label",      limit: 255
@@ -202,6 +205,7 @@ ActiveRecord::Schema.define(version: 20190320124809) do
     t.integer  "managing_group_id"
   end
 
+  add_foreign_key "orders", "customer_types"
   add_foreign_key "orders", "pickup_locations", name: "orders_location_id_fkey"
   add_foreign_key "orders", "statuses", name: "orders_status_id_fkey"
   add_foreign_key "orders", "users", name: "orders_user_id_fkey"

@@ -193,73 +193,73 @@ class OrdersController < ApplicationController
     logger.info "OrdersController#create: Begins"
     status = 500
     #my_data = params[:order].to_hash
-    obj = Order.new(permitted_params)
+    order = Order.new(permitted_params)
 
-    if obj.save!
+    if order.save!
       logger.info "OrdersController#update: Object successfully saved."
-      headers['pickup_location'] = "/orders/#{obj.id}"
+      headers['pickup_location'] = "/orders/#{order.id}"
       status = 201
       logger.info "==== Here is Header Info ==================="
       logger.info "#{headers['pickup_location']}"
       logger.info "============================================"
-      logger.info "==== Here is json for the created object ==="
-      logger.info "#{obj.as_json}"
+      logger.info "==== Here is json for the created orderect ==="
+      logger.info "#{order.as_json}"
       logger.info "============================================"
     end
 
     # Set is_archived and to_be_invoiced to false
-    obj.update_attribute(:is_archived, false)
-    obj.update_attribute(:to_be_invoiced, false)
+    order.update_attribute(:is_archived, false)
+    order.update_attribute(:to_be_invoiced, false)
 
     # Set a new order_number based on id and timestamp. Also save the original order number if any (just for "backwards tracing", this should be removed when the illform database is obsolete.)
-    if obj[:order_number].present?
-      logger.info "OrdersController#create: Order number exists: #{obj[:order_number]}, save it in the org. order number field."
-      #obj.update_attribute(:org_order_number, obj[:order_number])
+    if order[:order_number].present?
+      logger.info "OrdersController#create: Order number exists: #{order[:order_number]}, save it in the org. order number field."
+      #order.update_attribute(:org_order_number, order[:order_number])
     else
       logger.info "OrdersController#create: Order number does not exist."
     end
     logger.info "OrdersController#create: Creating an new order nummber"
-    id = obj[:id]
-    created_at = obj[:created_at]
+    id = order[:id]
+    created_at = order[:created_at]
     order_number = created_at.strftime("%Y%m%d%H%M%S") + id.to_s
-    obj.update_attribute(:order_number, order_number)
+    order.update_attribute(:order_number, order_number)
 
     # If status does not exist, set status_id to "New"
-    if obj[:status_id].blank?
+    if order[:status_id].blank?
       logger.info "OrdersController#create: Status id does not exist, set it to New."
-      obj.update_attribute(:status_id, Status.find_by_label('new')[:id])
+      order.update_attribute(:status_id, Status.find_by_label('new')[:id])
     end
 
-    # Set managing group based on loan type 
-    obj.set_managing_group
+    # Set managing group based on loan type
+    order.set_managing_group
 
     # Set delivery method based on delivery delivery_place (move to fjärrkontrollen-forms?)
-    obj.set_delivery_method
+    order.set_delivery_method
 
     # Set pickup_location to the same library as the sigel
-    if obj[:pickup_location_id].blank?
+    if order[:pickup_location_id].blank?
       logger.info "OrdersController#create: Pickup Location id does not exist, set it to the same as the sigel / label."
-      if pickup_location = PickupLocation.find_by_label(obj[:form_library])
+      if pickup_location = PickupLocation.find_by_label(order[:form_library])
         pickup_location_id = pickup_location[:id]
       else
         pickup_location_id = nil # Change to default ?
       end
-      obj.update_attribute(:pickup_location_id, pickup_location_id)
+      order.update_attribute(:pickup_location_id, pickup_location_id)
     end
 
     # Send mail to customer if email address is given.
-    if obj.email_address
+    if order.email_address
       logger.info("OrdersController#create: Sending email to customer")
-      Mailer.confirmation(obj, pickup_location).deliver
+      Mailer.confirmation(order, pickup_location).deliver
     end
 
     logger.info "OrdersController#create: Ends"
-    render json: {order: obj}, status: 201
+    render json: {order: order}, status: 201
 
   rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
     logger.error "OrdersController#create: Error sending email:"
     logger.error "#{error.inspect}"
-    render json: {order: obj}, status: 201
+    render json: {order: order}, status: 201
 
   rescue => error
     logger.error "OrdersController#create: Error creating an order:"
@@ -907,4 +907,13 @@ private
   def permitted_params
     params.require(:order).permit(metadata_attributes + order_attributes + customer_attributes)
   end
+
+  #def validate_auth_required
+  #  if get_xaccount
+  #  end
+  #end
+  def get_xaccount
+    request.headers["HTTP_X_AUTHENTICATED_XACCOUNT"]
+  end
+
 end

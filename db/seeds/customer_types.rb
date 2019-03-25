@@ -46,3 +46,9 @@ CustomerType.create({
   name_sv: 'Kohaanvändaare',
   name_en: 'Koha user'
 });
+CustomerType.create({
+  id: 9,
+  label: 'unknown',
+  name_sv: 'Okänd',
+  name_en: 'Unknown'
+});
