@@ -1,19 +1,20 @@
 namespace :customer_types do
-	desc "Create customer types"
-	task create: :environment do
-		puts "Creating customer types"
+  desc "Create customer types"
+  task create: :environment do
+    puts "Creating customer types"
 
-		ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
       load(Rails.root.join('db', 'seeds', 'customer_types.rb'))
-		end
+    end
 
-		puts " All done!"
-	end
+    puts " All done!"
+  end
 
-	desc "Migrate customer types data"
-	task migrate_data: :environment do
-		puts "Migrating customer types data"
+  desc "Migrate customer types data"
+  task migrate_data: :environment do
+    puts "Migrating customer types data"
 
+    # TODO: DOES NOT WORK!!!!?
     #'univ',
     #'stud',
     #'sahl',

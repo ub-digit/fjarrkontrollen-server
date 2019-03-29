@@ -16,6 +16,7 @@
 /tmp
 
 config/database.yml
+config/config_secret.yml
 config/deploy.yml
 config/initializers/illbackend_cfg.rb
 config/initializers/secret_token.rb

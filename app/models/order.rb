@@ -1,48 +1,4 @@
-class OrderTypeDetailsValidator < ActiveModel::Validator
-  def validate(order)
-    case order.order_type.label
-    when "loan"
-      if order.title.blank?
-        order.errors[:title] << "Title is required"
-      end
-      if order.authors.blank?
-        order.errors[:authors] << "Author/publisher is required"
-      end
-    when "photocopy"
-      if order.title.blank?
-        order.errors[:title] << "Journal title is required"
-      end
-      if order.publication_year.blank?
-        order.errors[:publication_year] << "Year is required"
-      end
-      if order.pages.blank?
-        order.errors[:pages] << "Pages is required"
-      end
-    when "photocopy_chapter"
-      if order.title.blank?
-        order.errors[:title] << "Chapter title is required"
-      end
-      if order.title.blank?
-        order.errors[:journal_title] << "Book title is required"
-      end
-    when "microfilm"
-      if order.title.blank?
-        order.errors[:title] << "Newspaper is required"
-      end
-      if order.period.blank?
-        order.errors[:period] << "Date/period is required"
-      end
-    when "score"
-      if order.title.blank?
-        order.errors[:authors] << "Composer is required"
-      end
-      if order.period.blank?
-        order.errors[:title] << "Title is required"
-      end
-    end
-  end
-end
-
+#TODO: translate attributes with i18n and active model translation?
 class DeliveryMethodDetailsValidator < ActiveModel::Validator
   def validate(order)
     if order.is_delivery_method_send?
@@ -59,7 +15,7 @@ class DeliveryMethodDetailsValidator < ActiveModel::Validator
       else
         order.errors[:delivery_method] << "\"send\" is not allowed for order that is not shippable"
       end
-    elsif order.pickup_location.empty?
+    elsif order.pickup_location.blank?
       order.errors[:pickup_location] << "is required"
     end
   end
@@ -68,7 +24,7 @@ end
 class InvoicingDetailsValidator < ActiveModel::Validator
   def validate(order)
     if order.is_invoicing_required?
-      if order.customer_type.label == 'sahl'
+      if order.is_invoicing_by_id?
         if order.invoicing_id.blank?
           order.errors[:invoicing_id] << "is required"
         end
@@ -93,100 +49,6 @@ class InvoicingDetailsValidator < ActiveModel::Validator
   end
 end
 
-class CustomerTypeDetailsValidator < ActiveModel::Validator
-  #TODO: Also validade relationship presence here, and same for other validators?
-
-  def validate(order)
-    def validate_properties(properties)
-      properties.each do |property|
-        case property
-        when "name"
-          if order.name.blank?
-            order.errors[:name] << "Name is required"
-          end
-        when "email_address"
-          if order.email_address.blank?
-            order.errors[:email_address] << "E-mail is required"
-          end
-        when "company1"
-          if order.company1.blank?
-            order.errors[:company1] << "Organisation/company is required"
-          end
-        when "company2"
-          if order.company2.blank?
-            order.errors[:company2] << "Department is required"
-          end
-        when "company3"
-          if order.company3.blank?
-            order.errors[:company3] << "Unit is required"
-          end
-        when "library_card_number"
-          if order.library_card_number.blank?
-            order.errors[:library_card_number] << "Library card number is required" #
-          end
-        when "x_account"
-          if order.x_account.blank?
-            order.errors[:x_account] << "x-account is required" #x uppercase?
-          end
-        end
-      end
-    end
-    case order.customer_type.label
-    when "univ"
-      validate_properties([
-        "name",
-        "email_address",
-        "company2",
-        "library_card_number",
-        "x_account"
-      ])
-    when"stud"
-      validate_properties([
-        "name",
-        "email_address",
-        "library_card_number"
-      ])
-    when"sahl"
-      validate_properties([
-        "name",
-        "email_address",
-        "company3"
-      ])
-    when "priv"
-      validate_properties([
-        "name",
-        "library_card_number"
-      ])
-    when "ftag"
-      validate_properties([
-        "company1",
-        "name",
-        "email_address"
-      ])
-    when "dist"
-      validate_properties([
-        "name",
-        "email_address",
-        "library_card_number"
-      ])
-    when "ovri"
-      validate_properties([
-        "company1",
-        "name",
-        "email_address"
-      ])
-    when "koha"
-      # TODO: Require more??? Should request from koha and fill in all available properties
-      # overwrite from request or merge?
-      validate_properties([
-        "x_account"
-      ])
-    when "unknown"
-      # Skip validations
-    end
-  end
-end
-
 class Order < ActiveRecord::Base
   auto_strip_attributes :libris_lf_number
   nilify_blanks
@@ -204,47 +66,110 @@ class Order < ActiveRecord::Base
 
   # Shipping helpers
   def is_delivery_method_send?
-    # self?
-    self.delivery_method.label == 'send'
+    delivery_method.present? && delivery_method.label == 'send'
   end
 
   def is_shippable?
-    !['loan', 'microfilm', 'score'].include?(self.order_type.label)
+    order_type.present? && !['loan', 'microfilm', 'score'].include?(order_type.label)
   end
 
   def is_shipping_allowed?
-    is_shippable? && !['stud', 'priv'].include?(self.order_type.label)
+    is_shippable? && !['stud', 'priv'].include?(order_type.label)
   end
 
   # Invoicing helpers
   def is_billable?
-    self.order_type.label != 'microfilm' && (self.order_type.label != 'book' || self.order_outside_scandinavia)
+    order_type.present? && order_type.label != 'microfilm' && (order_type.label != 'book' || order_outside_scandinavia)
   end
 
   def is_invoicing_required? # is_invoicing_address_required? + is_invoicing_id_required? instead?
-    is_billable? && ['sahl', 'ftag', 'ovri'].include?(self.customer_type.label)
+    customer_type.present? && is_billable? && ['sahl', 'ftag', 'ovri'].include?(customer_type.label)
   end
+
+  def is_invoicing_by_id?
+    order.customer_type? && order.customer_type.label == 'sahl'
+  end
+
+  validates :authenticated_x_account, presence: true, if: -> { order_type.auth_required }
 
   # Relationship validations
   #validates :managing_group, presence: true #??
   validates :status, presence: true #??
-  validates :order_type, presence: true
   #validates :delivery_source, presence: true # Most likely not required
   validates :delivery_method, presence: true
+  validates :order_type, presence: true
+  validates :customer_type, presence: true
 
-  # Property validations
+  ## Per order type validations ##
+  with_options if: -> { order_type.present? && order_type.label == 'loan' }, presence: true do |required|
+    required.validates :title
+    required.validates :authors
+  end
 
-  # Per order type validations
-  validates_with OrderTypeDetailsValidator
+  with_options if: -> { order_type.present? && order_type.label == 'photocopy' }, presence: true do |required|
+    required.validates :title
+    required.validates :publication_year
+    required.validates :pages
+  end
+
+  with_options if: -> { order_type.present? && order_type.label == 'photocopy_chapter' }, presence: true do |required|
+    required.validates :title
+    required.validates :journal_title
+  end
+
+  with_options if: -> { order_type.present? && order_type.label == 'microfilm' }, presence: true do |required|
+    required.validates :title
+    required.validates :period
+  end
+
+  with_options if: -> { order_type.present? && order_type.label == 'score' }, presence: true do |required|
+    required.validates :title
+    required.validates :authors
+  end
+
+  ##  Per customer type validations ##
+  with_options if: -> { customer_type.present? && customer_type.label == 'univ' }, presence: true do |required|
+    required.validates :name
+    required.validates :email_address
+    required.validates :company2
+    required.validates :library_card_number
+    required.validates :x_account
+  end
+
+  # TODO: make sure same validations for these?
+  with_options if: -> { customer_type.present? && (customer_type.label == 'stud' || customer_type.label == 'dist') }, presence: true do |required|
+    required.validates :name
+    required.validates :email_address
+    required.validates :library_card_number
+  end
+
+  with_options if: -> { customer_type.present? && customer_type.label == 'sahl' }, presence: true do |required|
+    required.validates :name
+    required.validates :email_address
+    required.validates :company3
+  end
+
+  with_options if: -> { customer_type.present? && customer_type.label == 'priv' }, presence: true do |required|
+    required.validates :name
+    required.validates :library_card_number
+  end
+
+  # Make sure correct:
+  with_options if: -> { customer_type.present? && customer_type.label == 'ftag' || customer_type.label == 'ovri' }, presence: true do |required|
+    required.validates :name
+    required.validates :email_address
+    required.validates :company1
+  end
+
+  with_options if: -> { customer_type.present? && customer_type.label == 'koha' }, presence: true do |required|
+    required.validates :x_account
+  end
 
   # Per delivery method validations
   validates_with DeliveryMethodDetailsValidator
 
   # Invoicing details validations
   validates_with InvoicingDetailsValidator
-
-  # Per customer type validataions
-  validates_with CustomerTypeDetailsValidator
 
   #validates_format_of :email, with: /\A([^\s]+)((?:[-a-z0-9]\.)[a-z]{2,})\z/i #??
   # TODO: when in to_be_invoiced used?
@@ -260,37 +185,39 @@ class Order < ActiveRecord::Base
   end
 
   def sticky_note_subject
-    Note.find_by_id(self.sticky_note_id).present? ? Note.find_by_id(self.sticky_note_id)[:subject] : nil
+    Note.find_by_id(sticky_note_id).present? ? Note.find_by_id(sticky_note_id)[:subject] : nil
   end
 
   def sticky_note_message
-    Note.find_by_id(self.sticky_note_id).present? ? Note.find_by_id(self.sticky_note_id)[:message] : nil
+    Note.find_by_id(sticky_note_id).present? ? Note.find_by_id(sticky_note_id)[:message] : nil
   end
 
-  def set_delivery_method
-    if self.delivery_place.starts_with?("Hämtas")
-      self.delivery_method_id = DeliveryMethod.find_by_label("pickup").id
-    elsif self.delivery_place.starts_with?("Skickas")
-      self.delivery_method_id = DeliveryMethod.find_by_label("send").id
-    else
-      self.delivery_method_id = DeliveryMethod.find_by_label("pickup").id
-    end
-  end
+  #def set_delivery_method
+  #  if delivery_place.starts_with?('Hämtas')
+  #    self.delivery_method = DeliveryMethod.find_by_label('pickup')
+  #  elsif self.delivery_place.starts_with?('Skickas')
+  #    self.delivery_method = DeliveryMethod.find_by_label('send')
+  #  else
+  #    self.delivery_method = DeliveryMethod.find_by_label('pickup')
+  #  end
+  #end
 
   def set_managing_group
-    case self.order_type_id
-    when OrderType.find_by_label("loan").id
-      self.managing_group_id = ManagingGroup.find_by_label("loan").id
-    when OrderType.find_by_label("photocopy").id
-      self.managing_group_id = ManagingGroup.find_by_label("copies").id
-    when OrderType.find_by_label("photocopy_chapter").id
-      self.managing_group_id = ManagingGroup.find_by_label("copies").id
-    when OrderType.find_by_label("microfilm").id
-      self.managing_group_id = ManagingGroup.find_by_label("microfilm").id
-    when OrderType.find_by_label("score").id
-      self.managing_group_id = ManagingGroup.find_by_label("score").id
-    else
-      self.managing_group_id = ManagingGroup.find_by_label("loan").id
+    if order_type.present?
+      case order_type.label
+      when 'loan'
+        self.managing_group = ManagingGroup.find_by_label('loan')
+      when 'photocopy'
+        self.managing_group = ManagingGroup.find_by_label('copies')
+      when 'photocopy_chapter'
+        self.managing_group = ManagingGroup.find_by_label('copies')
+      when 'microfilm'
+        self.managing_group = ManagingGroup.find_by_label('microfilm')
+      when 'score'
+        self.managing_group = ManagingGroup.find_by_label('score')
+      else
+        self.managing_group = ManagingGroup.find_by_label('loan')
+      end
     end
   end
 
