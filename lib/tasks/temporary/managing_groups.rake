@@ -22,58 +22,52 @@ namespace :managing_groups do
         pickup_location.update_attribute(:is_active, false)
       end
     end
-    if false
-      Order.all.each do |order|
-        if order.order_type_id == OrderType.find_by_label("loan").id
-          order.managing_group_id = ManagingGroup.find_by_label("loan").id
-        elsif order.order_type_id == OrderType.find_by_label("photocopy").id
-          order.managing_group_id = ManagingGroup.find_by_label("copies").id
-        elsif order.order_type_id == OrderType.find_by_label("photocopy_chapter").id
-          order.managing_group_id = ManagingGroup.find_by_label("copies").id
-        elsif order.order_type_id == OrderType.find_by_label("microfilm").id
-          order.managing_group_id = ManagingGroup.find_by_label("microfilm").id
-        elsif order.order_type_id == OrderType.find_by_label("score").id
-          order.managing_group_id = ManagingGroup.find_by_label("score").id
-        end
+
+    order_type_id_to_managing_group_id = {
+      OrderType.find_by_label("loan").id => ManagingGroup.find_by_label("loan").id,
+      OrderType.find_by_label("photocopy").id => ManagingGroup.find_by_label("copies").id,
+      OrderType.find_by_label("photocopy_chapter").id =>  ManagingGroup.find_by_label("copies").id,
+      OrderType.find_by_label("microfilm").id => ManagingGroup.find_by_label("microfilm").id,
+      OrderType.find_by_label("score").id => ManagingGroup.find_by_label("score").id
+    }
+
+    pickup_location_id_to_managing_group_id = {
+      PickupLocation.find_by_label("G-plikt").id => ManagingGroup.find_by_label("G-legal-deposits").id,
+      PickupLocation.find_by_label("G-inkop").id => ManagingGroup.find_by_label("G-acquisitions").id,
+      PickupLocation.find_by_label("Ge-inkop").id => ManagingGroup.find_by_label("Ge-acquisitions").id,
+      PickupLocation.find_by_label("Gm-inkop").id => ManagingGroup.find_by_label("Gm-acquisitions").id,
+      PickupLocation.find_by_label("Gp-inkop").id => ManagingGroup.find_by_label("Gp-acquisitions").id,
+      PickupLocation.find_by_label("Gk-inkop").id => ManagingGroup.find_by_label("Gk-acquisitions").id,
+      PickupLocation.find_by_label("Ghdk-inkop").id => ManagingGroup.find_by_label("Ghdk-acquisitions").id,
+      PickupLocation.find_by_label("Gumu-inkop").id => ManagingGroup.find_by_label("Gumu-acquisitions").id
+    }
+
+    Order.all.each do |order|
+      if order.pickup_location_id && pickup_location_id_to_managing_group_id.key?(order.pickup_location_id)
+        order.managing_group_id = pickup_location_id_to_managing_group_id[order.pickup_location_id]
+        order.save!(validate: false)
+      elsif order.order_type_id && order_type_id_to_managing_group_id.key?(order.order_type_id)
+        order.managing_group_id = order_type_id_to_managing_group_id[order.order_type_id]
         order.save!(validate: false)
       end
-      # delivery_type??
-
-      Order.all.each do |order|
-        if order.pickup_location_id == PickupLocation.find_by_label("G-plikt").id
-          order.managing_group_id = ManagingGroup.find_by_label("G-legal-deposits").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("G-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("G-acquisitions").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("Ge-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("Ge-acquisitions").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("Gm-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("Gm-acquisitions").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("Gp-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("Gp-acquisitions").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("Gk-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("Gk-acquisitions").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("Ghdk-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("Ghdk-acquisitions").id
-        elsif order.pickup_location_id == PickupLocation.find_by_label("Gumu-inkop").id
-          order.managing_group_id = ManagingGroup.find_by_label("Gumu-acquisitions").id
-        end
-        order.save!(validate: false)
-      end
-
     end
+    # delivery_type??
+
+    delivery_method_pickup_id = DeliveryMethod.find_by_label("pickup").id
+    delivery_method_send_id = DeliveryMethod.find_by_label("send").id
 
     Order.all.each do |order|
       if order.delivery_place.present?
         if /hämtas/i =~ order.delivery_place
-          order.delivery_method_id = DeliveryMethod.find_by_label("pickup").id
+          order.delivery_method_id = delivery_method_pickup_id
         elsif /skickas/i =~ order.delivery_place
-          order.delivery_method_id = DeliveryMethod.find_by_label("send").id
+          order.delivery_method_id = delivery_method_send_id
         else
-          order.delivery_method_id = DeliveryMethod.find_by_label("pickup").id
+          order.delivery_method_id = delivery_method_pickup_id
         end
         order.save!(validate: false)
       else # Libris låntagarbeställningar?
-        order.delivery_method_id = DeliveryMethod.find_by_label("pickup").id
+        order.delivery_method_id = delivery_method_pickup_id
         order.save!(validate: false)
         puts "No delivery_place for order #{order.id}"
       end
