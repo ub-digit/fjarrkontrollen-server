@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rake managing_groups:create
+rake managing_groups:migrate_data
+
+rake customer_types:create
+rake customer_types:migrate_data

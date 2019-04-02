@@ -14,19 +14,19 @@ namespace :customer_types do
   task migrate_data: :environment do
     puts "Migrating customer types data"
 
-    # TODO: DOES NOT WORK!!!!?
-    #'univ',
-    #'stud',
-    #'sahl',
-    #'priv',
-    #'ftag',
-    #'dist',
-    #'ovri',
+    OrderType.all.each do |order_type|
+      order_type.update_attribute(
+        :auth_required,
+        ["loan", "score"].include?(order_type.label)
+      )
+    end
+
     normalize = {
       "univ - doktorand" => "univ",
       "doktorand" => "univ",
       "stud  (doktorand)" => "univ",
       "Forsk (FC) - Campus Linné" => "univ",
+      " Forsk (FC) - Campus Linné" => "univ",
       "uni" => "univ",
       "student" => "stud",
       "före" => "ftag",
@@ -40,8 +40,9 @@ namespace :customer_types do
       "forskare" => "univ"
     }
 
+
     Order.all.each do |order|
-      customer_type_label = order.customer_type
+      customer_type_label = order.customer_type_old
 
       if customer_type_label.present?
         if normalize.key?(customer_type_label)
@@ -55,7 +56,7 @@ namespace :customer_types do
       if customer_type
         order.customer_type_id = customer_type.id
       else
-        raise "Unknown customer type label: #{label}"
+        raise "Unknown customer type label: #{customer_type_label}"
       end
       order.save!(validate: false)
     end
