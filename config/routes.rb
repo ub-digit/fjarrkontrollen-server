@@ -26,6 +26,10 @@ Illbackend::Application.routes.draw do
   get 'pickup_locations/:id' => 'pickup_locations#show', :constraints => { :id => /[0-9]+/ }
   get 'pickup_locations/:label' => 'pickup_locations#show_by_label', :constraints => { :label => /[A-Za-z\-]+/ }
 
+  get 'customer_types' => 'customer_types#index'
+  get 'customer_types/:id' => 'customer_types#show', :constraints => { :id => /[0-9]+/ }
+  get 'customer_types/:label' => 'customer_types#show_by_label', :constraints => { :label => /[A-Za-z\-]+/ }
+
   get 'managing_groups' => 'managing_groups#index'
   get 'managing_groups/:id' => 'managing_groups#show', :constraints => { :id => /[0-9]+/ }
   get 'managing_groups/:label' => 'managing_groups#show_by_label', :constraints => { :label => /[A-Za-z\-]+/ }
