@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
   # Change this when authentication in illforms is implemented!
-  #before_filter :validate_token
-  before_filter :validate_token, only: [:index, :update]
+  before_action :validate_token, only: [:index, :update]
+  before_action :validate_secret_access_token, only: [:create]
 
   respond_to :json, :pdf
   require "prawn/measurement_extensions"
@@ -192,78 +192,62 @@ class OrdersController < ApplicationController
   def create
     logger.info "OrdersController#create: Begins"
     status = 500
-    #my_data = params[:order].to_hash
-    obj = Order.new(permitted_params)
 
-    if obj.save!
+    order = Order.new(permitted_params)
+
+    # Set is_archived and to_be_invoiced to false
+    order.is_archived = false
+    order.to_be_invoiced = false
+
+    # If status does not exist, set status_id to "New"
+    # TODO: Remove this check since status_id is/should always be unset?
+    if order.status.blank?
+      logger.info "OrdersController#create: Status id does not exist, set it to New."
+      order.status = Status.find_by_label('new')
+    end
+
+    # Set managing group based on loan type
+    order.set_managing_group
+
+    # Set delivery method based on delivery delivery_place (move to fjärrkontrollen-forms?)
+    # order.set_delivery_method
+
+    if order.save!
       logger.info "OrdersController#update: Object successfully saved."
-      headers['pickup_location'] = "/orders/#{obj.id}"
+      headers['pickup_location'] = "/orders/#{order.id}"
       status = 201
       logger.info "==== Here is Header Info ==================="
       logger.info "#{headers['pickup_location']}"
       logger.info "============================================"
-      logger.info "==== Here is json for the created object ==="
-      logger.info "#{obj.as_json}"
+      logger.info "==== Here is json for the created orderect ==="
+      logger.info "#{order.as_json}"
       logger.info "============================================"
     end
 
-    # Set is_archived and to_be_invoiced to false
-    obj.update_attribute(:is_archived, false)
-    obj.update_attribute(:to_be_invoiced, false)
-
-    # Set a new order_number based on id and timestamp. Also save the original order number if any (just for "backwards tracing", this should be removed when the illform database is obsolete.)
-    if obj[:order_number].present?
-      logger.info "OrdersController#create: Order number exists: #{obj[:order_number]}, save it in the org. order number field."
-      #obj.update_attribute(:org_order_number, obj[:order_number])
-    else
-      logger.info "OrdersController#create: Order number does not exist."
-    end
-    logger.info "OrdersController#create: Creating an new order nummber"
-    id = obj[:id]
-    created_at = obj[:created_at]
+    logger.info "OrdersController#create: Creating an new order number"
+    id = order[:id]
+    created_at = order[:created_at]
     order_number = created_at.strftime("%Y%m%d%H%M%S") + id.to_s
-    obj.update_attribute(:order_number, order_number)
-
-    # If status does not exist, set status_id to "New"
-    if obj[:status_id].blank?
-      logger.info "OrdersController#create: Status id does not exist, set it to New."
-      obj.update_attribute(:status_id, Status.find_by_label('new')[:id])
-    end
-
-    # Set managing group based on loan type 
-    obj.set_managing_group
-
-    # Set delivery method based on delivery delivery_place (move to fjärrkontrollen-forms?)
-    obj.set_delivery_method
-
-    # Set pickup_location to the same library as the sigel
-    if obj[:pickup_location_id].blank?
-      logger.info "OrdersController#create: Pickup Location id does not exist, set it to the same as the sigel / label."
-      if pickup_location = PickupLocation.find_by_label(obj[:form_library])
-        pickup_location_id = pickup_location[:id]
-      else
-        pickup_location_id = nil # Change to default ?
-      end
-      obj.update_attribute(:pickup_location_id, pickup_location_id)
-    end
+    order.update_attribute(:order_number, order_number)
 
     # Send mail to customer if email address is given.
-    if obj.email_address
+    if order.email_address
       logger.info("OrdersController#create: Sending email to customer")
-      Mailer.confirmation(obj, pickup_location).deliver
+      Mailer.confirmation(order, order.pickup_location).deliver
     end
 
     logger.info "OrdersController#create: Ends"
-    render json: {order: obj}, status: 201
+    render json: {order: order}, status: 201
 
   rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
     logger.error "OrdersController#create: Error sending email:"
     logger.error "#{error.inspect}"
-    render json: {order: obj}, status: 201
+    render json: {order: order}, status: 201
 
   rescue => error
     logger.error "OrdersController#create: Error creating an order:"
     logger.error "#{error.inspect}"
+    # puts error.backtrace
     render json: {}, status: 500
   end
 
@@ -273,27 +257,27 @@ class OrdersController < ApplicationController
     status = 500
     logger.info "OrdersController#update: Parameters are: #{params}"
 
-    obj_id = params[:id]
-    obj = Order.find_by_id(obj_id)
+    order_id = params[:id]
+    order = Order.find_by_id(order_id)
 
     # Get a copy of the order for log creation
-    old_obj = Order.find_by_id(obj_id)
+    old_order = Order.find_by_id(order_id)
 
-    if obj
+    if order
       logger.info "OrdersController#update: Object is valid, now updating it..."
       logger.info "OrdersController#update: order: #{params[:order]}"
-      obj.update_attributes(permitted_params)
+      order.update_attributes(permitted_params)
       logger.info "OrdersController#update: Just updated attributes, now saving..."
 
-      if obj.save!
+      if order.save!(validation: false)
         # Get the user id, for note event log creation
         user_id = AccessToken.find_by_token(get_token)[:user_id]
-        handle_order_changes obj_id, user_id, old_obj, obj
+        handle_order_changes order_id, user_id, old_order, order
 
         logger.info "OrdersController#update: Object successfully saved."
         status = 200
-        logger.info "==== Here is json for the stored object ===="
-        logger.info "#{obj.as_json}"
+        logger.info "==== Here is json for the stored order ===="
+        logger.info "#{order.as_json}"
         logger.info "============================================"
       else
         logger.info "OrdersController#update: Bad request!"
@@ -304,18 +288,18 @@ class OrdersController < ApplicationController
     end
     logger.info "OrdersController#update: Returning representation..."
     # -------------------------------------------------- #
-    # Handle ember's need for object return  START
+    # Handle ember's need for order return  START
     # -------------------------------------------------- #
     if status==200
-      render json: {order: obj}, status: status
+      render json: {order: order}, status: status
     else
       render json: {}, status: status
     end
     # -------------------------------------------------- #
-    # Handle ember's need for object return  END
+    # Handle ember's need for order return  END
     # -------------------------------------------------- #
   rescue => error
-    logger.error "OrdersController#update: Error updating Order with id = #{obj_id}"
+    logger.error "OrdersController#update: Error updating Order with id = #{order_id}"
     logger.error "#{error.inspect}"
     render json: {}, status: 500
   end
@@ -738,7 +722,7 @@ class OrdersController < ApplicationController
       end
 
       pdf.text "Kundtyp", :style=>:bold
-      pdf.text "#{obj.customer_type} "
+      pdf.text "#{obj.customer_type.label} "
       pdf.move_down md_value
 
       if obj.not_valid_after
@@ -837,74 +821,86 @@ class OrdersController < ApplicationController
     render json: {}, status: 501
   end
 
-
-private
+  private
   def metadata_attributes
-    [:id,
-     :order_number,
-     :order_type_id,
-     :delivery_method_id,
-     :managing_group_id,
-     :pickup_location_id,
-     :order_path,
-     :status_id,
-     :user_id,
-     :libris_lf_number,
-     :libris_request_id,
-     :sticky_note_id,
-     :lending_library,
-     :is_archived,
-     :delivery_source_id]
+    [
+      :id,
+      :order_number,
+      :order_type_id,
+      :delivery_method_id,
+      :managing_group_id,
+      :pickup_location_id,
+      :order_path,
+      :status_id,
+      :user_id,
+      :libris_lf_number,
+      :libris_request_id,
+      :sticky_note_id,
+      :lending_library,
+      :is_archived,
+      :delivery_source_id
+    ]
   end
   def order_attributes
-    [:title,
-     :publication_year,
-     :volume,
-     :issue,
-     :pages,
-     :journal_title,
-     :issn_isbn,
-     :librisid,
-     :librismisc,
-     :reference_information,
-     :delivery_place, # move to customer ?
-     :order_outside_scandinavia,
-     :email_confirmation,
-     :authors,
-     :not_valid_after,
-     :loan_period,
-     :price,
-     :to_be_invoiced,
-     :publication_type,
-     :period]
+    [
+      :title,
+      :publication_year,
+      :volume,
+      :issue,
+      :pages,
+      :journal_title,
+      :issn_isbn,
+      :librisid,
+      :librismisc,
+      :reference_information,
+      :delivery_place, # move to customer ?
+      :order_outside_scandinavia,
+      :email_confirmation,
+      :authors,
+      :not_valid_after,
+      :loan_period,
+      :price,
+      :to_be_invoiced,
+      :publication_type,
+      :period
+    ]
   end
   def customer_attributes
-    [:name,
-     :company1,
-     :company2,
-     :company3,
-     :phone_number,
-     :email_address,
-     :library_card_number,
-     :x_account,
-     :customer_type,
-     :comments,
-     :form_lang,
-     :form_library, # not present in view ?
-     :invoicing_name,
-     :invoicing_company,
-     :invoicing_address,
-     :invoicing_postal_address1,
-     :invoicing_postal_address2,
-     :invoicing_id,
-     :delivery_address,
-     :delivery_box,
-     :delivery_postal_code,
-     :delivery_city,
-     :delivery_comments]
+    [
+      :customer_type_id,
+      :name,
+      :company1,
+      :company2,
+      :company3,
+      :phone_number,
+      :email_address,
+      :library_card_number,
+      :x_account,
+      :authenticated_x_account,
+      :comments,
+      :form_lang,
+      :invoicing_name,
+      :invoicing_company,
+      :invoicing_address,
+      :invoicing_postal_address1,
+      :invoicing_postal_address2,
+      :invoicing_id,
+      :delivery_address,
+      :delivery_box,
+      :delivery_postal_code,
+      :delivery_city,
+      :delivery_comments
+    ]
   end
 
   def permitted_params
     params.require(:order).permit(metadata_attributes + order_attributes + customer_attributes)
+  end
+
+  def validate_secret_access_token
+    access_token = APP_CONFIG['secret_access_token']
+    if get_token != access_token
+      render json: {error: "Invalid secret"}, status: 401
+    end
   end
 end
