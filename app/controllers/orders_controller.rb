@@ -233,7 +233,7 @@ class OrdersController < ApplicationController
     # Send mail to customer if email address is given.
     if order.email_address
       logger.info("OrdersController#create: Sending email to customer")
-      Mailer.confirmation(order, order.pickup_location).deliver
+      Mailer.confirmation(order).deliver
     end
 
     logger.info "OrdersController#create: Ends"
@@ -461,7 +461,7 @@ class OrdersController < ApplicationController
   def generade_delivery_note_pdf obj
     md_value = 6
     pickup_location =  PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).name_sv : ""
-    pickup_location_email = PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).email : "ditt bibliotek"
+    managing_group_email = ManagingGroup.find_by_id(obj.managing_group_id) ? ManagingGroup.find_by_id(obj.managing_group_id).email : "ditt bibliotek"
     order_type = OrderType.find_by_id(obj.order_type_id) ? OrderType.find_by_id(obj.order_type_id).name_sv : ""
 
     require 'barby'
@@ -530,7 +530,7 @@ class OrdersController < ApplicationController
     pdf.move_down 105.send(:mm)
 
     pdf.text "Vill du förnya ditt fjärrlån?", :size=>11, :style=>:bold
-    pdf.text "Kontakta #{pickup_location_email} när lånetiden gått ut.", :size=>11
+    pdf.text "Kontakta #{managing_group_email} när lånetiden gått ut.", :size=>11
     pdf.move_down md_value * 8
 
     pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold

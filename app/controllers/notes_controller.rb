@@ -34,17 +34,19 @@ class NotesController < ApplicationController
       # Get the order object
       order = Order.find(order_id)
       # Get the email adddress in the order
-      to = order[:email_address]
-      # Get the email address for the library (from address)
-      from = PickupLocation.find(order[:pickup_location_id])[:email]
+      to = order.email_address
 
-      !params[:note][:subject].nil? ? subject = params[:note][:subject] : subject = ""
-      !params[:note][:message].nil? ? message = params[:note][:message] : message = ""
+      subject = !params[:note][:subject].nil? ? params[:note][:subject] : subject = ""
+      message = !params[:note][:message].nil? ? params[:note][:message] : message = ""
+
+      # Get the email address for the managing group (from address)
+      # TBD: if the messare are of type Kopior att hämta, use email address of pickup library 
+      from = ManagingGroup.find(order.managing_group_id).email
 
       logger.info "NotesController#create: Sending the note by email, #{from} -> #{to}"
 
       begin
-        Mailer.send_message(order[:order_number], subject, message, from, to).deliver
+        Mailer.send_message(order.order_number, subject, message, from, to).deliver
       rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
         logger.error "NotesController#create: Error sending email:"
         logger.error "#{error.inspect}"
