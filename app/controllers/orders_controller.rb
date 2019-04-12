@@ -233,7 +233,7 @@ class OrdersController < ApplicationController
     # Send mail to customer if email address is given.
     if order.email_address
       logger.info("OrdersController#create: Sending email to customer")
-      Mailer.confirmation(order, order.pickup_location).deliver
+      Mailer.confirmation(order).deliver
     end
 
     logger.info "OrdersController#create: Ends"
@@ -461,7 +461,7 @@ class OrdersController < ApplicationController
   def generade_delivery_note_pdf obj
     md_value = 6
     pickup_location =  PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).name_sv : ""
-    pickup_location_email = PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).email : "ditt bibliotek"
+    managing_group_email = ManagingGroup.find_by_id(obj.managing_group_id) ? ManagingGroup.find_by_id(obj.managing_group_id).email : "ditt bibliotek"
     order_type = OrderType.find_by_id(obj.order_type_id) ? OrderType.find_by_id(obj.order_type_id).name_sv : ""
 
     require 'barby'
@@ -530,7 +530,7 @@ class OrdersController < ApplicationController
     pdf.move_down 105.send(:mm)
 
     pdf.text "Vill du förnya ditt fjärrlån?", :size=>11, :style=>:bold
-    pdf.text "Kontakta #{pickup_location_email} när lånetiden gått ut.", :size=>11
+    pdf.text "Kontakta #{managing_group_email} när lånetiden gått ut.", :size=>11
     pdf.move_down md_value * 8
 
     pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold
@@ -588,6 +588,7 @@ class OrdersController < ApplicationController
     md_value = 8
     status =  Status.find_by_id(obj.status_id) ? Status.find_by_id(obj.status_id).name_sv : ""
     pickup_location =  PickupLocation.find_by_id(obj.pickup_location_id) ? PickupLocation.find_by_id(obj.pickup_location_id).name_sv : ""
+    managing_group_email = ManagingGroup.find_by_id(obj.managing_group_id) ? ManagingGroup.find_by_id(obj.managing_group_id).email : "ditt bibliotek"
     user =  User.find_by_id(obj.user_id) ? User.find_by_id(obj.user_id).xkonto : ""
     order_type = OrderType.find_by_id(obj.order_type_id) ? OrderType.find_by_id(obj.order_type_id).name_sv : ""
 
@@ -614,7 +615,7 @@ class OrdersController < ApplicationController
 
     pdf.move_down (15.send(:mm) + md_value)
 
-    pdf.text "Handläggande enhet", :style=>:bold
+    pdf.text "Hämtas på", :style=>:bold
     pdf.text "#{pickup_location} "
     pdf.move_down md_value*2
 
@@ -772,11 +773,22 @@ class OrdersController < ApplicationController
     pdf.image Illbackend::Application.config.printing[:logo_path],
         :width=>36.send(:mm), :at=>[(154-20).send(:mm), 777]
 
+
+    pdf.move_cursor_to (30).send(:mm)
+
+    pdf.text "Har du frågor om dina kopior? Kontakta #{managing_group_email}"
+    pdf.move_cursor_to (22).send(:mm)
+
+    pdf.text "Leverans av kopior från Göteborgs universitetsbibliotek"
+    pdf.text "Vi kan tyvärr inte leverera den här artikeln elektroniskt till våra kunder på grund av Upphovsrättslagen och de avtal/licenser vi har med våra leverantörer av artiklar."
+    pdf.text "Kopian måste skrivas ut och lämnas i pappersformat"
     pdf.move_cursor_to (7).send(:mm)
+
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
     pdf.stroke
 
     pdf.move_cursor_to (5).send(:mm)
+
 
     pdf.text "Beställare: #{obj.name}"
     pdf.number_pages "<page>(<total>)", {:at=>[pdf.bounds.right - 20, 12], :size=>10}

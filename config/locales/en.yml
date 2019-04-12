@@ -26,8 +26,8 @@ en:
       body_header: ""
       gub: "GUB, "
     confirmation:
-      subject: "Receipt of order "
-      body_header: "This order has been sent to the "
+      subject: "Beställning av fjärrlån/kopia "
+      body_header: "Tack för din beställning!"
       extra_info: ""
     delivery_info: "Leveransuppgifter"
     invoicing_info: "Faktureringsuppgifter"
