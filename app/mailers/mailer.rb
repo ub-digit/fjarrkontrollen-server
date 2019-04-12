@@ -13,7 +13,7 @@ class Mailer < ActionMailer::Base
     @order = order
     @managing_group = order.managing_group
     set_locale order.form_lang ? order.form_lang.to_sym : :sv
-    mail(from:    managing_group.email,
+    mail(from:    @managing_group.email,
          to:      order.email_address, 
          subject: Illbackend::Application.config.email_settings[:subject_prefix] + I18n.t('email.confirmation.subject') + order.order_number)
     set_default_locale
