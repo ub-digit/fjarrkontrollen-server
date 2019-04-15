@@ -536,8 +536,9 @@ class OrdersController < ApplicationController
     pdf.text "Låt den här följesedeln medfölja boken vid återlämning.", :size=>14, :style=>:bold
 
     pdf.move_cursor_to top_line_cursor
-    pdf.move_down 157.send(:mm)
-    pdf.text "#{pickup_location}", :style=>:bold
+    pdf.move_down 152.send(:mm)
+    pdf.text "Hämtas på", :style=>:bold 
+    pdf.text "#{pickup_location}"
     pdf.move_down md_value
 
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
@@ -779,9 +780,9 @@ class OrdersController < ApplicationController
     pdf.text "Har du frågor om dina kopior? Kontakta #{managing_group_email}"
     pdf.move_cursor_to (22).send(:mm)
 
-    pdf.text "Leverans av kopior från Göteborgs universitetsbibliotek"
+    pdf.text "Leverans av kopior från Göteborgs universitetsbibliotek", :style=>:bold
     pdf.text "Vi kan tyvärr inte leverera den här artikeln elektroniskt till våra kunder på grund av Upphovsrättslagen och de avtal/licenser vi har med våra leverantörer av artiklar."
-    pdf.text "Kopian måste skrivas ut och lämnas i pappersformat"
+    pdf.text "Kopian måste skrivas ut och lämnas i pappersformat."
     pdf.move_cursor_to (7).send(:mm)
 
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
