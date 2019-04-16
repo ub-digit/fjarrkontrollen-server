@@ -107,7 +107,7 @@ class Order < ActiveRecord::Base
   end
 
   with_options if: -> { order_type.present? && order_type.label == 'photocopy' }, presence: true do |required|
-    required.validates :title
+    required.validates :journal_title
     required.validates :publication_year
     required.validates :pages
   end
