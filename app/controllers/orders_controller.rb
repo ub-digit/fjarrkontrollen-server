@@ -241,13 +241,12 @@ class OrdersController < ApplicationController
 
   rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
     logger.error "OrdersController#create: Error sending email:"
-    logger.error "#{error.inspect}"
+    logger.error "#{error.backtrace}"
     render json: {order: order}, status: 201
 
   rescue => error
     logger.error "OrdersController#create: Error creating an order:"
-    logger.error "#{error.inspect}"
-    # puts error.backtrace
+    logger.error "#{error.backtrace}"
     render json: {}, status: 500
   end
 
