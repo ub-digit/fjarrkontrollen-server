@@ -87,7 +87,7 @@ class Order < ActiveRecord::Base
   end
 
   def is_invoicing_by_id?
-    order.customer_type? && order.customer_type.label == 'sahl'
+    customer_type.present? && customer_type.label == 'sahl'
   end
 
   validates :authenticated_x_account, presence: true, if: -> { order_type.auth_required }
