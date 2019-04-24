@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   # Change this when authentication in illforms is implemented!
-  before_action :validate_token, only: [:index, :update]
+  before_action :validate_token, only: [:index, :update, :set_delivered]
   before_action :validate_secret_access_token, only: [:create]
 
   respond_to :json, :pdf
@@ -831,6 +831,61 @@ class OrdersController < ApplicationController
   def destroy
     status = 501
     render json: {}, status: 501
+  end
+
+  def set_delivered
+    order = Order.find_by_id(params[:id])
+    if order
+      # TODO: Ugly with markup, not sure how to fix
+      delivery_status = Status.find_by_label('delivered')
+
+      if order.order_type.blank? || !['photocopy', 'photocopy_chapter'].include?(order.order_type.label)
+        render json: {
+          errors: {
+            error: "Fel ordertyp",
+            message: "Order <b>#{order.order_number}</b> har en annan typ än kopia av artikel eller kapitel."
+          }
+        }, status: 400
+      elsif @current_user.pickup_location_id.blank?
+        render json: {
+          errors: {
+            error: "Användare saknar avhämtningsbibliotek",
+            message: "Avhämtningsbibliotek saknas för den nuvarande användaren."
+          }
+        }, status: 400
+      elsif order.pickup_location_id.blank?
+        render json: {
+          errors: {
+            error: "Order saknar avhämtningsbibliotek",
+            message: "Avhämtningsbibliotek saknas på order <b>#{order.order_number}</b>."
+          }
+        }, status: 400
+      elsif @current_user.pickup_location_id != order.pickup_location_id
+        render json: {
+          errors: {
+            error: "Fel avhämtningsbibliotek",
+            message: "Order <b>#{order.order_number}</b> har ej samma avhämtningsbibliotek som nuvarande användare."
+          }
+        }, status: 400
+      elsif delivery_status.id == order.status_id
+        render json: {
+          errors: {
+            error: "Status redan satt",
+            message: "Order status är redan satt till levererad för order <b>#{order.order_number}</b>."
+          }
+        }, status: 400
+      else
+        order.status = delivery_status
+        order.save!(validation: false)
+        render json: {order: order}, status: 200
+      end
+    else
+      render json: {}, status: 404
+    end
+  rescue => error
+    logger.error "OrdersController#set_delivered: Error setting status to delivered for Order id = #{params[:id]}"
+    logger.error "#{error.inspect}"
+    render json: {}, status: 500
   end
 
   private

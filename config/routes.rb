@@ -48,6 +48,9 @@ Illbackend::Application.routes.draw do
   delete "orders/:id" => "orders#destroy", :constraints  => { :id => /[0-9]+/ }
   get "orders/search" => "orders#search"
 
+  # Order status actions
+  put "orders/:id/set_delivered" => "orders#set_delivered", :constraints  => { :id => /[0-9]+/ }
+
   # Notes
   get "orders/:order_id/notes" => "notes#index", :constraints  => { :order_id => /[0-9]+/ }
 

@@ -23,10 +23,14 @@ class ApplicationController < ActionController::Base
   end
 
   def validate_token
-    token = get_token
-    token_object = AccessToken.find_by_token(token)
-    if !token_object || !token_object.user.validate_token(token)
-      render json: {error: "Invalid token"}, status: 401
+    unless @current_user
+      token = get_token
+      token_object = AccessToken.find_by_token(token)
+      if !token_object || !token_object.user.validate_token(token)
+        render json: {error: "Invalid token"}, status: 401
+      else
+        @current_user = token_object.user
+      end
     end
   end
 end
