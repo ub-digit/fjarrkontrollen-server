@@ -536,8 +536,6 @@ class OrdersController < ApplicationController
 
     pdf.move_cursor_to top_line_cursor
     pdf.move_down 152.send(:mm)
-    pdf.text "Hämtas på", :style=>:bold 
-    pdf.text "#{pickup_location}"
     pdf.move_down md_value
 
     pdf.line [0, pdf.cursor], [pdf.bounds.right, pdf.cursor]
@@ -572,6 +570,8 @@ class OrdersController < ApplicationController
       pdf.move_down md_value * 2
     end
 
+    pdf.text "Hämtas på", :style=>:bold 
+    pdf.text "#{pickup_location}"
 
 
     pdf.image Illbackend::Application.config.printing[:slip_logo_path],
