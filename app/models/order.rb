@@ -3,14 +3,20 @@ class DeliveryMethodDetailsValidator < ActiveModel::Validator
   def validate(order)
     if order.is_delivery_method_send?
       if order.is_shipping_allowed?
-        if order.delivery_address.blank?
-          order.errors[:delivery_address] << "is required"
-        end
-        if order.delivery_postal_code.blank?
-          order.errors[:delivery_postal_code] << "is required"
-        end
-        if order.delivery_city.blank?
-          order.errors[:delivery_city] << "is required"
+        if order.is_univ?
+          if order.delivery_box.blank?
+            order.errors[:delivery_box] << "is required"
+          end
+        else
+          if order.delivery_address.blank?
+            order.errors[:delivery_address] << "is required"
+          end
+          if order.delivery_postal_code.blank?
+            order.errors[:delivery_postal_code] << "is required"
+          end
+          if order.delivery_city.blank?
+            order.errors[:delivery_city] << "is required"
+          end
         end
       else
         order.errors[:delivery_method] << "\"send\" is not allowed for order that is not shippable"
@@ -65,6 +71,10 @@ class Order < ActiveRecord::Base
   belongs_to :customer_type
 
   # Shipping helpers
+  def is_univ?
+    customer_type.present? && customer_type.label == 'univ'
+  end
+
   def is_delivery_method_send?
     delivery_method.present? && delivery_method.label == 'send'
   end
@@ -74,7 +84,7 @@ class Order < ActiveRecord::Base
   end
 
   def is_shipping_allowed?
-    is_shippable? && !['stud', 'priv'].include?(order_type.label)
+    is_shippable? && !['stud', 'priv'].include?(customer_type.label)
   end
 
   # Invoicing helpers
