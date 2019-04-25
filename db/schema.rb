@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190402114307) do
+ActiveRecord::Schema.define(version: 20190425134208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,8 @@ ActiveRecord::Schema.define(version: 20190402114307) do
     t.text     "body_en"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "label"
+    t.boolean  "disabled"
   end
 
   create_table "managing_groups", force: :cascade do |t|
