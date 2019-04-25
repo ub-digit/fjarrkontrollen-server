@@ -54,7 +54,7 @@ namespace :libris_info do
               # Order type should be loan etc
               order_type_id = OrderType.find_by_label("loan").id
               managing_group_id = ManagingGroup.find_by_label("loan").id
-              title = user_request["title"].present? ? order["title"] : ""
+              title = user_request["title"].present? ? user_request["title"] : ""
               authors = user_request["author"].present? ? user_request["author"] : ""
             end
 
