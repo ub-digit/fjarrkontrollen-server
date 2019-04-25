@@ -79,8 +79,8 @@ namespace :libris_info do
               title: title.present? ? title : nil,
               authors: authors.present? ? authors : nil,
               issn_isbn: user_request["isxn"].present? ? user_request["isxn"] : nil,
-              publication_year: user_request["year"].present? ? user_request["year"] : nil
-              pages: user_request["pages"].present? ? user_request["pages"] : nil
+              publication_year: user_request["year"].present? ? user_request["year"] : nil,
+              pages: user_request["pages"].present? ? user_request["pages"] : nil,
               librisid: user_request["bib_id"].present? ? user_request["bib_id"] : nil,
               librismisc: librismisc.present? ? librismisc : nil,
               order_outside_scandinavia: user_request["overseas"].present? && user_request["overseas"].eql?("true") ? true : false,
