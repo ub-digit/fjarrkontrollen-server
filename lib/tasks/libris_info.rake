@@ -95,7 +95,7 @@ namespace :libris_info do
               library_card_number: user_request["user"]["library_card"].present? ? user_request["user"]["library_card"] : nil,
               email_address: user_request["user"]["email"].present? ? user_request["user"]["email"] : nil
             )
-            if order.save!
+            if order.save(validate: false)
               puts "beställning sparad"
               # Create an order number
               id = order.id

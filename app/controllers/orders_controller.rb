@@ -268,7 +268,7 @@ class OrdersController < ApplicationController
       order.update_attributes(permitted_params)
       logger.info "OrdersController#update: Just updated attributes, now saving..."
 
-      if order.save!(validation: false)
+      if order.save!(validate: false)
         # Get the user id, for note event log creation
         user_id = AccessToken.find_by_token(get_token)[:user_id]
         handle_order_changes order_id, user_id, old_order, order

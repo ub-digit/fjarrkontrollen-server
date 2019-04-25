@@ -90,7 +90,7 @@ class Order < ActiveRecord::Base
     customer_type.present? && customer_type.label == 'sahl'
   end
 
-  validates :authenticated_x_account, presence: true, if: -> { order_type.auth_required }
+  validates :authenticated_x_account, presence: true, if: -> { order_type.present? && order_type.auth_required }
 
   # Relationship validations
   #validates :managing_group, presence: true #??
