@@ -233,7 +233,7 @@ class OrdersController < ApplicationController
     # Send mail to customer if email address is given.
     if order.email_address
       logger.info("OrdersController#create: Sending email to customer")
-      Mailer.confirmation(order).deliver
+      Mailer.confirmation(order).deliver_now
     end
 
     logger.info "OrdersController#create: Ends"
@@ -837,7 +837,7 @@ class OrdersController < ApplicationController
     order = Order.find_by_id(params[:id])
     if order
       # TODO: Ugly with markup, not sure how to fix
-      delivery_status = Status.find_by_label('delivered')
+      delivered_status = Status.find_by_label('delivered')
 
       if order.order_type.blank? || !['photocopy', 'photocopy_chapter'].include?(order.order_type.label)
         render json: {
@@ -867,17 +867,43 @@ class OrdersController < ApplicationController
             message: "Order <b>#{order.order_number}</b> har ej samma avhämtningsbibliotek som nuvarande användare."
           }
         }, status: 400
-      elsif delivery_status.id == order.status_id
+      elsif delivered_status.id == order.status_id
         render json: {
           errors: {
             error: "Status redan satt",
             message: "Order status är redan satt till levererad för order <b>#{order.order_number}</b>."
           }
         }, status: 400
+      elsif order.email_address.blank?
+        render json: {
+          errors: {
+            error: "Låntagare saknar e-postaddress",
+            message: "Låntagare saknar e-postaddress för order <b>#{order.order_number}</b>."
+          }
+        }, status: 400
       else
-        order.status = delivery_status
+        order.status = delivered_status
         order.save!(validation: false)
-        render json: {order: order}, status: 200
+
+        email_template = EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect')
+        from = order.pickup_location.email
+        to = order.email_address
+        lang = order.form_lang.present? ? order.form_lang : 'sv'
+        subject = email_template["subject_#{lang}"]
+        message = email_template["body_#{lang}"]
+
+        begin
+          logger.info "OrdersController#set_delivered: Sending the delivered message by email, #{from} -> #{to}"
+          Mailer.send_message_with_tokens(order, subject, message, from, to).deliver_now
+          logger.info "OrdersController#set_delivered: Email sent with no known exceptions from SMTP server."
+
+          render json: {order: order}, status: 200
+        rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+          logger.error "Orders#set_delivered: Error sending email:"
+          logger.error "#{error.backtrace}"
+
+          render json: {}, status: 500
+        end
       end
     else
       render json: {}, status: 404

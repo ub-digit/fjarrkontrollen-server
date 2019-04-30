@@ -5,25 +5,37 @@ namespace :email_template_labels do
 
     ActiveRecord::Base.transaction do
       EmailTemplate.create({
-        label: 'status_change_message_delivered',
+        label: 'delivered_status_set_for_copies_to_collect',
         disabled: true,
         body_sv: <<~HEREDOC,
-          Beställda kopior finns nu att hämta på biblioteket. Kostar (X) Kr.
+          Beställda kopior finns nu att hämta på [pickup_location.name_sv].
 
           Endast kortbetalning.
 
           Med vänlig hälsning
 
-          X biblioteket
+          [pickup_location.name_sv]
+
+          ["Ordernummer: " order_number]
+          ["Låntagare: " name]
+          ["Titel: " title]
+          ["Författare: " authors]
+          ["Tidsskriftstitel: " journal_title]
         HEREDOC
         body_en: <<~HEREDOC,
-          Ordered copies may now be collected the Library. The cost will be (X) SEK.
+          Ordered copies may now be collected at [pickup_location.name_sv].
 
           Credit card payment only.
 
           Best regards
 
-          X Library
+          [pickup_location.name_sv]
+
+          ["Ordernumber: " order_number]
+          ["Patron: " name]
+          ["Title: " title]
+          ["Author: " authors]
+          ["Journal title: " journal_title]
         HEREDOC
         subject_sv: 'Kopior att hämta',
         subject_en: 'Copies to collect'

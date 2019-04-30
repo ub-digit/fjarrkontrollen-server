@@ -40,19 +40,20 @@ class NotesController < ApplicationController
       message = !params[:note][:message].nil? ? params[:note][:message] : message = ""
 
       # Get the email address for the managing group (from address)
-      # TBD: if the messare are of type Kopior att hämta, use email address of pickup library 
-      from = ManagingGroup.find(order.managing_group_id).email
+      # TBD: if the messare are of type Kopior att hämta, use email address of pickup library
+      from = order.managing_group.email
 
       logger.info "NotesController#create: Sending the note by email, #{from} -> #{to}"
 
       begin
-        Mailer.send_message(order.order_number, subject, message, from, to).deliver
+        Mailer.send_message(order.order_number, subject, message, from, to).deliver_now
+        logger.info "NotesController#create: Email sent with no known exceptions from SMTP server."
       rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
         logger.error "NotesController#create: Error sending email:"
         logger.error "#{error.inspect}"
         render json: {}, status: 500
+        return
       end
-      logger.info "NotesController#create: Email sent with no known exceptions from SMTP server."
     end
 
     obj = Note.new(permitted_params)
