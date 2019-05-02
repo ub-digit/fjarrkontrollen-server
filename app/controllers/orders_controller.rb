@@ -970,6 +970,7 @@ class OrdersController < ApplicationController
       :library_card_number,
       :x_account,
       :authenticated_x_account,
+      :koha_borrowernumber,
       :comments,
       :form_lang,
       :invoicing_name,
