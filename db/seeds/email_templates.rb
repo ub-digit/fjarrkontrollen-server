@@ -382,5 +382,3 @@ X Library',
   subject_sv: 'Påminnelse: Fjärrlån att hämta',
   subject_en: 'Reminder: Interlibrary loan'
 })
-
-
