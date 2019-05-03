@@ -23,7 +23,6 @@ class NotesController < ApplicationController
 
   def create
     logger.info "NotesController#create: Begins"
-
     # Check if we will send email
     if !params[:note][:is_email].nil? && params[:note][:is_email]
       logger.info "NotesController#create: This note is an email, trying to send it..."
@@ -39,9 +38,9 @@ class NotesController < ApplicationController
       subject = !params[:note][:subject].nil? ? params[:note][:subject] : subject = ""
       message = !params[:note][:message].nil? ? params[:note][:message] : message = ""
 
-      # Get the email address for the managing group (from address)
-      # TBD: if the messare are of type Kopior att hämta, use email address of pickup library
-      from = order.managing_group.email
+      # Get the proper from email address
+      from = get_from_email_address(params[:note][:email_template_label], order)
+      params[:note].delete(:email_template_label)
 
       logger.info "NotesController#create: Sending the note by email, #{from} -> #{to}"
 
@@ -148,7 +147,18 @@ class NotesController < ApplicationController
   end
 
   private
+  def get_from_email_address template, order
+    case template
+    when 'copies_to_collect'
+      order.pickup_location.email
+    when 'delivered_status_set_for_copies_to_collect'
+      order.pickup_location.email
+    else
+      order.managing_group.email 
+    end
+  end
+
   def permitted_params
-    params.require(:note).permit(:id, :order_id, :subject, :message, :user_id, :is_email)
+    params.require(:note).permit(:id, :order_id, :subject, :message, :user_id, :is_email, :email_template_label,)
   end
 end
