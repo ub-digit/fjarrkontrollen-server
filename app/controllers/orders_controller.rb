@@ -836,6 +836,7 @@ class OrdersController < ApplicationController
   def set_delivered
     order = Order.find_by_id(params[:id])
     if order
+      old_status = order.status
       # TODO: Ugly with markup, not sure how to fix
       delivered_status = Status.find_by_label('delivered')
 
@@ -895,6 +896,8 @@ class OrdersController < ApplicationController
         begin
           logger.info "OrdersController#set_delivered: Sending the delivered message by email, #{from} -> #{to}"
           Mailer.send_message_with_tokens(order, subject, message, from, to).deliver_now
+          msg = "Status ändrades från #{old_status.name_sv} till #{order.status.name_sv}.\nE-post skickad till låntagaren om att kopior finns att hämta."
+          Note.create({user_id: @current_user.id, order_id: order.id, message: msg, is_email: false})
           logger.info "OrdersController#set_delivered: Email sent with no known exceptions from SMTP server."
 
           render json: {order: order}, status: 200
