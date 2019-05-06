@@ -20,7 +20,7 @@ namespace :email_template_labels do
           ["Låntagare: " name]
           ["Titel: " title]
           ["Författare: " authors]
-          ["Tidsskriftstitel: " journal_title]
+          ["Tidskriftstitel: " journal_title]
         HEREDOC
         body_en: <<~HEREDOC,
           Ordered copies may now be collected at [pickup_location.name_sv].
