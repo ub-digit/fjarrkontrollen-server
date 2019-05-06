@@ -40,7 +40,6 @@ class NotesController < ApplicationController
 
       # Get the proper from email address
       from = get_from_email_address(params[:note][:email_template_label], order)
-      params[:note].delete(:email_template_label)
 
       logger.info "NotesController#create: Sending the note by email, #{from} -> #{to}"
 
@@ -159,6 +158,6 @@ class NotesController < ApplicationController
   end
 
   def permitted_params
-    params.require(:note).permit(:id, :order_id, :subject, :message, :user_id, :is_email, :email_template_label,)
+    params.require(:note).permit(:id, :order_id, :subject, :message, :user_id, :is_email)
   end
 end
