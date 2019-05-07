@@ -151,6 +151,7 @@ class Order < ActiveRecord::Base
     required.validates :name
     required.validates :email_address
     required.validates :library_card_number
+    required.validates :x_account
   end
 
   with_options if: -> { customer_type.present? && customer_type.label == 'sahl' }, presence: true do |required|
