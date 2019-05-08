@@ -109,30 +109,31 @@ class Order < ActiveRecord::Base
   validates :delivery_method, presence: true
   validates :order_type, presence: true
   validates :customer_type, presence: true
+  validates :order_path, presence: true
 
   ## Per order type validations ##
-  with_options if: -> { order_type.present? && order_type.label == 'loan' }, presence: true do |required|
+  with_options if: -> { order_path.present? && order_path != 'SFX' && order_type.present? && order_type.label == 'loan' }, presence: true do |required|
     required.validates :title
     required.validates :authors
   end
 
-  with_options if: -> { order_type.present? && order_type.label == 'photocopy' }, presence: true do |required|
+  with_options if: -> { order_path.present? && order_path != 'SFX' && order_type.present? && order_type.label == 'photocopy' }, presence: true do |required|
     required.validates :journal_title
     required.validates :publication_year
     required.validates :pages
   end
 
-  with_options if: -> { order_type.present? && order_type.label == 'photocopy_chapter' }, presence: true do |required|
+  with_options if: -> { order_path.present? && order_path != 'SFX' && order_type.present? && order_type.label == 'photocopy_chapter' }, presence: true do |required|
     required.validates :title
     required.validates :journal_title
   end
 
-  with_options if: -> { order_type.present? && order_type.label == 'microfilm' }, presence: true do |required|
+  with_options if: -> { order_path.present? && order_path != 'SFX' && order_type.present? && order_type.label == 'microfilm' }, presence: true do |required|
     required.validates :title
     required.validates :period
   end
 
-  with_options if: -> { order_type.present? && order_type.label == 'score' }, presence: true do |required|
+  with_options if: -> { order_path.present? && order_path != 'SFX' && order_type.present? && order_type.label == 'score' }, presence: true do |required|
     required.validates :title
     required.validates :authors
   end
