@@ -147,12 +147,17 @@ class Order < ActiveRecord::Base
     required.validates :x_account
   end
 
-  # TODO: make sure same validations for these?
-  with_options if: -> { customer_type.present? && (customer_type.label == 'stud' || customer_type.label == 'dist') }, presence: true do |required|
+  with_options if: -> { customer_type.present? && customer_type.label == 'stud' }, presence: true do |required|
     required.validates :name
     required.validates :email_address
     required.validates :library_card_number
     required.validates :x_account
+  end
+
+  with_options if: -> { customer_type.present? && customer_type.label == 'dist' }, presence: true do |required|
+    required.validates :name
+    required.validates :email_address
+    required.validates :library_card_number
   end
 
   with_options if: -> { customer_type.present? && customer_type.label == 'sahl' }, presence: true do |required|
