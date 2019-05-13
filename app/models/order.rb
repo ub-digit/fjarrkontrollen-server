@@ -3,14 +3,10 @@ class DeliveryMethodDetailsValidator < ActiveModel::Validator
   def validate(order)
     if order.is_delivery_method_send?
       if order.is_shipping_allowed?
-        if order.is_univ?
-          if order.delivery_box.blank?
-            order.errors[:delivery_box] << "is required"
-          end
-        else
-          if order.delivery_address.blank?
-            order.errors[:delivery_address] << "is required"
-          end
+        if order.delivery_address.blank?
+          order.errors[:delivery_address] << "is required"
+        end
+        if !order.is_univ?
           if order.delivery_postal_code.blank?
             order.errors[:delivery_postal_code] << "is required"
           end
@@ -143,21 +139,19 @@ class Order < ActiveRecord::Base
     required.validates :name
     required.validates :email_address
     required.validates :company2
-    required.validates :library_card_number
     required.validates :x_account
   end
 
   with_options if: -> { customer_type.present? && customer_type.label == 'stud' }, presence: true do |required|
     required.validates :name
     required.validates :email_address
-    required.validates :library_card_number
     required.validates :x_account
   end
 
   with_options if: -> { customer_type.present? && customer_type.label == 'dist' }, presence: true do |required|
     required.validates :name
     required.validates :email_address
-    required.validates :library_card_number
+    required.validates :x_account
   end
 
   with_options if: -> { customer_type.present? && customer_type.label == 'sahl' }, presence: true do |required|
