@@ -10,11 +10,9 @@ namespace :email_template_labels do
         body_sv: <<~HEREDOC,
           Beställda kopior finns nu att hämta på [pickup_location.name_sv].
 
-          Endast kortbetalning.
-
           Med vänlig hälsning
 
-          [pickup_location.name_sv]
+          Göteborgs universitetsbibliotek
 
           ["Ordernummer: " order_number]
           ["Låntagare: " name]
@@ -23,13 +21,11 @@ namespace :email_template_labels do
           ["Tidskriftstitel: " journal_title]
         HEREDOC
         body_en: <<~HEREDOC,
-          Ordered copies may now be collected at [pickup_location.name_sv].
-
-          Credit card payment only.
+          Ordered copies may now be collected at [pickup_location.name_en].
 
           Best regards
 
-          [pickup_location.name_sv]
+          Gothenburg University Library
 
           ["Ordernumber: " order_number]
           ["Patron: " name]
