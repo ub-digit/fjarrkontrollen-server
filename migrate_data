@@ -5,3 +5,11 @@ rake managing_groups:migrate_data
 
 rake customer_types:create
 rake customer_types:migrate_data
+
+
+# NOTE: Different order because migrate_date will screw up
+# data created by create task
+rake email_template_labels:migrate_data
+rake email_template_labels:create
+
+
