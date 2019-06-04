@@ -203,15 +203,16 @@ class Order < ActiveRecord::Base
     Note.find_by_id(sticky_note_id).present? ? Note.find_by_id(sticky_note_id)[:message] : nil
   end
 
-  #def set_delivery_method
-  #  if delivery_place.starts_with?('Hämtas')
-  #    self.delivery_method = DeliveryMethod.find_by_label('pickup')
-  #  elsif self.delivery_place.starts_with?('Skickas')
-  #    self.delivery_method = DeliveryMethod.find_by_label('send')
-  #  else
-  #    self.delivery_method = DeliveryMethod.find_by_label('pickup')
-  #  end
-  #end
+  def delivery_info
+    #delivery_method_name = delivery_method['public_name_' + I18n.locale.to_s]
+    delivery_method_name = delivery_method['public_name_sv']
+    if delivery_method.label == 'pickup'
+      #delivery_method_name + ': ' + self.pickup_location['name_' + I18n.locale.to_s]
+      delivery_method_name + ': ' + self.pickup_location['name_sv']
+    else
+      delivery_method_name
+    end
+  end
 
   def set_managing_group
     if order_type.present?
