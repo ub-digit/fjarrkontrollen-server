@@ -204,9 +204,11 @@ class Order < ActiveRecord::Base
   end
 
   def delivery_info
-    delivery_method_name = delivery_method['public_name_' + I18n.locale.to_s]
+    #delivery_method_name = delivery_method['public_name_' + I18n.locale.to_s]
+    delivery_method_name = delivery_method['public_name_sv']
     if delivery_method.label == 'pickup'
-      delivery_method_name + ': ' + self.pickup_location['name_' + I18n.locale.to_s]
+      #delivery_method_name + ': ' + self.pickup_location['name_' + I18n.locale.to_s]
+      delivery_method_name + ': ' + self.pickup_location['name_sv']
     else
       delivery_method_name
     end
