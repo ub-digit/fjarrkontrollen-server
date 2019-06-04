@@ -209,9 +209,6 @@ class OrdersController < ApplicationController
     # Set managing group based on loan type
     order.set_managing_group
 
-    # Set delivery method based on delivery delivery_place (move to fjärrkontrollen-forms?)
-    # order.set_delivery_method
-
     if order.save!
       logger.info "OrdersController#update: Object successfully saved."
       headers['pickup_location'] = "/orders/#{order.id}"
@@ -754,7 +751,7 @@ class OrdersController < ApplicationController
       end
 
       pdf.text "Leveransalternativ", :style=>:bold
-      pdf.text "#{obj.delivery_place} "
+      pdf.text "#{obj.delivery_method.name} "
       pdf.move_down md_value
 
       if obj.delivery_address || obj.delivery_postal_code || obj.delivery_box || obj.delivery_city || obj.delivery_comments
@@ -949,7 +946,6 @@ class OrdersController < ApplicationController
       :librisid,
       :librismisc,
       :reference_information,
-      :delivery_place, # move to customer ?
       :order_outside_scandinavia,
       :email_confirmation,
       :authors,
