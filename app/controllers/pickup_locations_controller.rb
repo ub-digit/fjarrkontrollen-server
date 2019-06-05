@@ -1,7 +1,12 @@
 class PickupLocationsController < ApplicationController
   # Find all pickup_location and show them.
   def index
-    objs = PickupLocation.all.where(is_active: true).order(:name_sv)
+    show_only_available = params[:show_only_available].present? && params[:show_only_available] == 'true'
+    if show_only_available
+      objs = PickupLocation.all.where(is_active: true).where(is_available: true).order(:name_sv)
+    else
+      objs = PickupLocation.all.where(is_active: true).order(:name_sv)
+    end
     if objs
       render json: {pickup_locations: objs}, status: 200
     else
