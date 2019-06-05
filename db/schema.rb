@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190430094411) do
+ActiveRecord::Schema.define(version: 20190605124526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,15 +162,16 @@ ActiveRecord::Schema.define(version: 20190430094411) do
   add_index "orders", ["customer_type_id"], name: "index_orders_on_customer_type_id", using: :btree
 
   create_table "pickup_locations", force: :cascade do |t|
-    t.string   "label",      limit: 255
-    t.string   "name_sv",    limit: 255
-    t.string   "name_en",    limit: 255
-    t.string   "email",      limit: 255
+    t.string   "label",        limit: 255
+    t.string   "name_sv",      limit: 255
+    t.string   "name_en",      limit: 255
+    t.string   "email",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_sigel"
-    t.string   "sigel",      limit: 255
+    t.string   "sigel",        limit: 255
     t.boolean  "is_active"
+    t.boolean  "is_available",             default: true
   end
 
   create_table "status_group_members", force: :cascade do |t|
