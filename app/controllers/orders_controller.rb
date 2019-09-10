@@ -751,7 +751,7 @@ class OrdersController < ApplicationController
       end
 
       pdf.text "Leveransalternativ", :style=>:bold
-      pdf.text "#{obj.delivery_method.name} "
+      pdf.text "#{obj.delivery_method.name if obj.delivery_method.present?} "
       pdf.move_down md_value
 
       if obj.delivery_address || obj.delivery_postal_code || obj.delivery_box || obj.delivery_city || obj.delivery_comments
