@@ -6,10 +6,11 @@ class NotesController < ApplicationController
     if params[:order_id]
       @notes = Note
         .where(order_id: params[:order_id])
+        .where(deleted_at: nil)
         .order(created_at: :desc)
     else
       @notes = Note
-        .all
+        .where(deleted_at: nil)
         .order(created_at: :desc)
     end
     logger.info "NotesController#create: Ends"
@@ -140,10 +141,22 @@ class NotesController < ApplicationController
   end
 
 
-
   def destroy
-    render json: {}, status: 501
+    logger.info "NotesController#destroy: Begins"
+    note = Note.find_by_id(params[:id])
+
+    if note.present?
+      note.update_attributes({deleted_at: DateTime.now, deleted_by: @current_user.xkonto})
+      render json: {}, status: 200
+    else
+      render json: {}, status: 404
+    end
+  rescue => error
+    logger.error "NotesController#destroy: Error finding Note with id = #{params[:id]}"
+    logger.error "#{error.inspect}"
+    render json: {}, status: 500
   end
+
 
   private
   def get_from_email_address template, order
@@ -158,6 +171,6 @@ class NotesController < ApplicationController
   end
 
   def permitted_params
-    params.require(:note).permit(:id, :order_id, :subject, :message, :user_id, :is_email)
+    params.require(:note).permit(:id, :order_id, :subject, :message, :user_id, :is_email, :note_type_id)
   end
 end

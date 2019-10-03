@@ -440,7 +440,7 @@ class OrdersController < ApplicationController
     if write_to_note && !log_entries.empty?
       msg = log_entries.join("\n")
       logger.info "Writing to Note: " + msg
-      Note.create({user_id: user_id, order_id: order_id, message: msg, is_email: false})
+      Note.create({user_id: user_id, order_id: order_id, message: msg, is_email: false, note_type_id: NoteType.find_by_label('system').id})
     else
       logger.info "Nothing to write to Note"
     end
@@ -894,7 +894,7 @@ class OrdersController < ApplicationController
           logger.info "OrdersController#set_delivered: Sending the delivered message by email, #{from} -> #{to}"
           Mailer.send_message_with_tokens(order, subject, message, from, to).deliver_now
           msg = "Status ändrades från #{old_status.name_sv} till #{order.status.name_sv}.\nE-post skickad till låntagaren om att kopior finns att hämta."
-          Note.create({user_id: @current_user.id, order_id: order.id, message: msg, is_email: false})
+          Note.create({user_id: @current_user.id, order_id: order.id, message: msg, is_email: false, note_type_id: NoteType.find_by_label('system').id})
           logger.info "OrdersController#set_delivered: Email sent with no known exceptions from SMTP server."
 
           render json: {order: order}, status: 200
