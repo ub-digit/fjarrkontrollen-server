@@ -137,9 +137,9 @@ ActiveRecord::Schema.define(version: 20190605124526) do
     t.text     "librismisc"
     t.text     "invoicing_id"
     t.integer  "sticky_note_id"
-    t.string   "lending_library",                  limit: 255
     t.boolean  "is_archived"
     t.integer  "delivery_source_id"
+    t.string   "lending_library",                  limit: 255
     t.text     "loan_period"
     t.integer  "price"
     t.boolean  "to_be_invoiced"
