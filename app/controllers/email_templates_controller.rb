@@ -3,7 +3,7 @@ class EmailTemplatesController < ApplicationController
 
   def index
     logger.info "EmailTemplatesController#index: Begins"
-    email_templates = EmailTemplate.all
+    email_templates = EmailTemplate.all.order(:position)
     if email_templates
       logger.info "EmailTemplatesController#index: Ends"
       render json: {email_templates: email_templates}, status: 200     
