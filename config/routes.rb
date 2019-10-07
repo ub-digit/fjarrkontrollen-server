@@ -60,6 +60,10 @@ Illbackend::Application.routes.draw do
   put "notes/:id" => "notes#update", :constraints  => { :id => /[0-9]+/ }
   delete "notes/:id" => "notes#destroy", :constraints  => { :id => /[0-9]+/ }
 
+  # Note types
+  get "note_types/" => "note_types#index"
+  get "note_types/:id" => "note_types#show", :constraints  => { :id => /[0-9]+/ }
+
   # Email templates
   get "email_templates/" => "email_templates#index"
   get "email_templates/:id" => "email_templates#show", :constraints  => { :id => /[0-9]+/ }
