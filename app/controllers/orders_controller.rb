@@ -325,20 +325,27 @@ class OrdersController < ApplicationController
       log_entries << "Status ändrades från #{Status.find_by_id(old_order[:status_id])[:name_sv]} till #{Status.find_by_id(new_order[:status_id])[:name_sv]}."
 
       if (new_order[:status_id] == Status.find_by_label("requested").id &&
-
           [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
           ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
           Illbackend::Application.config.koha[:write])
         res = Koha.create_bib_and_item new_order
-        if res
+        if res[:biblio_item]
           log_entries << "Bibliografisk post och exemplarpost skapades i Koha."
+          if res[:reserve] && res[:reserve].eql?('error')
+            log_entries << "Reservation kunde inte skapas i Koha."
+          elsif res[:reserve] && res[:reserve].eql?('no_borrower_supplied')
+            log_entries << "Reservation kunde inte skapas på grund av att låntagaren inte fanns sparad i fjärrkontrollen."
+          elsif res[:reserve] && res[:reserve].eql?('no_borrower_found')
+            log_entries << "Reservation kunde inte skapas på grund av att låntagaren inte hittades i Koha."
+          else
+            log_entries << "Reservation skapades i Koha."
+          end
         else
           log_entries << "Systemet misslyckades med att skapa bibliografisk post och beståndspost i Koha."
         end
       end
 
       if (new_order[:status_id] == Status.find_by_label("received").id &&
-
           [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
           ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
           Illbackend::Application.config.koha[:write])

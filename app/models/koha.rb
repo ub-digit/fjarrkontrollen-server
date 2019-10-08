@@ -7,25 +7,26 @@ class Koha
     sublocation = ManagingGroup.find_by_id(order.managing_group_id).sublocation
     if sublocation.blank?
       Rails.logger.error "Leaving Koha#create_bib_and_item, error, no sublocation for managing group}"
-      return false
+      return {biblio_item: false, reserve: nil}
     end
 
     branch = sublocation[0,2]
     location = sublocation
 
-    order.authors ? au =  order.authors : au = ''
-    order.title ? ti =  order.title : ti = ''
-    order.publication_year ? yr =  order.publication_year : yr = ''
-    order.issn_isbn ? isbn =  order.issn_isbn : isbn = ''
-    order.lending_library ? ll =  order.lending_library : ll = ''
-    order.order_number ? item =  order.order_number : item = ''
+    au = order.authors ? order.authors : ''
+    ti = order.title ? order.title : ''
+    yr = order.publication_year ? order.publication_year : ''
+    isbn = order.issn_isbn ? order.issn_isbn : ''
+    ll = order.lending_library ? order.lending_library : ''
+    item = order.order_number ? order.order_number : ''
+    borrowernumber = order.koha_borrowernumber ? order.koha_borrowernumber : ''
 
     if ti.blank? || item.blank?
       missing_fields = []
       ti.blank? ? missing_fields << "title" : ""
       item.blank? ? missing_fields << "order_number" : ""
       Rails.logger.error "Leaving Koha#create_bib_and_item, error, missing fields: #{missing_fields.join(", ")}"
-      return false
+      return {biblio_item: false, reserve: nil}
     end
 
     mt = "a" #monograph
@@ -33,23 +34,39 @@ class Koha
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
+    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, borrowernumber: borrowernumber}
     response = RestClient.get Illbackend::Application.config.koha[:create_bib_and_item_url], :params => params
 
     if response.code != 200
       Rails.logger.error "Leaving Koha#create_bib_and_item, error: response code from Koha: #{response.code}"
-      return false
+      return {biblio_item: false, reserve: nil}
     end
     if !response.body.include?("biblionumber")
       Rails.logger.error "Leaving Koha#create_bib_and_item, error: response body from Koha: #{response.body}"
-      return false
+      return {biblio_item: false, reserve: nil}
     end
-    Rails.logger.info "Leaving Koha#create_bib_and_item, success"
-    return true
+
+    if response.body.include?("<reserve_status>no_borrower_supplied</reserve_status>")
+      Rails.logger.info "Leaving Koha#create_bib_and_item, success, nno borrower supplied"
+      return {biblio_item: true, reserve: "no_borrower_supplied"}
+    end
+
+    if response.body.include?("<reserve_status>no_borrower_found</reserve_status>")
+      Rails.logger.info "Leaving Koha#create_bib_and_item, success,no borrower found"
+      return {biblio_item: true, reserve: "no_borrower_found"}
+    end
+
+    if response.body.include?("<reserve_status>error</reserve_status>") 
+      Rails.logger.info "Leaving Koha#create_bib_and_item, success, reserve error"
+      return {biblio_item: true, reserve: "error"}
+    end
+
+    Rails.logger.info "Leaving Koha#create_bib_and_item, success, reserve success"
+    return {biblio_item: true, reserve: "success"}
 
   rescue RestClient::ResourceNotFound, RestClient::BadRequest, URI::InvalidURIError => e
     Rails.logger.error "Leaving Koha#create_bib_and_item, exception: #{e}"
-    return false
+    return {biblio_item: false, reserve: nil}
   end
 
   def self.update_bib_and_item order
@@ -65,12 +82,12 @@ class Koha
     branch = sublocation[0,2]
     location = sublocation
 
-    order.authors ? au =  order.authors : au = ''
-    order.title ? ti =  order.title : ti = ''
-    order.publication_year ? yr =  order.publication_year : yr = ''
-    order.issn_isbn ? isbn =  order.issn_isbn : isbn = ''
-    order.lending_library ? ll =  order.lending_library : ll = ''
-    order.order_number ? item =  order.order_number : item = ''
+    au = order.authors ? order.authors : ''
+    ti = order.title ? order.title : ''
+    yr = order.publication_year ? order.publication_year : ''
+    isbn = order.issn_isbn ? order.issn_isbn : ''
+    ll = order.lending_library ? order.lending_library : ''
+    item = order.order_number ? order.order_number : ''
 
     if ti.blank? || ll.blank? || item.blank?
       missing_fields = []
