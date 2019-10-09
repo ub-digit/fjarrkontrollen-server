@@ -359,6 +359,30 @@ Interlibrary loans department
 Gothenburg University Library');
     end
 
+
+    EmailTemplate.find_or_create_by(subject_sv: "Egen samling: utlånat") do | template |
+      template.subject_en = "Egen samling: utlånat" 
+      template.body_sv = "Hej,
+Vi gör inga fjärrlån på material som vi har i våra egna samlingar, trots att det är utlånat.
+Du är dock välkommen att ställa dig i kö.
+Se vår katalog: (länk)
+ 
+Med vänlig hälsning,
+Fjärrlån
+Göteborgs universitetsbibliotek"; 
+      template.body_en = "Hej,
+Vi gör inga fjärrlån på material som vi har i våra egna samlingar, trots att det är utlånat.
+Du är dock välkommen att ställa dig i kö.
+Se vår katalog: (länk)
+ 
+Med vänlig hälsning,
+Fjärrlån
+Göteborgs universitetsbibliotek"; 
+      template.label = "Egen samling: utlånat" 
+      template.disabled = false 
+      template.position = 150
+    end
+
     puts " All done!"
   end
 end
