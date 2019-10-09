@@ -9,7 +9,7 @@ namespace :email_templates do
   	EmailTemplate.find_by_subject_sv('Utlånas ej').try(:update_attributes, {position:40})
   	EmailTemplate.find_by_subject_sv('Kopior i stället för lån?').try(:update_attributes, {position:50})
   	EmailTemplate.find_by_subject_sv('Lån utanför Norden').try(:update_attributes, {position:60})
-  	EmailTemplate.find_by_subject_sv('Kopior att hämta').try(:update_attributes, {position:70})
+  	EmailTemplate.find_by_label('copies_to_collect').try(:update_attributes, {position:70})
   	EmailTemplate.find_by_subject_sv('Inköp').try(:update_attributes, {position:80})
   	EmailTemplate.find_by_subject_sv('Egna samlingar').try(:update_attributes, {position:90})
   	EmailTemplate.find_by_subject_sv('Pliktleverans').try(:update_attributes, {position:100})
@@ -175,9 +175,9 @@ Gothenburg University Library');
       EmailTemplate.find_by_subject_sv('Lån utanför Norden').update_attribute(:subject_en, 'Item not available in any Nordic country');
     end
 
-    @template = EmailTemplate.find_by_subject_sv('Kopior att hämta')
+    @template = EmailTemplate.find_by_label('copies_to_collect')
     if @template
-      EmailTemplate.find_by_subject_sv('Kopior att hämta').update_attribute(:body_sv, 'Hej,
+      EmailTemplate.find_by_label('copies_to_collect').update_attribute(:body_sv, 'Hej,
 
 Beställda kopior finns nu att hämta på biblioteket.
 
@@ -186,7 +186,7 @@ Fjärrlån
 
 X biblioteket');
 
-      EmailTemplate.find_by_subject_sv('Kopior att hämta').update_attribute(:body_en, 'Hello,
+      EmailTemplate.find_by_label('copies_to_collect').update_attribute(:body_en, 'Hello,
 
 Ordered copies may now be collected at the Library.
 
@@ -381,6 +381,36 @@ Göteborgs universitetsbibliotek";
       template.label = "Egen samling: utlånat" 
       template.disabled = false 
       template.position = 150
+    end
+
+
+    @template = EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect')
+    if @template
+      EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect').update_attribute(:body_sv, 'Beställda kopior finns nu att hämta på [pickup_location.name_sv].
+
+Med vänlig hälsning
+
+Göteborgs universitetsbibliotek
+
+["Ordernummer: " order_number]
+["Låntagare: " name]
+["Titel: " title]
+["Författare: " authors]
+["Tidskriftstitel: " journal_title]
+');
+
+      EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect').update_attribute(:body_en, 'Ordered copies may now be collected at [pickup_location.name_en].
+
+Best regards
+
+Gothenburg University Library  
+
+["Ordernumber: " order_number]
+["Patron: " name]
+["Title: " title]
+["Author: " authors]
+["Journal title: " journal_title]
+');
     end
 
     puts " All done!"
