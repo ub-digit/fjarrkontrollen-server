@@ -64,6 +64,8 @@ Best regards
 Interlibrary loans department
 
 Gothenburg University Library');
+
+      EmailTemplate.find_by_subject_sv('Komplettera').update_attribute(:subject_en, 'Insufficient information');
     end
 
 
@@ -89,6 +91,8 @@ Best regards
 Interlibrary loans department
 
 Gothenburg University Library');
+
+      EmailTemplate.find_by_subject_sv('Utlånat').update_attribute(:subject_en, 'Checked out');
     end
 
 
@@ -167,6 +171,8 @@ Best regards
 Interlibrary loans department
 
 Gothenburg University Library');
+
+      EmailTemplate.find_by_subject_sv('Lån utanför Norden').update_attribute(:subject_en, 'Item not available in any Nordic country');
     end
 
     @template = EmailTemplate.find_by_subject_sv('Kopior att hämta')
@@ -276,9 +282,9 @@ Gothenburg University Library');
 
       EmailTemplate.find_by_subject_sv('Påminnelse: Fjärrlån att hämta').update_attribute(:body_sv, 'Hej,
 
-Beställt material är nytt och kommer att levereras till biblioteket med pliktleverans.
+Du har ett fjärrlån att hämta på biblioteket. Vänligen vänd dig till informationsdisken.
 
-Du ställs i kö och vi meddelar när materialet har inkommit.
+Om du inte hämtar materialet inom sju dagar kommer det att skickas tillbaka.
 
 Med vänlig hälsning,
 Fjärrlån
