@@ -361,7 +361,7 @@ Gothenburg University Library');
 
 
     EmailTemplate.find_or_create_by(subject_sv: "Egen samling: utlånat") do | template |
-      template.subject_en = "Egen samling: utlånat" 
+      template.subject_en = "Library holding: Checked out" 
       template.body_sv = "Hej,
 Vi gör inga fjärrlån på material som vi har i våra egna samlingar, trots att det är utlånat.
 Du är dock välkommen att ställa dig i kö.
@@ -370,19 +370,29 @@ Se vår katalog: (länk)
 Med vänlig hälsning,
 Fjärrlån
 Göteborgs universitetsbibliotek"; 
-      template.body_en = "Hej,
-Vi gör inga fjärrlån på material som vi har i våra egna samlingar, trots att det är utlånat.
-Du är dock välkommen att ställa dig i kö.
-Se vår katalog: (länk)
+      template.body_en = 'Hello,
+The item you’ve ordered is already held by the library. We do not provide interlibrary loans for items we already hold in our collections, even if they are currently checked out.  You’re welcome to make a reservation.
+Please consult our catalogue: (link)
  
-Med vänlig hälsning,
-Fjärrlån
-Göteborgs universitetsbibliotek"; 
+Best regards
+Interlibrary loans department
+Gotenburg University Library'; 
       template.label = "Egen samling: utlånat" 
       template.disabled = false 
       template.position = 150
     end
+    
 
+    @template = EmailTemplate.find_by_subject_sv('Egen samling: utlånat')
+    if @template
+       EmailTemplate.find_by_subject_sv('Egen samling: utlånat').update_attribute(:body_en, 'Hello,
+The item you’ve ordered is already held by the library. We do not provide interlibrary loans for items we already hold in our collections, even if they are currently checked out.  You’re welcome to make a reservation.
+Please consult our catalogue: (link)
+ 
+Best regards
+Interlibrary loans department
+Gotenburg University Library'); 
+    end 
 
     @template = EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect')
     if @template
