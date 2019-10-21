@@ -112,7 +112,7 @@ class EmailTemplatesController < ApplicationController
       render json: {}, status: 200
     end
     rescue => error
-      logger.error "NotesController#destroy: Error finding EmailTemplate with id = #{params[:id]}"
+      logger.error "EmailTemplatesController#destroy: Error finding EmailTemplate with id = #{params[:id]}"
       logger.error "#{error.inspect}"
       render json: {}, status: 500
     end
