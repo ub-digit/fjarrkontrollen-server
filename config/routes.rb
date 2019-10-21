@@ -67,6 +67,9 @@ Illbackend::Application.routes.draw do
   # Email templates
   get "email_templates/" => "email_templates#index"
   get "email_templates/:id" => "email_templates#show", :constraints  => { :id => /[0-9]+/ }
+  delete "email_templates/:id" => "email_templates#destroy", :constraints  => { :id => /[0-9]+/ }
+  put "email_templates/:id" => "email_templates#update", :constraints  => { :id => /[0-9]+/ }
+  post "email_templates/" => "email_templates#create"
 
   # Delivery sources
   get "delivery_sources/" => "delivery_sources#index"
