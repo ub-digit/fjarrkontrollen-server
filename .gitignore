@@ -37,3 +37,4 @@ public/libris*.html
 tmp/testindicator.file
 backend_server_name
 cronlog.txt
+.rake_tasks~
