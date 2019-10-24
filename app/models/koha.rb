@@ -13,6 +13,8 @@ class Koha
     branch = sublocation[0,2]
     location = sublocation
 
+    pickup_location = order.pickup_location.code
+
     au = order.authors ? order.authors : ''
     ti = order.title ? order.title : ''
     yr = order.publication_year ? order.publication_year : ''
@@ -34,7 +36,7 @@ class Koha
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, borrowernumber: borrowernumber}
+    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, borrowernumber: borrowernumber, pickup_location: pickup_location}
     response = RestClient.get Illbackend::Application.config.koha[:create_bib_and_item_url], :params => params
 
     if response.code != 200
