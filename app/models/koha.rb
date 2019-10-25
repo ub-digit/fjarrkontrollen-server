@@ -101,9 +101,15 @@ class Koha
     mt = "a" #monograph
     mt = "c" if order.order_type_id && OrderType.find_by_id(order.order_type_id).label.eql?("score")
 
+    itype = "16"
+    lp = order.loan_period.present? ? order.loan_period : ''
+    if lp.blank?
+      itype="13"
+    end
+
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item}
+    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, itype: itype}
     response = RestClient.get Illbackend::Application.config.koha[:update_bib_and_item_url], :params => params
 
     if response.code != 200
