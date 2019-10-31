@@ -62,6 +62,6 @@ class UsersController < ApplicationController
 
 private
   def permitted_params
-    params.require(:user).permit([:managing_group_id, :pickup_location_id])
+    params.require(:user).permit([:managing_group_id, :pickup_location_id, :name])
   end
 end
