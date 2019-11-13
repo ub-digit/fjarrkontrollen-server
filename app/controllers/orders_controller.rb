@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
   # GET /orders/
   # Filters:
   # GET /orders/?currentPickupLocation=pickup_location_id
-  # GET /orders/?mediaType=media_type_id
+  # GET /orders/?mediaType=media_type_idgit s
   # GET /orders/?user=user_id
   # GET /orders/?status_group=status_group_id
   # GET /orders/?is_archived=
@@ -148,7 +148,10 @@ class OrdersController < ApplicationController
           OR (lower(librismisc) LIKE ?)
           OR (user_id IN (?))
           OR (user_id IN (?))
-          OR (id IN (?))",
+          OR (id IN (?))
+          OR (lower(x_account) LIKE ?)
+          OR (lower(library_card_number) LIKE ?)",
+
         "%#{st}%",
         "%#{st}%",
         "%#{st}%",
@@ -165,7 +168,9 @@ class OrdersController < ApplicationController
         "%#{st}%",
         user_xkonto_hit,
         user_name_hit,
-        note_hit_ids
+        note_hit_ids,
+        "#{st}",
+        "#{st}",
       )
     end
 
