@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   # Change this when authentication in illforms is implemented!
-  before_action :validate_token, only: [:index, :update, :set_delivered]
+  before_action :validate_token, only: [:index, :update, :set_delivered, :show]
   before_action :validate_secret_access_token, only: [:create]
 
   respond_to :json, :pdf
