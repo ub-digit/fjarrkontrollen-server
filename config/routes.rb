@@ -12,6 +12,7 @@ Illbackend::Application.routes.draw do
   get 'users/:id' => 'users#show', :constraints => { :id => /[0-9]+/ }
   get 'users/:xkonto' => 'users#show_by_xkonto', :constraints => { :xkonto => /[A-Za-z]+/ }
   put 'users/:id' => 'users#update', :constraints => { :id => /[0-9]+/ }
+  post "users/" => "users#create"
 
   get 'statuses' => 'statuses#index'
   get 'statuses/:id' => 'statuses#show', :constraints => { :id => /[0-9]+/ }
