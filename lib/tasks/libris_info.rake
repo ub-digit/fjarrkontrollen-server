@@ -85,6 +85,7 @@ namespace :libris_info do
               librismisc: librismisc.present? ? librismisc : nil,
               order_outside_scandinavia: user_request["overseas"].present? && user_request["overseas"].eql?("true") ? true : false,
               email_confirmation: true,
+              comments: user_request["user_message"].present? ? user_request["user_message"] : nil,
 
               # End user data
               name: user_request["user"]["full_name"].present? ? user_request["user"]["full_name"] : nil,
