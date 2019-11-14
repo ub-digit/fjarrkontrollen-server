@@ -117,21 +117,9 @@ class OrdersController < ApplicationController
     if search_term.present?
       st = search_term.downcase
       #the_user = User.where("id = ?", st[/^\d+$/] ? search_term.to_i : nil)
-      user_xkonto_hit = User.where("(xkonto LIKE ?)", "%#{st}%").select(:id)
-      user_name_hit = User.where("(lower(name) LIKE ?)", "%#{st}%").select(:id)
+      user_xkonto_or_name_hit = User.where("(xkonto LIKE ?) OR (lower(name) LIKE ?)", "%#{st}%", "%#{st}%").select(:id)
 
-      note_hits = Order.joins(:notes).where(
-        "(lower(notes.message) LIKE ?)
-          OR (lower(notes.subject) LIKE ?)",
-        "%#{st}%",
-        "%#{st}%").to_a
-      note_hit_ids = Array.new()
-      note_hits.to_a.each do |hit|
-        note_hit_ids << hit[:id]
-      end
-      logger.debug "note_hit_ids: #{note_hit_ids}"
-
-      @orders = @orders.where(
+      @orders = @orders.joins('LEFT OUTER JOIN notes on notes.order_id = orders.id').where(
         "(lower(name) LIKE ?)
           OR (lower(title) LIKE ?)
           OR (lower(authors) LIKE ?)
@@ -146,11 +134,11 @@ class OrdersController < ApplicationController
           OR (libris_request_id = ?)
           OR (lower(librisid) = ?)
           OR (lower(librismisc) LIKE ?)
-          OR (user_id IN (?))
-          OR (user_id IN (?))
-          OR (id IN (?))
-          OR (lower(x_account) LIKE ?)
-          OR (lower(library_card_number) LIKE ?)",
+          OR (orders.user_id IN (?))
+          OR (lower(notes.message) LIKE ?)
+          OR (lower(notes.subject) LIKE ?)
+          OR (lower(x_account) = ?)
+          OR (lower(library_card_number) = ?)",
 
         "%#{st}%",
         "%#{st}%",
@@ -166,12 +154,12 @@ class OrdersController < ApplicationController
         st[/^\d+$/] ? search_term.to_i : nil,
         st,
         "%#{st}%",
-        user_xkonto_hit,
-        user_name_hit,
-        note_hit_ids,
+        user_xkonto_or_name_hit,
+        "%#{st}%",
+        "%#{st}%",
         "#{st}",
         "#{st}",
-      )
+      ).distinct
     end
 
     logger.info "OrdersController#index: current_pickup_location = #{current_pickup_location}"
