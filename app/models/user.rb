@@ -1,4 +1,6 @@
+
 class User < ActiveRecord::Base
+   include ActiveModel::Validations
 DEFAULT_TOKEN_EXPIRE = 1.day
 # superfluous comment
   has_many :orders
@@ -8,9 +10,9 @@ DEFAULT_TOKEN_EXPIRE = 1.day
   belongs_to :pickup_location
   has_many :access_tokens
 
-  validates_presence_of :xkonto
-  validates_uniqueness_of :xkonto
-  validates_presence_of :name
+
+  validates :xkonto, :name, presence: true
+  validates_uniqueness_of :xkonto 
 
   def authenticate(provided_password)
     uri = URI('https://login-server.ub.gu.se/auth/' + xkonto)
