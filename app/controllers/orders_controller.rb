@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
   # GET /orders/
   # Filters:
   # GET /orders/?currentPickupLocation=pickup_location_id
-  # GET /orders/?mediaType=media_type_idgit s
+  # GET /orders/?mediaType=media_type_id
   # GET /orders/?user=user_id
   # GET /orders/?status_group=status_group_id
   # GET /orders/?is_archived=
