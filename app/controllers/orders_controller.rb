@@ -117,8 +117,7 @@ class OrdersController < ApplicationController
     if search_term.present?
       st = search_term.downcase
       #the_user = User.where("id = ?", st[/^\d+$/] ? search_term.to_i : nil)
-      user_xkonto_hit = User.where("(xkonto LIKE ?)", "%#{st}%").select(:id)
-      user_name_hit = User.where("(lower(name) LIKE ?)", "%#{st}%").select(:id)
+      user_xkonto_or_name_hit = User.where("(xkonto LIKE ?) OR (lower(name) LIKE ?)", "%#{st}%", "%#{st}%").select(:id)
 
       @orders = @orders.joins('LEFT OUTER JOIN notes on notes.order_id = orders.id').where(
         "(lower(name) LIKE ?)
@@ -135,7 +134,6 @@ class OrdersController < ApplicationController
           OR (libris_request_id = ?)
           OR (lower(librisid) = ?)
           OR (lower(librismisc) LIKE ?)
-          OR (orders.user_id IN (?))
           OR (orders.user_id IN (?))
           OR (lower(notes.message) LIKE ?)
           OR (lower(notes.subject) LIKE ?)
@@ -156,8 +154,7 @@ class OrdersController < ApplicationController
         st[/^\d+$/] ? search_term.to_i : nil,
         st,
         "%#{st}%",
-        user_xkonto_hit,
-        user_name_hit,
+        user_xkonto_or_name_hit,
         "%#{st}%",
         "%#{st}%",
         "#{st}",
