@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   # Change this when authentication in illforms is implemented!
-  before_action :validate_token, only: [:index, :update, :set_delivered]
+  before_action :validate_token, only: [:index, :update, :set_delivered, :show]
   before_action :validate_secret_access_token, only: [:create]
 
   respond_to :json, :pdf
@@ -148,7 +148,10 @@ class OrdersController < ApplicationController
           OR (lower(librismisc) LIKE ?)
           OR (user_id IN (?))
           OR (user_id IN (?))
-          OR (id IN (?))",
+          OR (id IN (?))
+          OR (lower(x_account) LIKE ?)
+          OR (lower(library_card_number) LIKE ?)",
+
         "%#{st}%",
         "%#{st}%",
         "%#{st}%",
@@ -165,7 +168,9 @@ class OrdersController < ApplicationController
         "%#{st}%",
         user_xkonto_hit,
         user_name_hit,
-        note_hit_ids
+        note_hit_ids,
+        "#{st}",
+        "#{st}",
       )
     end
 
