@@ -27,21 +27,16 @@ namespace :libris_info do
     pickup_locations.each do |pickup_location|
       pickup_location_id = pickup_location.id
       library_code = pickup_location.label
-      puts "pickup_location_id:" + pickup_location_id.to_s
-      puts "library_code:" + library_code
       resp = LibrisILL.get_user_requests library_code
-      puts resp.inspect
-      puts "Antal låntagarbeställningar: " + resp["count"].to_s
 
       # Get any Libris end user request for this library
       if resp["user_requests"]
         resp["user_requests"].each do |user_request|
-          puts user_request
           libris_request_id = user_request["request_id"]
 
           # Check if the order already exists in fjärrkontrollen by the request_id
           if Order.find_by_libris_request_id(libris_request_id)
-            puts "order already exist in fjärrkontrollen"
+            # Order already exist in fjärrkontrollen
           else
             # Find out the order type
             if user_request["author_of_article"].present? || user_request["title_of_article"].present?
@@ -107,8 +102,6 @@ namespace :libris_info do
               msg = "Libris låntagarbeställning hämtad från Libris Fjärrlån.\n"
               msg << "Status ändrades från Ingen till #{Status.find_by_label('new').name_sv}."
               Note.create({user_id: 0, order_id: order.id, message: msg, is_email: false })
-            else
-              puts "Fel vid sparande av beställning."
             end
           end
         end
