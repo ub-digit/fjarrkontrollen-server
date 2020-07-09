@@ -293,6 +293,7 @@ class OrdersController < ApplicationController
     render json: {}, status: 500
   end
 
+
   def handle_order_changes order_id, user_id, old_order, new_order
     write_to_note = true
     log_entries = []
@@ -912,6 +913,10 @@ class OrdersController < ApplicationController
     logger.error "OrdersController#set_delivered: Error setting status to delivered for Order id = #{params[:id]}"
     logger.error "#{error.inspect}"
     render json: {}, status: 500
+  end
+
+  def export
+    send_file "#{Illbackend::Application.config.export[:dir]}orders.xls", type: "application/excel", disposition: "attachment"
   end
 
   private

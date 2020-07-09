@@ -3,3 +3,4 @@
 # Update fjarrkontrollen db every 30 minutes
 */30 * * * *     apps /apps/fjarrlan/fjarrkontrollen-server/current/libris_neg_responses.sh lab /apps/fjarrlan/fjarrkontrollen-server/current >> /apps/fjarrlan/fjarrkontrollen-server/logs/cronlog.txt 2>&1
 */30 * * * *     apps /apps/fjarrlan/fjarrkontrollen-server/current/libris_user_requests.sh lab /apps/fjarrlan/fjarrkontrollen-server/current >> /apps/fjarrlan/fjarrkontrollen-server/logs/cronlog.txt 2>&1
+00 01  * * *     apps /apps/fjarrlan/fjarrkontrollen-server/current/export_orders.sh lab /apps/fjarrlan/fjarrkontrollen-server/current >> /apps/fjarrlan/fjarrkontrollen-server/logs/cronlog.txt 2>&1

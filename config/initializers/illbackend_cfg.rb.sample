@@ -35,3 +35,7 @@ Illbackend::Application.config.koha = {
   :update_bib_and_item_url => '<enter url>',
   :delete_bib_and_item_url => '<enter url>'
 }
+
+Illbackend::Application.config.export = {
+  :dir => '<enter dir>'
+}

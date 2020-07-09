@@ -25,3 +25,5 @@ end
 server deploy_config['host'], user: deploy_config['user'], roles: deploy_config['roles']
 
 set :deploy_to, deploy_config['path']
+
+set :branch, 'master'
