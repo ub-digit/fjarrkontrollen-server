@@ -48,6 +48,7 @@ Illbackend::Application.routes.draw do
   put "orders/:id" => "orders#update", :constraints  => { :id => /[0-9]+/ }
   delete "orders/:id" => "orders#destroy", :constraints  => { :id => /[0-9]+/ }
   get "orders/search" => "orders#search"
+  get "orders/export" => "orders#export"
 
   # Order status actions
   put "orders/:id/set_delivered" => "orders#set_delivered", :constraints  => { :id => /[0-9]+/ }

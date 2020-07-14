@@ -67,6 +67,7 @@ gem 'nilify_blanks'
 gem 'barby'
 gem 'will_paginate'
 gem 'responders'
+gem 'spreadsheet'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'
