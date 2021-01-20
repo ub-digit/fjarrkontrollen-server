@@ -1,19 +1,18 @@
 # -*- encoding : utf-8 -*-
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = {
-  :address => "<SMTP server>",
-  :port => 25
+   :address => "smtp.gu.se",
+   :port => 25,
+   :enable_starttls_auto => false
 }
 ActionMailer::Base.raise_delivery_errors = true
 
 Illbackend::Application.config.email_settings = {
-  :subject_prefix => "TEST : "
+  :subject_prefix => ENV["ILL_EMAIL_SUBJECT_PREFIX"]
 }
 
-# Usage:
-# Illbackend::Application.config.librisill_settings[:base_url]
 Illbackend::Application.config.librisill_settings = {
-  :base_url => "<Libris fjärrlån API endpoint>"
+  :base_url => "http://iller.libris.kb.se/librisfjarrlan/api/"
 }
 
 # Usage:
@@ -24,18 +23,18 @@ Illbackend::Application.config.printing = {
 }
 
 Illbackend::Application.config.pagination = {
-  :orders_per_page => 5
+  :orders_per_page => 50
 }
 
 Illbackend::Application.config.koha = {
   :write => true,
-  :userid => '<enter api user id>',
-  :password => '<enter api password>',
-  :create_bib_and_item_url => '<enter url>',
-  :update_bib_and_item_url => '<enter url>',
-  :delete_bib_and_item_url => '<enter url>'
+  :userid => ENV["ILL_KOHA_USERID"],
+  :password => ENV["ILL_KOHA_PASSWORD"],
+  :create_bib_and_item_url => 'https://koha-intra.ub.gu.se/cgi-bin/koha/svc/ill/add',
+  :delete_bib_and_item_url => 'https://koha-intra.ub.gu.se/cgi-bin/koha/svc/ill/remove',
+  :update_bib_and_item_url => 'https://koha-intra.ub.gu.se/cgi-bin/koha/svc/ill/update'
 }
 
 Illbackend::Application.config.export = {
-  :dir => '<enter dir>'
+  :dir => '/apps/fjarrkontrollen-server/files/'
 }
