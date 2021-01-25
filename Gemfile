@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.7'
+gem 'rails', '4.2.11.3'
 
 gem 'rack-cors'
 
@@ -36,11 +36,6 @@ group :doc do
 end
 
 group :development do
-  gem 'capistrano', '3.4.1'
-  gem 'capistrano-rails', '~> 1.1.5'
-  gem 'capistrano-passenger' #For passenger specific projects
-  gem 'capistrano-bundler', '~> 1.1.2' #To be able to run bundle install on deploy
-  gem 'capistrano-rvm' # För att hantera ruby version vid deploy
 end
 
 gem 'active_model_serializers'
