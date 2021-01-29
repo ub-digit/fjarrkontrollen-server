@@ -28,11 +28,11 @@ Illbackend::Application.config.pagination = {
 
 Illbackend::Application.config.koha = {
   :write => true,
-  :userid => ENV["ILL_KOHA_USERID"],
+  :userid => ENV["ILL_KOHA_USER"],
   :password => ENV["ILL_KOHA_PASSWORD"],
-  :create_bib_and_item_url => 'https://koha-intra.ub.gu.se/cgi-bin/koha/svc/ill/add',
-  :delete_bib_and_item_url => 'https://koha-intra.ub.gu.se/cgi-bin/koha/svc/ill/remove',
-  :update_bib_and_item_url => 'https://koha-intra.ub.gu.se/cgi-bin/koha/svc/ill/update'
+  :create_bib_and_item_url => ENV["ILL_KOHA_SVC_URL"] + '/ill/add',
+  :delete_bib_and_item_url => ENV["ILL_KOHA_SVC_URL"] + '/ill/remove',
+  :update_bib_and_item_url => ENV["ILL_KOHA_SVC_URL"] + '/ill/update'
 }
 
 Illbackend::Application.config.export = {
