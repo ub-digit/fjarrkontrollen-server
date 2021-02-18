@@ -25,5 +25,10 @@ module Illbackend
         resource '*', :headers => :any, :methods => [:get, :options, :put, :post, :delete]
       end
     end
+
+    if ENV["RAILS_LOG_TO_STDOUT"].present?
+      config.logger = Logger.new(STDOUT)
+    end
+
   end
 end
