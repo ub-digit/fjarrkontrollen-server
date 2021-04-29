@@ -36,5 +36,5 @@ Illbackend::Application.config.koha = {
 }
 
 Illbackend::Application.config.export = {
-  :dir => '/apps/fjarrkontrollen-server/files/'
+  :dir => ENV["ILL_KOHA_EXPORT_DIR"]
 }
