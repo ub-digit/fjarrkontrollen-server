@@ -1,9 +1,12 @@
 # -*- encoding : utf-8 -*-
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = {
-   :address => "smtp.gu.se",
-   :port => 25,
-   :enable_starttls_auto => false
+   :address => ENV["ILL_SMTP_SERVER"],
+   :port => ENV["ILL_SMTP_PORT"],
+   :user_name => ENV["ILL_SMTP_USERNAME"],
+   :password => ENV["ILL_SMTP_PASSWORD"],
+   :authentication => ENV["ILL_SMTP_AUTH"],
+   :enable_starttls_auto => ENV["ILL_SMTP_ENABLE_STARTTLS_AUTO"]
 }
 ActionMailer::Base.raise_delivery_errors = true
 
@@ -36,5 +39,5 @@ Illbackend::Application.config.koha = {
 }
 
 Illbackend::Application.config.export = {
-  :dir => ENV["ILL_KOHA_EXPORT_DIR"]
+  :dir => ENV["ILL_EXPORT_DIR"]
 }
