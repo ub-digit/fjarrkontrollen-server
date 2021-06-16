@@ -1,7 +1,5 @@
 class Export
   def self.create
-    require 'spreadsheet'
-    require 'stringio'
 
     query = "SELECT
   orders.id as id,
@@ -39,15 +37,15 @@ ORDER BY orders.created_at ASC;"
 
     result = ActiveRecord::Base.connection.exec_query(query)
 
-    Spreadsheet.client_encoding = 'UTF-8'
-    book = Spreadsheet::Workbook.new
-    sheet = book.create_worksheet(name: "Fjärrkontrollen - beställningar")
-    sheet.row(0).concat(result.columns.map{|column| export_column_name_mappings(column)})
-
-    result.rows.each_with_index do |row, index|
-      sheet.insert_row(index + 1, row)
+    Axlsx::Package.new do |p|
+      p.workbook.add_worksheet(:name => 'Fjärrkontrollen - beställningar') do |sheet|
+        sheet.add_row(result.columns.map{ |column| export_column_name_mappings(column) })
+        result.rows.each do |row|
+          sheet.add_row(row)
+        end
+      end
+      return p
     end
-    return book
   end
 
   def self.export_column_name_mappings name
