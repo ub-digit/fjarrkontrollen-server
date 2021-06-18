@@ -1,0 +1,29 @@
+production:
+  host: app-production-1.ub.gu.se
+  port: 22
+  user: apps
+  roles:
+    - app
+    - db
+    - web
+  path: '/apps/fjarrkontrollen-server'
+
+staging:
+  host: app-staging-1.ub.gu.se
+  port: 22
+  user: apps
+  roles:
+    - app
+    - db
+    - web
+  path: '/apps/fjarrkontrollen-server'
+
+lab:
+  host: app-lab-1.ub.gu.se
+  port: 22
+  user: apps
+  roles:
+    - app
+    - db
+    - web
+  path: '/apps/fjarrkontrollen-server'

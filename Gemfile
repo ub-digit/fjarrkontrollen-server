@@ -1,10 +1,7 @@
 source 'https://rubygems.org'
 
-# Use this version of ruby (rvm will use this line)
-ruby "2.3.1"
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.7'
+gem 'rails', '4.2.11.3'
 
 gem 'rack-cors'
 
@@ -39,11 +36,6 @@ group :doc do
 end
 
 group :development do
-  gem 'capistrano', '3.4.1'
-  gem 'capistrano-rails', '~> 1.1.5'
-  gem 'capistrano-passenger' #For passenger specific projects
-  gem 'capistrano-bundler', '~> 1.1.2' #To be able to run bundle install on deploy
-  gem 'capistrano-rvm' # För att hantera ruby version vid deploy
 end
 
 gem 'active_model_serializers'
@@ -67,7 +59,7 @@ gem 'nilify_blanks'
 gem 'barby'
 gem 'will_paginate'
 gem 'responders'
-gem 'spreadsheet'
+gem 'caxlsx'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'

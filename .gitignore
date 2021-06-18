@@ -15,16 +15,9 @@
 /log/*.log
 /tmp
 
-config/database.yml
-config/config_secret.yml
-config/deploy.yml
-config/initializers/illbackend_cfg.rb
-config/initializers/secret_token.rb
-
 db/seeds/locations.rb
 db/seeds/users.rb
 db/seeds/testdata.rb
-
 
 .ruby-gemset
 deploy-info.txt
@@ -38,3 +31,5 @@ tmp/testindicator.file
 backend_server_name
 cronlog.txt
 .rake_tasks~
+
+/vendor/bundle
