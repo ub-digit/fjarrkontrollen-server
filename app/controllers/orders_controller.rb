@@ -916,7 +916,7 @@ class OrdersController < ApplicationController
   end
 
   def export
-    send_file "#{Illbackend::Application.config.export[:dir]}orders.xls", type: "application/excel", disposition: "attachment"
+    send_file "#{Illbackend::Application.config.export[:dir]}orders.xlsx", type: "application/excel", disposition: "attachment"
   end
 
   private
