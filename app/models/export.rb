@@ -41,7 +41,7 @@ ORDER BY orders.created_at ASC;"
       p.workbook.add_worksheet(:name => 'Fjärrkontrollen - beställningar') do |sheet|
         sheet.add_row(result.columns.map{ |column| export_column_name_mappings(column) })
         result.rows.each do |row|
-          sheet.add_row(row)
+          sheet.add_row(row, types: [nil, :string])
         end
       end
       return p
