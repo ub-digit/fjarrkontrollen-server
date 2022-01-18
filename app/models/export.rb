@@ -15,6 +15,7 @@ class Export
   delivery_sources.name as delivery_source,
   orders.lending_library as lending_library,
   customer_types.name_sv as customer_type,
+  orders.koha_user_category as koha_user_category,
   delivery_methods.name as delivery_method,
   orders.journal_title as journal_title
 FROM
@@ -76,6 +77,8 @@ ORDER BY orders.created_at ASC;"
       return "Utlånande bibliotek"
     when "customer_type"
       return "Kundtyp"
+    when "koha_user_category"
+      return "Låntagarkategori i Koha"
     when "delivery_method"
       return "Leveransmetod"
     when "journal_title"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191024140623) do
+ActiveRecord::Schema.define(version: 20211129080423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,9 +147,9 @@ ActiveRecord::Schema.define(version: 20191024140623) do
     t.text     "librismisc"
     t.text     "invoicing_id"
     t.integer  "sticky_note_id"
-    t.string   "lending_library",                  limit: 255
     t.boolean  "is_archived"
     t.integer  "delivery_source_id"
+    t.string   "lending_library",                  limit: 255
     t.text     "loan_period"
     t.integer  "price"
     t.boolean  "to_be_invoiced"
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20191024140623) do
     t.integer  "customer_type_id"
     t.string   "authenticated_x_account"
     t.integer  "koha_borrowernumber"
+    t.string   "koha_user_category"
   end
 
   add_index "orders", ["customer_type_id"], name: "index_orders_on_customer_type_id", using: :btree
