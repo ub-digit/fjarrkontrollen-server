@@ -17,7 +17,10 @@ class Export
   customer_types.name_sv as customer_type,
   orders.koha_user_category as koha_user_category,
   delivery_methods.name as delivery_method,
-  orders.journal_title as journal_title
+  orders.journal_title as journal_title,
+  orders.issn_isbn as issn_isbn,
+  orders.publication_year as publication_year,
+  orders.volume as volume
 FROM
   public.orders
   LEFT JOIN pickup_locations
@@ -83,6 +86,12 @@ ORDER BY orders.created_at ASC;"
       return "Leveransmetod"
     when "journal_title"
       return "Tidskriftstitel"
+    when "issn_isbn"
+      return "ISSN / ISBN"
+    when "publication_year"
+      return "Publiceringsår"
+    when "volume"
+      return "Volym"
     else
       return ""
     end
