@@ -31,7 +31,7 @@ class Koha
       return {biblio_item: false, reserve: nil}
     end
 
-    mt = "a" #monograph
+    mt = "a" #monograph and microfilm
     mt = "c" if order.order_type_id && OrderType.find_by_id(order.order_type_id).label.eql?("score")
 
     userid = Illbackend::Application.config.koha[:userid]

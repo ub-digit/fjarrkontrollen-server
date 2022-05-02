@@ -319,7 +319,7 @@ class OrdersController < ApplicationController
       log_entries << "Status ändrades från #{Status.find_by_id(old_order[:status_id])[:name_sv]} till #{Status.find_by_id(new_order[:status_id])[:name_sv]}."
 
       if (new_order[:status_id] == Status.find_by_label("requested").id &&
-          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
+          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id], OrderType.find_by_label("microfilm")[:id]].include?(new_order[:order_type_id]) &&
           ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
           Illbackend::Application.config.koha[:write])
         res = Koha.create_bib_and_item new_order
@@ -340,7 +340,7 @@ class OrdersController < ApplicationController
       end
 
       if (new_order[:status_id] == Status.find_by_label("received").id &&
-          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
+          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id], OrderType.find_by_label("microfilm")[:id]].include?(new_order[:order_type_id]) &&
           ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
           Illbackend::Application.config.koha[:write])
         res = Koha.update_bib_and_item new_order
@@ -354,7 +354,7 @@ class OrdersController < ApplicationController
       # If new status is "returned" or "cancelled" and order type is loan or score and managing group of the order has a sublocation and 
       # system is configured to write to Koha, then try to delete items in Koha
       if ([Status.find_by_label("returned").id, Status.find_by_label("cancelled").id].include?(new_order[:status_id]) &&
-          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id]].include?(new_order[:order_type_id]) &&
+          [OrderType.find_by_label("loan")[:id], OrderType.find_by_label("score")[:id], OrderType.find_by_label("microfilm")[:id]].include?(new_order[:order_type_id]) &&
           ManagingGroup.find_by_id(new_order.managing_group_id).sublocation &&
           Illbackend::Application.config.koha[:write])
         res = Koha.delete_bib_and_item new_order.order_number
