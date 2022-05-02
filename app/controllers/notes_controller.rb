@@ -4,20 +4,17 @@ class NotesController < ApplicationController
   def index
     logger.info "NotesController#index: Begins"
     if params[:order_id]
-      @notes = Note
-        .where(order_id: params[:order_id])
-        .where(deleted_at: nil)
-        .order(created_at: :desc)
+      # Get sticky note if any
+      sticky_note_id = Order.find_by_id(params[:order_id]).sticky_note_id
+      notes = Note.where(id: sticky_note_id) + Note.where.not(id: sticky_note_id).where(order_id: params[:order_id]).where(deleted_at: nil).order(created_at: :desc)
     else
-      @notes = Note
-        .where(deleted_at: nil)
-        .order(created_at: :desc)
+      notes = Note.where(deleted_at: nil).order(created_at: :desc)
     end
     logger.info "NotesController#create: Ends"
-    render json: {notes: @notes}, status: 200
+    render json: {notes: notes}, status: 200
 
   rescue => error
-    logger.error "NotesController#index: Error creating a note:"
+    logger.error "NotesController#index: Error listing notes:"
     logger.error "#{error.inspect}"
     render json: {}, status: 500
   end
