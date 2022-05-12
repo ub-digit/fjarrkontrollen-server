@@ -3,9 +3,9 @@ namespace :order do
   task :clear_data, [:year] => :environment do |t, args|
     cleared_value = "Rensad data"
     anonymized_data = [:name, :company1, :company2, :company3, :phone_number, :email_address, :library_card_number,
-                         :invoicing_name, :invoicing_address, :invoicing_postal_address1, :invoicing_postal_address2, :user_id,
+                         :invoicing_name, :invoicing_address, :invoicing_postal_address1, :invoicing_postal_address2,
                          :delivery_address, :delivery_postal_code, :delivery_city, :x_account, :invoicing_company,
-                         :delivery_box, :delivery_comments, :authenticated_x_account, :koha_borrowernumber].map{|field|[field, cleared_value]}.to_h
+                         :delivery_box, :delivery_comments, :authenticated_x_account, :koha_borrowernumber].map{|field|[field, cleared_value]}.to_h.merge!(user_id: nil)
 
     orders = Order.where("orders.created_at < ?", args[:year].to_i.years.ago).joins(:status).where(statuses: {label: ["cancelled", "delivered", "returned"]})
     orders.update_all(anonymized_data)
