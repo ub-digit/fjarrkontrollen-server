@@ -15,7 +15,8 @@ namespace :order do
   desc "Set to cancel"
   task :set_cancel, [:year] => :environment do |t, args|
     cancelled_id = Status.find_by_label("cancelled")
-    Order.where("orders.created_at < ?", args[:year].to_i.years.ago).update_all(status_id: cancelled_id)
+    preserve_list = [Status.find_by_label("cancelled"), Status.find_by_label("returned"), Status.find_by_label("delivered")]
+    Order.where("orders.created_at < ?", args[:year].to_i.years.ago).where.not(status_id: preserve_list).update_all(status_id: cancelled_id)
   end
 end
 
