@@ -16,6 +16,7 @@ class Export
   orders.lending_library as lending_library,
   customer_types.name_sv as customer_type,
   orders.koha_user_category as koha_user_category,
+  orders.koha_organisation as koha_organisation,
   delivery_methods.name as delivery_method,
   orders.journal_title as journal_title,
   orders.issn_isbn as issn_isbn,
@@ -82,6 +83,8 @@ ORDER BY orders.created_at ASC;"
       return "Kundtyp"
     when "koha_user_category"
       return "Låntagarkategori i Koha"
+    when "koha_organisation"
+      return "Organisation i Koha"
     when "delivery_method"
       return "Leveransmetod"
     when "journal_title"

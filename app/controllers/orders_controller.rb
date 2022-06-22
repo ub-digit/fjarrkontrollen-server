@@ -976,6 +976,7 @@ class OrdersController < ApplicationController
       :authenticated_x_account,
       :koha_borrowernumber,
       :koha_user_category,
+      :koha_organisation,
       :comments,
       :form_lang,
       :invoicing_name,
