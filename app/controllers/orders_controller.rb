@@ -229,7 +229,7 @@ class OrdersController < ApplicationController
     logger.info "OrdersController#create: Ends"
     render json: {order: order}, status: 201
 
-  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+  rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => error
     logger.error "OrdersController#create: Error sending email:"
     logger.error "#{error.backtrace}"
     render json: {order: order}, status: 201
@@ -899,7 +899,7 @@ class OrdersController < ApplicationController
           logger.info "OrdersController#set_delivered: Email sent with no known exceptions from SMTP server."
 
           render json: {order: order}, status: 200
-        rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+        rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => error
           logger.error "Orders#set_delivered: Error sending email:"
           logger.error "#{error.backtrace}"
 

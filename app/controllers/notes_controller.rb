@@ -44,7 +44,7 @@ class NotesController < ApplicationController
       begin
         Mailer.send_message(order.order_number, subject, message, from, to).deliver_now
         logger.info "NotesController#create: Email sent with no known exceptions from SMTP server."
-      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => e
+      rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => error
         logger.error "NotesController#create: Error sending email:"
         logger.error "#{error.inspect}"
         render json: {}, status: 500
