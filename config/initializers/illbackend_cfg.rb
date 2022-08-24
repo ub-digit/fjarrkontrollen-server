@@ -2,11 +2,7 @@
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = {
    :address => ENV["ILL_SMTP_SERVER"],
-   :port => ENV["ILL_SMTP_PORT"],
-   :user_name => ENV["ILL_SMTP_USERNAME"],
-   :password => ENV["ILL_SMTP_PASSWORD"],
-   :authentication => ENV["ILL_SMTP_AUTH"],
-   :enable_starttls_auto => ENV["ILL_SMTP_ENABLE_STARTTLS_AUTO"]
+   :port => ENV["ILL_SMTP_PORT"]
 }
 ActionMailer::Base.raise_delivery_errors = true
 
