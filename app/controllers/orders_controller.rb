@@ -882,7 +882,7 @@ class OrdersController < ApplicationController
         }, status: 400
       else
         order.status = delivered_status
-        order.save!(validation: false)
+        order.save!(validate: false)
 
         email_template = EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect')
         from = order.pickup_location.email
