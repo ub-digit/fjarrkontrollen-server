@@ -882,7 +882,7 @@ class OrdersController < ApplicationController
         }, status: 400
       else
         order.status = delivered_status
-        order.save!(validation: false)
+        order.save!(validate: false)
 
         email_template = EmailTemplate.find_by_label('delivered_status_set_for_copies_to_collect')
         from = order.pickup_location.email
@@ -901,9 +901,15 @@ class OrdersController < ApplicationController
           render json: {order: order}, status: 200
         rescue Net::SMTPAuthenticationError, Net::SMTPServerBusy, Net::SMTPSyntaxError, Net::SMTPFatalError, Net::SMTPUnknownError => error
           logger.error "Orders#set_delivered: Error sending email:"
-          logger.error "#{error.backtrace}"
+          logger.error "#{error.inspect}"
 
-          render json: {}, status: 500
+          render json: {
+            errors: [{
+              status: "500",
+              title: "Kunde ej skicka mail, ett okänt fel inträffade",
+              detail: CGI::escapeHTML("#{error.inspect}")
+            }]
+          }, status: 500
         end
       end
     else
@@ -912,7 +918,13 @@ class OrdersController < ApplicationController
   rescue => error
     logger.error "OrdersController#set_delivered: Error setting status to delivered for Order id = #{params[:id]}"
     logger.error "#{error.inspect}"
-    render json: {}, status: 500
+    render json: {
+      errors: [{
+        status: "500",
+        title: "Ett okänt fel inträffade",
+        detail: CGI::escapeHTML("#{error.inspect}")
+      }]
+    }, status: 500
   end
 
   def export
