@@ -15,11 +15,13 @@ class ApplicationController < ActionController::Base
   private
 
   def get_token
-    if params[:token]
-      return params[:token]
-    elsif request.headers["Authorization"]
+    if request.headers["Authorization"]
       request.headers["Authorization"][/^Bearer (.*)/, 1]
     end
+  end
+
+  def get_secret_token
+    params[:token]
   end
 
   def validate_token
