@@ -231,6 +231,10 @@ class OrdersController < ApplicationController
       Mailer.confirmation(order).deliver_now
     end
 
+    logger.info "OrdersController#create: Creating note"
+    msg = "Ny order skapad.\nStatus satt till #{order.status.name_sv}."
+    Note.create({user_id: @current_user ? @current_user.id : nil, order_id: order.id, message: msg, is_email: false, note_type_id: NoteType.find_by_label('system').id})
+
     logger.info "OrdersController#create: Ends"
     render json: {order: order}, status: 201
 

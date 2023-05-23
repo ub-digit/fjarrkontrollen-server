@@ -1,12 +1,14 @@
 Illbackend::Application.routes.draw do
 
   resources :session
-  
+
   get "libris_info/neg_responses"
   get "libris_info/user_requests"
- 
+
   get "app_info/deployinfo"
   get "users/authorise"
+
+  get 'koha_patrons/:cardnumber' => 'koha_patrons#show'
 
   get 'users' => 'users#index'
   get 'users/:id' => 'users#show', :constraints => { :id => /[0-9]+/ }
