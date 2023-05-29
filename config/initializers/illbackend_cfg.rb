@@ -11,7 +11,7 @@ Illbackend::Application.config.email_settings = {
 }
 
 Illbackend::Application.config.librisill_settings = {
-  :base_url => "http://iller.libris.kb.se/librisfjarrlan/api/"
+  :base_url => ENV["ILL_LIBRISILL_BASE_URL"]
 }
 
 # Usage:
