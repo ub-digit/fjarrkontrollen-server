@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   # Change this when authentication in illforms is implemented!
-  before_action :validate_token, only: [:index, :update, :set_delivered, :show]
+  before_action :validate_token, only: [:index, :update, :set_delivered, :show, :show_by_order_number, :export]
   before_action :validate_secret_access_token, only: [:create]
 
   respond_to :json, :pdf
@@ -1019,11 +1019,7 @@ class OrdersController < ApplicationController
   end
 
   def validate_secret_access_token
-    if get_secret_token
-      if get_secret_token != APP_CONFIG['secret_access_token']
-        render json: {error: "Invalid secret"}, status: 401
-      end
-    else
+    if get_token != APP_CONFIG['secret_access_token']
       validate_token
     end
   end
