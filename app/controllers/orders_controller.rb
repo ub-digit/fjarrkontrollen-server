@@ -202,7 +202,12 @@ class OrdersController < ApplicationController
     # Set managing group based on loan type
     order.set_managing_group
 
-    if order.save!
+    if @current_user
+      order.order_path = 'Staff'
+    end
+
+    # Only validate if created by forms
+    if order.save!(validate: !@current_user)
       logger.info "OrdersController#update: Object successfully saved."
       headers['pickup_location'] = "/orders/#{order.id}"
       status = 201
@@ -221,10 +226,14 @@ class OrdersController < ApplicationController
     order.update_attribute(:order_number, order_number)
 
     # Send mail to customer if email address is given.
-    if order.email_address
+    if order.email_address #Skip mail if created by staff?
       logger.info("OrdersController#create: Sending email to customer")
       Mailer.confirmation(order).deliver_now
     end
+
+    logger.info "OrdersController#create: Creating note"
+    msg = "Ny order skapad.\nStatus satt till #{order.status.name_sv}."
+    Note.create({user_id: @current_user ? @current_user.id : nil, order_id: order.id, message: msg, is_email: false, note_type_id: NoteType.find_by_label('system').id})
 
     logger.info "OrdersController#create: Ends"
     render json: {order: order}, status: 201
@@ -1010,9 +1019,12 @@ class OrdersController < ApplicationController
   end
 
   def validate_secret_access_token
-    access_token = APP_CONFIG['secret_access_token']
-    if get_token != access_token
-      render json: {error: "Invalid secret"}, status: 401
+    if get_secret_token
+      if get_secret_token != APP_CONFIG['secret_access_token']
+        render json: {error: "Invalid secret"}, status: 401
+      end
+    else
+      validate_token
     end
   end
 end

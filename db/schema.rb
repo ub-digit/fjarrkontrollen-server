@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220622084021) do
+ActiveRecord::Schema.define(version: 20230519143544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,13 +95,16 @@ ActiveRecord::Schema.define(version: 20220622084021) do
   add_index "notes", ["order_id"], name: "index_notes_on_order_id", using: :btree
 
   create_table "order_types", force: :cascade do |t|
-    t.string   "name_sv",       limit: 255
-    t.string   "name_en",       limit: 255
+    t.string   "name_sv",                   limit: 255
+    t.string   "name_en",                   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "label",         limit: 255
-    t.boolean  "auth_required",             default: true, null: false
+    t.string   "label",                     limit: 255
+    t.boolean  "auth_required",                         default: true, null: false
+    t.integer  "default_managing_group_id"
   end
+
+  add_index "order_types", ["default_managing_group_id"], name: "index_order_types_on_default_managing_group_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
     t.integer  "order_type_id"
@@ -222,6 +225,7 @@ ActiveRecord::Schema.define(version: 20220622084021) do
     t.integer  "managing_group_id"
   end
 
+  add_foreign_key "order_types", "managing_groups", column: "default_managing_group_id"
   add_foreign_key "orders", "customer_types"
   add_foreign_key "orders", "pickup_locations", name: "orders_location_id_fkey"
   add_foreign_key "orders", "statuses", name: "orders_status_id_fkey"
