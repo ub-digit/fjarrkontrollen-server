@@ -68,6 +68,8 @@ class KohaPatronsController < ApplicationController
 
     if xml.search('//response/attributes[code="ORG"]/attribute').text.present?
       patron['organisation'] = xml.search('//response/attributes[code="ORG"]/attribute').text
+    else
+      patron['organisation'] = ""
     end
 
   patron
