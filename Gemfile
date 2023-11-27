@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1.7.6'
+gem 'rails', '7.1.2'
 
-gem 'puma', '~> 4.3'
+gem 'puma', '~> 6.4'
 
 gem 'rack-cors'
 
@@ -65,7 +65,7 @@ gem 'caxlsx'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'
-  gem "factory_girl_rails"
+  gem "factory_bot_rails"
 end
 
 group :test do
