@@ -1,5 +1,5 @@
 class DeliveryMethodsController < ApplicationController
-  #before_filter :validate_token
+  #before_action :validate_token
   def index
     objs = DeliveryMethod.all
     if objs
