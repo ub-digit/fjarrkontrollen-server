@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11.3'
+gem 'rails', '5.2.8'
 
 gem 'puma', '~> 4.3'
 
@@ -30,7 +30,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder', '~> 2.11'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -38,6 +38,7 @@ group :doc do
 end
 
 group :development do
+  gem 'listen'
 end
 
 gem 'active_model_serializers'

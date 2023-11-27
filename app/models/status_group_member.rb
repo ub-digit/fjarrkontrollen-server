@@ -1,4 +1,4 @@
-class StatusGroupMember < ActiveRecord::Base
+class StatusGroupMember < ApplicationRecord
   belongs_to :status
   belongs_to :status_group
 

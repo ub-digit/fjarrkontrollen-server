@@ -1,4 +1,4 @@
-class ManagingGroup < ActiveRecord::Base
+class ManagingGroup < ApplicationRecord
   has_many :orders
   has_many :users
 

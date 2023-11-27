@@ -1,4 +1,4 @@
-class CustomerType < ActiveRecord::Base
+class CustomerType < ApplicationRecord
   has_many :orders
 
   validates_presence_of :label
