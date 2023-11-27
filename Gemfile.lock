@@ -95,13 +95,6 @@ GEM
       marcel (~> 1.0)
       nokogiri (~> 1.10, >= 1.10.4)
       rubyzip (>= 1.3.0, < 3)
-    coffee-rails (5.0.0)
-      coffee-script (>= 2.2.0)
-      railties (>= 5.2.0)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
     crack (0.4.5)
@@ -113,7 +106,6 @@ GEM
     drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
-    execjs (2.9.1)
     factory_bot (6.4.2)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.2)
@@ -262,16 +254,6 @@ GEM
     rspec-support (3.9.4)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     sdoc (2.6.1)
       rdoc (>= 5.0)
     shoulda (4.0.0)
@@ -280,18 +262,10 @@ GEM
     shoulda-context (2.0.0)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
-    sprockets (4.2.1)
-      concurrent-ruby (~> 1.0)
-      rack (>= 2.2.4, < 4)
-    sprockets-rails (3.4.2)
-      actionpack (>= 5.2)
-      activesupport (>= 5.2)
-      sprockets (>= 3.0.0)
     sqlite3 (1.6.9)
       mini_portile2 (~> 2.8.0)
     stringio (3.0.9)
     thor (1.3.0)
-    tilt (2.3.0)
     timeout (0.4.1)
     ttfunk (1.7.0)
     turbolinks (5.2.1)
@@ -299,8 +273,6 @@ GEM
     turbolinks-source (5.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     webmock (3.19.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -320,7 +292,6 @@ DEPENDENCIES
   auto_strip_attributes
   barby
   caxlsx
-  coffee-rails
   factory_bot_rails
   jbuilder (~> 2.11)
   listen
@@ -335,12 +306,10 @@ DEPENDENCIES
   responders
   rest-client
   rspec-rails (~> 3.6)
-  sass-rails
   sdoc
   shoulda
   sqlite3
   turbolinks
-  uglifier (>= 1.3.0)
   webmock
   will_paginate
 
