@@ -1,5 +1,5 @@
 class KohaPatronsController < ApplicationController
-  before_filter :validate_token
+  before_action :validate_token
 
   def parse_patron(response_body)
     patron = {

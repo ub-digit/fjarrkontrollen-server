@@ -1,5 +1,5 @@
 class DeliverySourcesController < ApplicationController
-  before_filter :validate_token
+  before_action :validate_token
   def index
     objs = DeliverySource.all.order(:position)
     if objs
