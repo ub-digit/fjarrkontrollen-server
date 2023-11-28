@@ -275,7 +275,7 @@ class OrdersController < ApplicationController
     if order
       logger.info "OrdersController#update: Object is valid, now updating it..."
       logger.info "OrdersController#update: order: #{params[:order]}"
-      order.update_attributes(permitted_params)
+      order.update(permitted_params)
       logger.info "OrdersController#update: Just updated attributes, now saving..."
 
       if order.save!(validate: false)
