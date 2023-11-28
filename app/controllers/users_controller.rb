@@ -71,7 +71,7 @@ class UsersController < ApplicationController
     user = User.find_by_id(user_id)
     # TBD: check user
     if user
-      user.update_attributes(permitted_params)
+      user.update(permitted_params)
       if user.save!
         logger.info "UsersController#update: User successfully saved."
         status = 200

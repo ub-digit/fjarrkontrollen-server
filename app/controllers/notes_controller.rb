@@ -103,7 +103,7 @@ class NotesController < ApplicationController
     if obj
       logger.info "NotesController#update: Object is valid, now updating it..."
       logger.info "NotesController#update: notes: #{params[:order]}"
-      obj.update_attributes(permitted_params)
+      obj.update(permitted_params)
       logger.info "NotessController#update: Just updated attributes, now saving..."
 
       if obj.save!
@@ -143,7 +143,7 @@ class NotesController < ApplicationController
     note = Note.find_by_id(params[:id])
 
     if note.present?
-      note.update_attributes({deleted_at: DateTime.now, deleted_by: @current_user.xkonto})
+      note.update({deleted_at: DateTime.now, deleted_by: @current_user.xkonto})
       render json: {}, status: 200
     else
       render json: {}, status: 404
