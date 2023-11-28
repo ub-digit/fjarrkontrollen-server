@@ -7,7 +7,7 @@ namespace :libris_info do
       if order.libris_lf_number && order.status_id == Status.find_by_label('requested').id && order.delivery_source_id == DeliverySource.find_by_label('libris').id
         lf_number = order.libris_lf_number
         puts "lf_number:" + lf_number
-        if LibrisILL.negative_response?(lf_number)
+        if LibrisIll.negative_response?(lf_number)
           # Get old status, for logging
           old_status = order.status_id
           # Set status to Negativt svar från Libris
@@ -27,7 +27,7 @@ namespace :libris_info do
     pickup_locations.each do |pickup_location|
       pickup_location_id = pickup_location.id
       library_code = pickup_location.label
-      resp = LibrisILL.get_user_requests library_code
+      resp = LibrisIll.get_user_requests library_code
 
       # Get any Libris end user request for this library
       if resp["user_requests"]
