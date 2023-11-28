@@ -1,36 +1,23 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11.3'
+gem 'rails', '7.1.2'
 
-gem 'puma', '~> 4.3'
+gem 'puma', '~> 6.4'
 
 gem 'rack-cors'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
-gem 'pg', '~> 0.15'
-
-# Use SCSS for stylesheets
-gem 'sass-rails'
-
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
-
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer', :platform => :ruby
-
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
+gem 'sqlite3' #@TODO: Remove this?
+gem 'pg', '~> 1.1'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
+gem 'matrix'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder', '~> 2.11'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -38,6 +25,7 @@ group :doc do
 end
 
 group :development do
+  gem 'listen'
 end
 
 gem 'active_model_serializers'
@@ -65,7 +53,7 @@ gem 'caxlsx'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'
-  gem "factory_girl_rails"
+  gem "factory_bot_rails"
 end
 
 group :test do

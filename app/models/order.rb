@@ -51,7 +51,7 @@ class InvoicingDetailsValidator < ActiveModel::Validator
   end
 end
 
-class Order < ActiveRecord::Base
+class Order < ApplicationRecord
   auto_strip_attributes :libris_lf_number
   nilify_blanks
 

@@ -1,4 +1,4 @@
-class OrderType < ActiveRecord::Base
+class OrderType < ApplicationRecord
   has_many :orders
   belongs_to :default_managing_group, class_name: "ManagingGroup"
 

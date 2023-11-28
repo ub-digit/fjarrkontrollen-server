@@ -40,7 +40,7 @@ FROM
     ON delivery_methods.id = orders.delivery_method_id
 ORDER BY orders.created_at ASC;"
 
-    result = ActiveRecord::Base.connection.exec_query(query)
+    result = ApplicationRecord.connection.exec_query(query)
 
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(:name => 'Fjärrkontrollen - beställningar') do |sheet|
