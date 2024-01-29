@@ -48,5 +48,8 @@ namespace :delivery_sources do
 
     delivery_source = DeliverySource.find_by(label: 'bibsys')
     delivery_source.update(position: 140)
+
+    delivery_source = DeliverySource.find_by(label: 'blld')
+    delivery_source.update(position: 150)
   end
 end
