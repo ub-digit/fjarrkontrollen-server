@@ -22,6 +22,17 @@ class OrdersController < ApplicationController
 
 
   def index
+    # Special case for barcode, only ever returns one
+    if params[:order_number]
+      order = Order.find_by_order_number(params[:order_number])
+      if order
+        render json: {order: order}, status: 200
+      else
+        render json: {}, status: 404
+      end
+      return
+    end
+
     pagination = {}
     query = {}
 
