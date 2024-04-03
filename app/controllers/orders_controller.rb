@@ -22,6 +22,17 @@ class OrdersController < ApplicationController
 
 
   def index
+    # Special case for barcode, only ever returns one
+    if params[:order_number]
+      order = Order.find_by_order_number(params[:order_number])
+      if order
+        render json: {order: order}, status: 200
+      else
+        render json: {}, status: 404
+      end
+      return
+    end
+
     pagination = {}
     query = {}
 
@@ -849,45 +860,45 @@ class OrdersController < ApplicationController
 
       if order.order_type.blank? || !['photocopy', 'photocopy_chapter'].include?(order.order_type.label)
         render json: {
-          errors: {
+          errors: [{
             error: "Fel ordertyp",
             message: "Order <b>#{order.order_number}</b> har en annan typ än kopia av artikel eller kapitel."
-          }
+          }]
         }, status: 400
       elsif @current_user.pickup_location_id.blank?
         render json: {
-          errors: {
+          errors: [{
             error: "Användare saknar avhämtningsbibliotek",
             message: "Avhämtningsbibliotek saknas för den nuvarande användaren."
-          }
+          }]
         }, status: 400
       elsif order.pickup_location_id.blank?
         render json: {
-          errors: {
+          errors: [{
             error: "Order saknar avhämtningsbibliotek",
             message: "Avhämtningsbibliotek saknas på order <b>#{order.order_number}</b>."
-          }
+          }]
         }, status: 400
       elsif @current_user.pickup_location_id != order.pickup_location_id
         render json: {
-          errors: {
+          errors: [{
             error: "Fel avhämtningsbibliotek",
             message: "Order <b>#{order.order_number}</b> har ej samma avhämtningsbibliotek som nuvarande användare."
-          }
+          }]
         }, status: 400
       elsif delivered_status.id == order.status_id
         render json: {
-          errors: {
+          errors: [{
             error: "Status redan satt",
             message: "Order status är redan satt till levererad för order <b>#{order.order_number}</b>."
-          }
+          }]
         }, status: 400
       elsif order.email_address.blank?
         render json: {
-          errors: {
+          errors: [{
             error: "Låntagare saknar e-postaddress",
             message: "Låntagare saknar e-postaddress för order <b>#{order.order_number}</b>."
-          }
+          }]
         }, status: 400
       else
         order.status = delivered_status
