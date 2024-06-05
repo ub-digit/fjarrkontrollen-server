@@ -1,5 +1,5 @@
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
    include ActiveModel::Validations
 DEFAULT_TOKEN_EXPIRE = 1.day
 # superfluous comment

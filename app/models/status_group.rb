@@ -1,4 +1,4 @@
-class StatusGroup < ActiveRecord::Base
+class StatusGroup < ApplicationRecord
   has_many :status_group_members
   has_many :statuses, :through => :status_group_members
 

@@ -1,5 +1,5 @@
 class EmailTemplatesController < ApplicationController
-  before_filter :validate_token
+  before_action :validate_token
 
 
 
@@ -71,7 +71,7 @@ class EmailTemplatesController < ApplicationController
     if template
       logger.info "EmailTemplatesController#update: Object is valid, now updating it..."
       logger.info "EmailTemplatesController#update: EmailTemplate: #{params[:template]}"
-      template.update_attributes(permitted_params)
+      template.update(permitted_params)
       logger.info "EmailTemplatesController#update: Just updated attributes, now saving..."
 
       if template.save!(validate: false)

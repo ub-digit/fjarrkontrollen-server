@@ -1,5 +1,4 @@
-Illbackend::Application.routes.draw do
-
+Rails.application.routes.draw do
   resources :session
 
   get "libris_info/neg_responses"
