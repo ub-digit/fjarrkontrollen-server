@@ -1,14 +1,14 @@
 class SessionController < ApplicationController
   def create
     if params[:code]
-      uri = 'https://github.com/login/oauth/access_token'
+      uri = URI(APP_CONFIG['oauth2']['token_endpoint'])
       body = {
         "client_id" => APP_CONFIG['oauth2']['client_id'],
         "client_secret" => APP_CONFIG['oauth2']['client_secret'],
         "code" => params[:code]
       }
       response = Net::HTTP.post(
-        URI(uri),
+        uri,
         body.to_json,
         'content-type' => 'application/json',
         'accept' => 'application/json'
@@ -18,7 +18,7 @@ class SessionController < ApplicationController
         json_response = JSON.parse(response.body)
         if json_response["access_token"]
           token = json_response["access_token"]
-          uri = URI('https://api.github.com/user')
+          uri = URI(APP_CONFIG['oauth2']['user_endpoint'])
           response = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) {|http|
             request = Net::HTTP::Get.new(uri)
             #/vnd.github?
