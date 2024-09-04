@@ -34,7 +34,6 @@ class SessionController < ApplicationController
             json_response = JSON.parse(response.body)
             if json_response["login"]
               username = json_response["login"]
-              username = 'xg00625'
               user = User.find_by_xkonto(username)
               if user
                 token_object = user.generate_token()
