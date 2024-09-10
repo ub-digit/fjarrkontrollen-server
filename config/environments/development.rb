@@ -76,4 +76,14 @@ Rails.application.configure do
 
   # Fix cors issues after upgrade
   config.action_controller.forgery_protection_origin_check = false
+
+  # Fix Blocked hosts error after upgrade
+  # Should be:
+  # config.hosts = [
+  # IPAddr.new("0.0.0.0/0"), # All IPv4 addresses.
+  #IPAddr.new("::/0"),      # All IPv6 addresses.
+  # "localhost"              # The localhost reserved domain.
+  #]
+  # by default so don't really get why need to do this
+  config.hosts.clear
 end
