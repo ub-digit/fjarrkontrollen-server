@@ -58,7 +58,7 @@ class Order < ApplicationRecord
   has_many :notes
   belongs_to :user, optional: true
   has_many :users, :through => :notes
-  belongs_to :pickup_location
+  belongs_to :pickup_location, optional: true
   belongs_to :managing_group
   belongs_to :status
   belongs_to :order_type
