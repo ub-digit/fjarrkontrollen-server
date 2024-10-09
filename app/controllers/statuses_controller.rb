@@ -1,5 +1,5 @@
 class StatusesController < ApplicationController
-  before_filter :validate_token
+  before_action :validate_token
 
   def index
     objs = Status.all.order(:position)

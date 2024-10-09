@@ -1,5 +1,5 @@
 class KohaPatronsController < ApplicationController
-  before_filter :validate_token
+  before_action :validate_token
 
   def parse_patron(response_body)
     patron = {
@@ -92,7 +92,8 @@ end
       render json: {}, status: 404
     rescue RestClient::ExceptionWithResponse => error
       logger.error "KohaPatronsController#show: Error requesting patron info"
-      logger.error "#{error.backtrace}"
+      logger.error "#{error.message}"
+      logger.error "#{url}"
       render json: {}, status: 500
     end
   end

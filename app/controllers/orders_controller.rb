@@ -218,17 +218,16 @@ class OrdersController < ApplicationController
     end
 
     # Only validate if created by forms
-    if order.save!(validate: !@current_user)
-      logger.info "OrdersController#update: Object successfully saved."
-      headers['pickup_location'] = "/orders/#{order.id}"
-      status = 201
-      logger.info "==== Here is Header Info ==================="
-      logger.info "#{headers['pickup_location']}"
-      logger.info "============================================"
-      logger.info "==== Here is json for the created orderect ==="
-      logger.info "#{order.as_json}"
-      logger.info "============================================"
-    end
+    order.save!(validate: !@current_user)
+    logger.info "OrdersController#update: Object successfully saved."
+    headers['pickup_location'] = "/orders/#{order.id}"
+    status = 201
+    logger.info "==== Here is Header Info ==================="
+    logger.info "#{headers['pickup_location']}"
+    logger.info "============================================"
+    logger.info "==== Here is json for the created orderect ==="
+    logger.info "#{order.as_json}"
+    logger.info "============================================"
 
     logger.info "OrdersController#create: Creating an new order number"
     id = order[:id]
@@ -253,7 +252,10 @@ class OrdersController < ApplicationController
     logger.error "OrdersController#create: Error sending email:"
     logger.error "#{error.backtrace}"
     render json: {order: order}, status: 201
-
+  rescue ActiveRecord::RecordInvalid => invalid
+    logger.error "OrdersController#create: Invalid order:"
+    logger.error invalid.record.errors
+    render json: {}, status: 400
   rescue => error
     logger.error "OrdersController#create: Error creating an order:"
     logger.error "#{error.backtrace}"
@@ -275,7 +277,7 @@ class OrdersController < ApplicationController
     if order
       logger.info "OrdersController#update: Object is valid, now updating it..."
       logger.info "OrdersController#update: order: #{params[:order]}"
-      order.update_attributes(permitted_params)
+      order.update(permitted_params)
       logger.info "OrdersController#update: Just updated attributes, now saving..."
 
       if order.save!(validate: false)

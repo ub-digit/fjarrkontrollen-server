@@ -1,5 +1,5 @@
 class ManagingGroupsController < ApplicationController
-  before_filter :validate_token
+  before_action :validate_token
   # Find all managing_group and show them.
   def index
     objs = ManagingGroup.all.order(:position)

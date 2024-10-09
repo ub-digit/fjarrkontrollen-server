@@ -1,4 +1,4 @@
-class NoteType < ActiveRecord::Base
+class NoteType < ApplicationRecord
   has_many :notes
 
   validates_presence_of :label

@@ -1,8 +1,8 @@
 
-class User < ActiveRecord::Base
-   include ActiveModel::Validations
-DEFAULT_TOKEN_EXPIRE = 1.day
-# superfluous comment
+class User < ApplicationRecord
+  include ActiveModel::Validations
+  DEFAULT_TOKEN_EXPIRE = 1.day
+  # superfluous comment
   has_many :orders
   has_many :notes
   has_many :orders, :through => :notes
@@ -10,25 +10,8 @@ DEFAULT_TOKEN_EXPIRE = 1.day
   belongs_to :pickup_location
   has_many :access_tokens
 
-
   validates :xkonto, :name, presence: true
-  validates_uniqueness_of :xkonto 
-
-  def authenticate(provided_password)
-    uri = URI('https://login-server.ub.gu.se/auth/' + xkonto)
-    params = { :password => provided_password}
-    params[:service] = 'test' if Rails.env == 'test'
-    uri.query = URI.encode_www_form(params)
-    res = Net::HTTP.get_response(uri)
-    json_response = JSON.parse(res.body) if res.is_a?(Net::HTTPSuccess)
-    #puts json_response["auth"]["yesno"]
-
-    if(json_response["auth"]["yesno"])
-      token_object = generate_token
-      return token_object.token
-    end
-    false
-  end
+  validates_uniqueness_of :xkonto
 
   def generate_token
     access_tokens.create(token: SecureRandom.hex, token_expire: Time.now + DEFAULT_TOKEN_EXPIRE)

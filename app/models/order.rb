@@ -51,18 +51,18 @@ class InvoicingDetailsValidator < ActiveModel::Validator
   end
 end
 
-class Order < ActiveRecord::Base
+class Order < ApplicationRecord
   auto_strip_attributes :libris_lf_number
   nilify_blanks
 
   has_many :notes
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many :users, :through => :notes
-  belongs_to :pickup_location
+  belongs_to :pickup_location, optional: true
   belongs_to :managing_group
   belongs_to :status
   belongs_to :order_type
-  belongs_to :delivery_source
+  belongs_to :delivery_source, optional: true
   belongs_to :delivery_method
   belongs_to :customer_type
 
