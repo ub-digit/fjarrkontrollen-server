@@ -12,6 +12,7 @@ Illbackend::Application.config.email_settings = {
 
 Illbackend::Application.config.librisill_settings = {
   :base_url => ENV["ILL_LIBRISILL_BASE_URL"]
+  :api_key => ENV["ILL_LIBRISILL_API_KEY"]
 }
 
 # Usage:
