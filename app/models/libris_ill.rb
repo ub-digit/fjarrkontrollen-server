@@ -1,8 +1,11 @@
 class LibrisIll
 
   # Takes a Libris LF Number and returns an order in Libris fjärrlån
+  ## This method is not used?
   def self.get_order lf_number
-    response = RestClient.get Illbackend::Application.config.librisill_settings[:base_url] + "illrequests/G/" + lf_number
+    url = Illbackend::Application.config.librisill_settings[:base_url] + "illrequests/G/" + lf_number
+    headers = {"api-key" => Illbackend::Application.config.librisill_settings[:api_key]}
+    response = RestClient.get url, headers
     if response.code == 200
       json_response = JSON.parse(response)
   	  return json_response["ill_requests"][0]
@@ -15,7 +18,9 @@ class LibrisIll
   def self.negative_response? lf_number
     Rails.logger.info "Entering LibrisIll#negative_response?, lf_number: #{lf_number}"
     begin
-      response = RestClient.get Illbackend::Application.config.librisill_settings[:base_url] + "illrequests/G/" + lf_number
+      url = Illbackend::Application.config.librisill_settings[:base_url] + "illrequests/G/" + lf_number
+      headers = {"api-key" => Illbackend::Application.config.librisill_settings[:api_key]}
+      response = RestClient.get url, headers
       if response.code == 200
         json_response = JSON.parse(response)
   	    if json_response["count"].to_i > 0
@@ -32,7 +37,9 @@ class LibrisIll
   end
 
   def self.get_user_requests library_code
-    response = RestClient.get Illbackend::Application.config.librisill_settings[:base_url] + "userrequests/" + library_code
+    url = Illbackend::Application.config.librisill_settings[:base_url] + "userrequests/" + library_code
+    headers = {"api-key" => Illbackend::Application.config.librisill_settings[:api_key]}
+    response = RestClient.get url, headers
     if response.code == 200
       json_response = JSON.parse(response)
       return json_response
