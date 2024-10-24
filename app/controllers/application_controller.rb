@@ -6,11 +6,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
 #
-# Aktivera autentiseringen för resp. action (before_filter :validate_token, :only => [...])
+# Aktivera autentiseringen för resp. action (before_action :validate_token, :only => [...])
 #
 # T.ex.
-# before_filter :validate_token, only: [:create, :update]
-  ##before_filter :validate_token
+# before_action :validate_token, only: [:create, :update]
+  ##before_action :validate_token
 
   private
 

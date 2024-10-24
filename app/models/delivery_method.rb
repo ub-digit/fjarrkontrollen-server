@@ -1,4 +1,4 @@
-class DeliveryMethod < ActiveRecord::Base
+class DeliveryMethod < ApplicationRecord
   has_many :orders
 
   validates_presence_of :label
