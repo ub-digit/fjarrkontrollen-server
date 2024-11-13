@@ -1,6 +1,6 @@
 class OrderTypesController < ApplicationController
   def index
-    objs = OrderType.all
+    objs = OrderType.all.order(:position)
     if objs
       render json: {order_types: objs}, status: 200
     else
