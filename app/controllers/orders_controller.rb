@@ -993,7 +993,9 @@ class OrdersController < ApplicationController
       :price,
       :to_be_invoiced,
       :publication_type,
-      :period
+      :period,
+      :article_identifier,
+      :article_identifier_source
     ]
   end
   def customer_attributes
