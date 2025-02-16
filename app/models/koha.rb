@@ -36,7 +36,7 @@ class Koha
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, borrowernumber: borrowernumber, pickup_location: pickup_location}
+    params = {login_userid: userid, login_password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, borrowernumber: borrowernumber, pickup_location: pickup_location}
     response = RestClient.get Illbackend::Application.config.koha[:create_bib_and_item_url], :params => params
 
     if response.code != 200
@@ -111,7 +111,7 @@ class Koha
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, itype: itype}
+    params = {login_userid: userid, login_password: password, branch: branch, location: location, au: au, ti: ti, yr: yr, isbn: isbn, ll: ll, mt: mt, item: item, itype: itype}
     response = RestClient.get Illbackend::Application.config.koha[:update_bib_and_item_url], :params => params
 
     if response.code != 200
@@ -135,7 +135,7 @@ class Koha
 
     userid = Illbackend::Application.config.koha[:userid]
     password = Illbackend::Application.config.koha[:password]
-    params = {userid: userid, password: password, item: order_number}
+    params = {login_userid: userid, login_password: password, item: order_number}
     response = RestClient.get Illbackend::Application.config.koha[:delete_bib_and_item_url], :params => params
 
     if response.code != 200
