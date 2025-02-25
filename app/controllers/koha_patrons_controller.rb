@@ -82,7 +82,7 @@ end
     base_url = APP_CONFIG['koha']['base_url']
     user = APP_CONFIG['koha']['user']
     password = APP_CONFIG['koha']['password']
-    url = "#{base_url}/members/get?borrower=#{cardnumber}&userid=#{user}&password=#{password}"
+    url = "#{base_url}/members/get?borrower=#{cardnumber}&login_userid=#{user}&login_password=#{password}"
 
     begin
       response = RestClient.get url
