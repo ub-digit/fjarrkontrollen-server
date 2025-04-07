@@ -6,8 +6,8 @@ class User < ApplicationRecord
   has_many :orders
   has_many :notes
   has_many :orders, :through => :notes
-  belongs_to :managing_group
-  belongs_to :pickup_location
+  belongs_to :managing_group, optional: true
+  belongs_to :pickup_location, optional: true
   has_many :access_tokens
 
   validates :xkonto, :name, presence: true
