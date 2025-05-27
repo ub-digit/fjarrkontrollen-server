@@ -51,6 +51,7 @@ gem 'barby'
 gem 'will_paginate'
 gem 'responders'
 gem 'caxlsx'
+gem 'rails_semantic_logger'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'
