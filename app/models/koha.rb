@@ -66,8 +66,8 @@ class Koha
     Rails.logger.info "Leaving Koha#create_bib_and_item, success, reserve success"
     return {biblio_item: true, reserve: "success"}
 
-  rescue RestClient::ResourceNotFound, RestClient::BadRequest, URI::InvalidURIError => e
-    Rails.logger.error "Leaving Koha#create_bib_and_item, exception: #{e}"
+  rescue RestClient::ExceptionWithResponse => e
+    Rails.logger.error "Leaving Koha#create_bib_and_item, exception: #{e.response}"
     return {biblio_item: false, reserve: nil}
   end
 
@@ -125,8 +125,8 @@ class Koha
     Rails.logger.info "Leaving Koha#update_bib_and_item, success"
     return true
 
-  rescue RestClient::ResourceNotFound, RestClient::BadRequest, URI::InvalidURIError => e
-    Rails.logger.error "Leaving Koha#update_bib_and_item, exception: #{e}"
+  rescue RestClient::ExceptionWithResponse => e
+    Rails.logger.error "Leaving Koha#update_bib_and_item, exception: #{e.response}"
     return false
   end
 
@@ -149,8 +149,8 @@ class Koha
     Rails.logger.info "Leaving Koha#delete_bib_and_item, success"
     return true
 
-  rescue RestClient::ResourceNotFound, RestClient::BadRequest, URI::InvalidURIError => e
-    Rails.logger.error "Leaving Koha#delete_bib_and_item, exception: #{e}"
+  rescue RestClient::ExceptionWithResponse => e
+    Rails.logger.error "Leaving Koha#delete_bib_and_item, exception: #{e.response}"
     return false
   end
 end
