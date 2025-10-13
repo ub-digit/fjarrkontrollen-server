@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_13_164205) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_26_110804) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,29 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_13_164205) do
     t.datetime "token_expire", precision: nil
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
+  end
+
+  create_table "batch_imports", force: :cascade do |t|
+    t.integer "batch_id"
+    t.integer "order_id"
+    t.string "request_id"
+    t.string "article_title"
+    t.string "journal_title"
+    t.string "issn"
+    t.string "publication_year"
+    t.string "volume"
+    t.string "pages"
+    t.string "issue"
+    t.text "authors"
+    t.string "item_identifier"
+    t.string "item_identifier_source"
+    t.text "error"
+    t.datetime "imported_at"
+    t.boolean "processed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["batch_id"], name: "index_batch_imports_on_batch_id"
+    t.index ["request_id"], name: "index_batch_imports_on_request_id"
   end
 
   create_table "customer_types", id: :serial, force: :cascade do |t|
@@ -169,6 +192,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_13_164205) do
     t.integer "koha_borrowernumber"
     t.string "koha_user_category"
     t.string "koha_organisation"
+    t.string "article_identifier"
+    t.string "article_identifier_source"
     t.index ["customer_type_id"], name: "index_orders_on_customer_type_id"
   end
 
