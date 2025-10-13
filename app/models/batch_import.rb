@@ -9,6 +9,7 @@ class BatchImport < ApplicationRecord
       success: options[:success] || false,
     }
   end
+
   # String in vancouver style from database id
   def as_vancouver
     if self.error.present?
@@ -248,5 +249,70 @@ class BatchImport < ApplicationRecord
     db_ready[:item_identifier] = data["id"] || ""
     db_ready[:item_identifier_source] = "scopus"
     return db_ready
+  end
+
+  # {"batchId"=>nil, "orderListIds"=>"sadf", "allItems"=>"[]", "itemsFailed"=>"", "errors"=>"[]", "pickupLocationId"=>"7", "name"=>nil, "company1"=>nil, "company2"=>nil, "company3"=>nil, "emailAddress"=>nil, "xAccount"=>"adsf", "authenticatedXAccount"=>nil, "customerTypeId"=>"1", "deliveryMethodId"=>"2", "invoicingName"=>nil, "invoicingCompany"=>nil, "invoicingAddress"=>nil, "invoicingPostalAddress1"=>nil, "invoicingPostalAddress2"=>nil, "invoicingId"=>nil, "deliveryAddress"=>nil, "deliveryBox"=>nil, "deliveryPostalCode"=>nil, "deliveryCity"=>nil, "deliveryComments"=>nil},
+
+  # Assume a hash with string keys in camelCase, convert to symbol keys and snake_case.
+  # "allItems" and "errors" must also be JSON-parsed because they are sent as strings with stringified arrays.
+  # Some names are changed.
+  def self.to_local_params(params)
+    new = {}
+    new[:batch_id] = params["batchId"]
+    new[:request_ids] = params["orderListIds"]
+    new[:all_items] = params["allItems"].present? ? JSON.parse(params["allItems"], symbolize_names: true) : []
+    new[:items_failed] = params["itemsFailed"]
+    new[:errors] = params["errors"].present? ? JSON.parse(params["errors"], symbolize_names: true) : []
+    new[:pickup_location_id] = params["pickupLocationId"].to_i
+    new[:name] = params["name"]
+    new[:company1] = params["company1"]
+    new[:company2] = params["company2"]
+    new[:company3] = params["company3"]
+    new[:email_address] = params["emailAddress"]
+    new[:x_account] = params["xAccount"]
+    new[:authenticated_x_account] = params["authenticatedXAccount"]
+    new[:customer_type_id] = params["customerTypeId"].to_i
+    new[:delivery_method_id] = params["deliveryMethodId"].to_i
+    new[:invoicing_name] = params["invoicingName"]
+    new[:invoicing_address] = params["invoicingAddress"]
+    new[:invoicing_postal_address1] = params["invoicingPostalAddress1"]
+    new[:invoicing_postal_address2] = params["invoicingPostalAddress2"]
+    new[:invoicing_id] = params["invoicingId"]
+    new[:delivery_address] = params["deliveryAddress"]
+    new[:delivery_box] = params["deliveryBox"]
+    new[:delivery_postal_code] = params["deliveryPostalCode"]
+    new[:delivery_city] = params["deliveryCity"]
+    new[:delivery_comments] = params["deliveryComments"]
+    return new
+  end
+
+  def self.from_local_params(params)
+    new = {}
+    new["batchId"] = params[:batch_id]
+    new["orderListIds"] = params[:request_ids]
+    new["allItems"] = params[:all_items].to_json
+    new["itemsFailed"] = params[:items_failed]
+    new["errors"] = params[:errors].to_json
+    new["pickupLocationId"] = params[:pickup_location_id]
+    new["name"] = params[:name]
+    new["company1"] = params[:company1]
+    new["company2"] = params[:company2]
+    new["company3"] = params[:company3]
+    new["emailAddress"] = params[:email_address]
+    new["xAccount"] = params[:x_account]
+    new["authenticatedXAccount"] = params[:authenticated_x_account]
+    new["customerTypeId"] = params[:customer_type_id]
+    new["deliveryMethodId"] = params[:delivery_method_id]
+    new["invoicingName"] = params[:invoicing_name]
+    new["invoicingAddress"] = params[:invoicing_address]
+    new["invoicingPostalAddress1"] = params[:invoicing_postal_address1]
+    new["invoicingPostalAddress2"] = params[:invoicing_postal_address2]
+    new["invoicingId"] = params[:invoicing_id]
+    new["deliveryAddress"] = params[:delivery_address]
+    new["deliveryBox"] = params[:delivery_box]
+    new["deliveryPostalCode"] = params[:delivery_postal_code]
+    new["deliveryCity"] = params[:delivery_city]
+    new["deliveryComments"] = params[:delivery_comments]
+    return new
   end
 end
