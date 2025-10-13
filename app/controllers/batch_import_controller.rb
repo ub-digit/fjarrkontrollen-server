@@ -23,7 +23,8 @@ class BatchImportController < ApplicationController
       # Error: Add validation_results to params.errors and return 422
       # with full object.
       data[:errors] = validation_result
-      render json: data, status: 422
+      data = BatchImport.from_local_params(data)
+      render json: {"orderBatchRequest" => data}, status: 422
     else
       # All good, import from ids.
       batch_id = BatchImport.fetch_batch_id()

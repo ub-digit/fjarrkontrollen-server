@@ -21,6 +21,21 @@ class BatchImport < ApplicationRecord
     "Error generating citation"
   end
 
+  def self.validate_params(data)
+    # Only customer_type_id needs to actually be verified to exist.
+    errors = []
+    if data[:customer_type_id].nil? || data[:customer_type_id].blank? || data[:customer_type_id].to_i == 0
+      errors << {field: "customer_type_id", code: "missing", msg: "Missing customer_type_id"}
+    else
+      if !CustomerType.exists?(id: data[:customer_type_id].to_i)
+        errors << {field: "customer_type_id", code: "invalid", msg: "customer_type_id not valid"}
+      end
+    end
+
+    # Return errors or empty array if all good.
+    return errors
+  end
+
   # Create one order from the given item and provided metadata.
   def self.create_order_from_item(batch_id, item, metadata, current_user)
     batch_item = fetch_item(batch_id, item[:db_id], item[:request_id])
@@ -110,8 +125,10 @@ class BatchImport < ApplicationRecord
   end
 
   # Loop through all request ids. If it contains a "/" it is assumed to be a scopus id, otherwise pubmed.
-  def self.fetch_batch(batch_id, request_ids)
+  def self.fetch_batch(batch_id, request_ids_string)
     results = []
+    # Split by newlines, strip whitespace of each, ignore empty lines
+    request_ids = request_ids_string.to_s.split("\n").map(&:strip)
     request_ids.each do |id|
       id = id.to_s.strip
       next if id.blank?
