@@ -99,7 +99,7 @@ class BatchImport < ApplicationRecord
     new_order = Order.new(order_data)
     new_order.save!(validate: false)
     created_at = new_order[:created_at]
-    order_number = created_at.strftime("%Y%m%d%H%M%S") + id.to_s
+    order_number = created_at.strftime("%Y%m%d%H%M%S") + new_order.id.to_s
     new_order.update_attribute(:order_number, order_number)
 
     # Add note about creation
