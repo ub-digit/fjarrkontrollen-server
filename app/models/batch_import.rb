@@ -107,7 +107,7 @@ class BatchImport < ApplicationRecord
     Note.create({user_id: current_user ? current_user.id : nil, order_id: new_order.id, message: msg, is_email: false, note_type_id: NoteType.find_by_label('system').id})
 
     # Mark batch item as processed and set imported_at to now.
-    batch_item.update_attributes(processed: true, imported_at: Time.now, order_id: new_order.id)
+    batch_item.update(processed: true, imported_at: Time.now, order_id: new_order.id)
     return new_order
   end
 
