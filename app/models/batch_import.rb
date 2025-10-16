@@ -2,7 +2,7 @@ require 'pp'
 class BatchImport < ApplicationRecord
   def as_json(options = {})
     {
-      id: self.request_id,
+      request_id: self.request_id,
       db_id: self.id,
       display_title: as_vancouver,
       selected: options[:selected] || false,
