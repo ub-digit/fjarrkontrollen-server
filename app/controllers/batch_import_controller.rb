@@ -31,7 +31,7 @@ class BatchImportController < ApplicationController
       # Results is a hash "import_results" and "failed_imports"
       results = BatchImport.fetch_batch(batch_id, data[:request_ids])
       data[:all_items] = results["import_results"]
-      data[:failed_items] = results["failed_imports"].join("\n")
+      data[:items_failed] = results["failed_imports"].join("\n")
       data[:batch_id] = batch_id
       data = BatchImport.from_local_params(data)
       render json: {"orderBatchRequest" => data}, status: 200
