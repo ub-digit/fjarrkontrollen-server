@@ -88,7 +88,7 @@ class BatchImport < ApplicationRecord
       delivery_box: metadata[:delivery_box],
       delivery_postal_code: metadata[:delivery_postal_code],
       delivery_city: metadata[:delivery_city],
-      delivery_comments: metadata[:delivery_comments],
+      comments: metadata[:comments],
       invoicing_name: metadata[:invoicing_name],
       invoicing_address: metadata[:invoicing_address],
       invoicing_postal_address1: metadata[:invoicing_postal_address1],
@@ -268,7 +268,7 @@ class BatchImport < ApplicationRecord
     return db_ready
   end
 
-  # {"batchId"=>nil, "orderListIds"=>"sadf", "allItems"=>"[]", "itemsFailed"=>"", "errors"=>"[]", "pickupLocationId"=>"7", "name"=>nil, "company1"=>nil, "company2"=>nil, "company3"=>nil, "emailAddress"=>nil, "xAccount"=>"adsf", "authenticatedXAccount"=>nil, "customerTypeId"=>"1", "deliveryMethodId"=>"2", "invoicingName"=>nil, "invoicingCompany"=>nil, "invoicingAddress"=>nil, "invoicingPostalAddress1"=>nil, "invoicingPostalAddress2"=>nil, "invoicingId"=>nil, "deliveryAddress"=>nil, "deliveryBox"=>nil, "deliveryPostalCode"=>nil, "deliveryCity"=>nil, "deliveryComments"=>nil},
+  # {"batchId"=>nil, "orderListIds"=>"sadf", "allItems"=>"[]", "itemsFailed"=>"", "errors"=>"[]", "pickupLocationId"=>"7", "name"=>nil, "company1"=>nil, "company2"=>nil, "company3"=>nil, "emailAddress"=>nil, "xAccount"=>"adsf", "authenticatedXAccount"=>nil, "customerTypeId"=>"1", "deliveryMethodId"=>"2", "invoicingName"=>nil, "invoicingCompany"=>nil, "invoicingAddress"=>nil, "invoicingPostalAddress1"=>nil, "invoicingPostalAddress2"=>nil, "invoicingId"=>nil, "deliveryAddress"=>nil, "deliveryBox"=>nil, "deliveryPostalCode"=>nil, "deliveryCity"=>nil, "comments"=>nil},
 
   # Assume a hash with string keys in camelCase, convert to symbol keys and snake_case.
   # "allItems" and "errors" must also be JSON-parsed because they are sent as strings with stringified arrays.
@@ -299,7 +299,7 @@ class BatchImport < ApplicationRecord
     new[:delivery_box] = params["deliveryBox"]
     new[:delivery_postal_code] = params["deliveryPostalCode"]
     new[:delivery_city] = params["deliveryCity"]
-    new[:delivery_comments] = params["deliveryComments"]
+    new[:comments] = params["comments"]
     return new
   end
 
@@ -329,7 +329,7 @@ class BatchImport < ApplicationRecord
     new["deliveryBox"] = params[:delivery_box]
     new["deliveryPostalCode"] = params[:delivery_postal_code]
     new["deliveryCity"] = params[:delivery_city]
-    new["deliveryComments"] = params[:delivery_comments]
+    new["comments"] = params[:comments]
     return new
   end
 end
