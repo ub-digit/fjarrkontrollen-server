@@ -84,4 +84,8 @@ Rails.application.routes.draw do
 
   get "statistics/" => "statistics#index"
 
+  # Batch import
+  post "batch_import/" => "batch_import#create"
+  put "batch_import/:batch_id" => "batch_import#update", :constraints  => { :batch_id => /[0-9]+/ }
+
 end
