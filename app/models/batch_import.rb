@@ -263,7 +263,7 @@ class BatchImport < ApplicationRecord
     db_ready[:pages] = data["pages"] || ""
     db_ready[:issue] = data["issue"] || ""
     db_ready[:authors] = data["authors"] || ""
-    db_ready[:item_identifier] = data["id"] || ""
+    db_ready[:item_identifier] = request_id
     db_ready[:item_identifier_source] = "scopus"
     return db_ready
   end
