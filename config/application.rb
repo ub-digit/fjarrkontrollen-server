@@ -22,6 +22,9 @@ module Illbackend
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
+    config.semantic_logger.application = "fjarrkontrollen"
+    config.semantic_logger.environment = ENV["STACK_NAME"] || Rails.env
+
     formatter = :color
     default_log_level = :debug
 
