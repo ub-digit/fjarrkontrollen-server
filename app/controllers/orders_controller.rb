@@ -126,6 +126,14 @@ class OrdersController < ApplicationController
 
 
     if search_term.present?
+
+      # Check string length to avoid IntegerOutOf64BitRange exception for very long numeric search terms.
+      if search_term[/^\d+$/] && search_term.length < 20
+        libris_lf_number = search_term.to_i
+      else
+        libris_lf_number = nil
+      end
+
       st = search_term.downcase
       #the_user = User.where("id = ?", st[/^\d+$/] ? search_term.to_i : nil)
       user_xkonto_or_name_hit = User.where("(xkonto LIKE ?) OR (lower(name) LIKE ?)", "%#{st}%", "%#{st}%").select(:id)
@@ -162,7 +170,7 @@ class OrdersController < ApplicationController
         "%#{st}%",
         "%#{st}%",
         st,
-        st[/^\d+$/] ? search_term.to_i : nil,
+        libris_lf_number,
         st,
         "%#{st}%",
         user_xkonto_or_name_hit,
