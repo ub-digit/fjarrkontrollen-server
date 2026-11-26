@@ -29,6 +29,8 @@ sv:
       subject: "Beställning av fjärrlån/kopia "
       body_header: "Tack för din beställning!"
       extra_info: ""
+      order_details: "Beställningsuppgifter"
+      contact_info: "Kontaktuppgifter"
     delivery_info: "Leveransuppgifter"
     invoicing_info: "Faktureringsuppgifter"
 

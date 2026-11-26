@@ -1,92 +1,104 @@
-<%= t('email.confirmation.body_header') %>
-<br />
-<br />
-<%= t('email.confirmation.extra_info') %>
-<br />
-<br />
-<br />
-<%= @order.order_number %>
-<br />
----------------------------------------------------------------------------
-<br />
-<%= @order.journal_title.blank? ? "" : @order.journal_title %>
-<%= @order.publication_year.blank? ? "" : " " + @order.publication_year + ";" %>
-<%= @order.volume.blank? ? "" : @order.volume %>
-<%= @order.issue.blank? ? "():" : "(" + @order.issue + "):" %>
-<%= @order.pages.blank? ? "" : @order.pages %>
-<br />
-<%= @order.authors.blank? ? "" : @order.authors %>
-<br />
-<%= @order.title.blank? ? "" : @order.title %>
-<br />
-<%= @order.publication_type.blank? ? "" : @order.publication_type %>
-<br />
-<%= @order.period.blank? ? "" : @order.period %>
-<br />
----------------------------------------------------------------------------
-<br />
-<% if !@order.issn_isbn.blank? %>
+<div style="max-width: 640px; margin: 0 auto; color: #24292f; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.5;">
+  <div style="padding: 20px 24px; background-color: #f3f6f9; border-bottom: 3px solid #2f5d7c;">
+    <h1 style="margin: 0; color: #20394c; font-size: 22px; line-height: 1.3;">
+      <%= t('email.confirmation.body_header') %>
+    </h1>
+    <% if t('email.confirmation.extra_info').present? %>
+      <p style="margin: 8px 0 0;"><%= t('email.confirmation.extra_info') %></p>
+    <% end %>
+  </div>
 
-  <% if @order.order_type_id == 1 %>
-    <%= t('email.field.issn') + ": " + @order.issn_isbn %>
-  <% elsif @order.order_type_id == 2 %>
-    <%= t('email.field.isbn') + ": " + @order.issn_isbn %>
-  <% end %>
-<% end %>
-<br />
----------------------------------------------------------------------------
-<br />
-<%= @order.email_address.blank? ? "" : t('email.field.email_address') + ": " + @order.email_address %>
-<br />
-<%= @order.phone_number.blank? ? "" : t('email.field.phone_number') + ": " + @order.phone_number %>
-<br />
-<%= @order.library_card_number.blank? ? "" : t('email.field.library_card_number') + ": " + @order.library_card_number %>
-<br />
-<br />
+  <div style="padding: 20px 24px;">
+    <p style="margin: 0 0 20px; padding: 12px 16px; background-color: #f3f6f9;">
+      <strong><%= @order.order_number %></strong>
+    </p>
 
-<%= @order.name.blank? ? "" : "        " + @order.name %>
-<br />
-<%= @order.company1.blank? ? "" : "        " + @order.company1 %>
-<br />
-<%= @order.company2.blank? ? "" : "        " + @order.company2 %>
-<br />
-<%= @order.company3.blank? ? "" : "        " + @order.company3 %>
-<br />
----------------------------------------------------------------------------
-<br />
-<%= @order.delivery_info %>
-<br />
----------------------------------------------------------------------------
-<br />
-<%= t('email.delivery_info') + ":" %>
-<br />
-<%= @order.delivery_address.blank? ? "" : @order.delivery_address %>
-<br />
-<%= @order.delivery_box.blank? ? "" : @order.delivery_box %>
-<br />
-<%= @order.delivery_postal_code.blank? ? "" : @order.delivery_postal_code %>
-<br />
-<%= @order.delivery_city.blank? ? "" : @order.delivery_city %>
-<br />
-<%= @order.delivery_comments.blank? ? "" : simple_format(@order.delivery_comments) %>
-<br />
----------------------------------------------------------------------------
-<br />
-<%= t('email.invoicing_info') + ":" %>
-<br />
-<%= @order.invoicing_name.blank? ? "" : @order.invoicing_name %>
-<br />
-<%= @order.invoicing_company.blank? ? "" : @order.invoicing_company %>
-<br />
-<%= @order.invoicing_address.blank? ? "" : @order.invoicing_address %>
-<br />
-<%= @order.invoicing_postal_address1.blank? ? "" : @order.invoicing_postal_address1 %>
-<br />
-<%= @order.invoicing_postal_address2.blank? ? "" : @order.invoicing_postal_address2 %>
-<br />
-<%= @order.invoicing_id.blank? ? "" : t('email.field.invoicing_id') + ": " + @order.invoicing_id %>
-<br />
-<br />
-<%= @order.not_valid_after.blank? ? "" : t('email.field.not_valid_after') + ": " +  @order.not_valid_after %>
-<br />
-<%= @order.comments.blank? ? "" : simple_format(@order.comments) %>
+    <section style="margin: 0 0 20px; padding: 0 0 16px; border-bottom: 1px solid #dfe3e8;">
+      <h2 style="margin: 0 0 10px; color: #20394c; font-size: 17px;">
+        <%= t('email.confirmation.order_details') %>
+      </h2>
+      <% if @order.journal_title.present? %>
+        <p style="margin: 0 0 4px;"><strong><%= @order.journal_title %></strong></p>
+      <% end %>
+      <% if @order.publication_year.present? || @order.volume.present? || @order.issue.present? || @order.pages.present? %>
+        <p style="margin: 0 0 8px;">
+          <%= @order.publication_year %><%= ";" if @order.publication_year.present? %><%= " " if @order.publication_year.present? && @order.volume.present? %><%= @order.volume %><%= "(#{@order.issue})" if @order.issue.present? %><%= ":#{@order.pages}" if @order.pages.present? %>
+        </p>
+      <% end %>
+      <% if @order.authors.present? %>
+        <p style="margin: 0 0 4px;"><%= @order.authors %></p>
+      <% end %>
+      <% if @order.title.present? %>
+        <p style="margin: 0 0 4px;"><strong><%= @order.title %></strong></p>
+      <% end %>
+      <% if @order.publication_type.present? %>
+        <p style="margin: 0 0 4px;"><%= @order.publication_type %></p>
+      <% end %>
+      <% if @order.period.present? %>
+        <p style="margin: 0;"><%= @order.period %></p>
+      <% end %>
+      <% if @order.issn_isbn.present? && [1, 2].include?(@order.order_type_id) %>
+        <p style="margin: 12px 0 0;">
+          <strong><%= t(@order.order_type_id == 1 ? 'email.field.issn' : 'email.field.isbn') %>:</strong>
+          <%= @order.issn_isbn %>
+        </p>
+      <% end %>
+    </section>
+
+    <section style="margin: 0 0 20px; padding: 0 0 16px; border-bottom: 1px solid #dfe3e8;">
+      <h2 style="margin: 0 0 10px; color: #20394c; font-size: 17px;">
+        <%= t('email.confirmation.contact_info') %>
+      </h2>
+      <% if @order.email_address.present? %>
+        <p style="margin: 0 0 4px;"><strong><%= t('email.field.email_address') %>:</strong> <%= @order.email_address %></p>
+      <% end %>
+      <% if @order.phone_number.present? %>
+        <p style="margin: 0 0 4px;"><strong><%= t('email.field.phone_number') %>:</strong> <%= @order.phone_number %></p>
+      <% end %>
+      <% if @order.library_card_number.present? %>
+        <p style="margin: 0 0 8px;"><strong><%= t('email.field.library_card_number') %>:</strong> <%= @order.library_card_number %></p>
+      <% end %>
+      <% [@order.name, @order.company1, @order.company2, @order.company3].each do |value| %>
+        <% if value.present? %>
+          <p style="margin: 0 0 4px;"><%= value %></p>
+        <% end %>
+      <% end %>
+    </section>
+
+    <section style="margin: 0 0 20px; padding: 0 0 16px; border-bottom: 1px solid #dfe3e8;">
+      <h2 style="margin: 0 0 10px; color: #20394c; font-size: 17px;">
+        <%= t('email.delivery_info') %>
+      </h2>
+      <p style="margin: 0 0 8px;"><%= @order.delivery_info %></p>
+      <% [@order.delivery_address, @order.delivery_box, @order.delivery_postal_code, @order.delivery_city].each do |value| %>
+        <% if value.present? %>
+          <p style="margin: 0 0 4px;"><%= value %></p>
+        <% end %>
+      <% end %>
+      <% if @order.delivery_comments.present? %>
+        <div style="margin: 8px 0 0;"><%= simple_format(@order.delivery_comments) %></div>
+      <% end %>
+    </section>
+
+    <section style="margin: 0 0 20px; padding: 0 0 16px; border-bottom: 1px solid #dfe3e8;">
+      <h2 style="margin: 0 0 10px; color: #20394c; font-size: 17px;">
+        <%= t('email.invoicing_info') %>
+      </h2>
+      <% [@order.invoicing_name, @order.invoicing_company, @order.invoicing_address, @order.invoicing_postal_address1, @order.invoicing_postal_address2].each do |value| %>
+        <% if value.present? %>
+          <p style="margin: 0 0 4px;"><%= value %></p>
+        <% end %>
+      <% end %>
+      <% if @order.invoicing_id.present? %>
+        <p style="margin: 8px 0 0;"><strong><%= t('email.field.invoicing_id') %>:</strong> <%= @order.invoicing_id %></p>
+      <% end %>
+    </section>
+
+    <% if @order.not_valid_after.present? %>
+      <p style="margin: 0 0 8px;"><strong><%= t('email.field.not_valid_after') %>:</strong> <%= @order.not_valid_after %></p>
+    <% end %>
+    <% if @order.comments.present? %>
+      <div style="margin: 0;"><%= simple_format(@order.comments) %></div>
+    <% end %>
+  </div>
+</div>

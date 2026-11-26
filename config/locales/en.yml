@@ -39,6 +39,8 @@ en:
       subject: "Beställning av fjärrlån/kopia "
       body_header: "Tack för din beställning!"
       extra_info: ""
+      order_details: "Order details"
+      contact_info: "Contact information"
     delivery_info: "Leveransuppgifter"
     invoicing_info: "Faktureringsuppgifter"
 
